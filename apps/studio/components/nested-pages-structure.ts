@@ -30,7 +30,7 @@ type StructureOptions = {
 type SanityListItem = ListItemBuilder | ReturnType<StructureBuilder["divider"]>;
 
 const DOCUMENTS_QUERY = `
-  *[_type == $schemaType && defined(slug.current)] {
+  *[_type == $schemaType && siteId == $siteId && defined(slug.current)] {
       _id,
       title,
       "slug": slug.current
@@ -182,7 +182,8 @@ const createFolderListItem = (
   S: StructureBuilder,
   folder: FolderNode,
   uniqueId: string,
-  listItems: SanityListItem[]
+  listItems: SanityListItem[],
+  siteId?: string 
 ): ListItemBuilder => {
   const pageSlug = friendlyWords();
   const pageTitle = getTitleCase(pageSlug);
@@ -201,7 +202,12 @@ const createFolderListItem = (
             intent: {
               type: "create",
               params: [
-                { type: "page", template: "nested-page-template" },
+                { 
+                  type: "page", 
+                  template: "nested-page-template",
+                  // Inject the siteId so the new page is tagged correctly
+                  siteId: siteId 
+                },
                 {
                   slug: `/${folder.path}/${pageSlug}`,
                   title: `${folder.title} > ${pageTitle}`,
@@ -328,7 +334,8 @@ const combineItemsWithDividers = (
  */
 export const createSlugBasedStructure = (
   S: StructureBuilder,
-  schemaType: string
+  schemaType: string,
+  siteId?: string // Added siteId parameter
 ) => {
   if (!schemaType || typeof schemaType !== "string") {
     throw new Error("Schema type is required and must be a string");
@@ -339,14 +346,17 @@ export const createSlugBasedStructure = (
     .icon(FolderIcon)
     .child(async () => {
       try {
-        // 1. Get client from context with error handling
         const client = S.context.getClient({ apiVersion: API_VERSION });
         if (!client) {
           throw new Error("Unable to get Sanity client");
         }
 
-        // 2. Fetch and process documents
-        const documents = await client.fetch(DOCUMENTS_QUERY, { schemaType });
+        // Pass the siteId into the query parameters
+        const documents = await client.fetch(DOCUMENTS_QUERY, { 
+          schemaType, 
+          siteId 
+        });
+        
         const uniqueDocuments = deduplicateDocuments(documents);
 
         // 3. Build folder structure

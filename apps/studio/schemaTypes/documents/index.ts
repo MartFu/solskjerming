@@ -8,7 +8,8 @@ import { navbar } from "@/schemaTypes/documents/navbar";
 import { page } from "@/schemaTypes/documents/page";
 import { redirect } from "@/schemaTypes/documents/redirect";
 import { settings } from "@/schemaTypes/documents/settings";
+import { site } from "@/schemaTypes/documents/site";
 
 export const singletons = [homePage, blogIndex, settings, footer, navbar];
 
-export const documents = [blog, page, faq, author, ...singletons, redirect];
+export const documents = [site, blog, page, faq, author, ...singletons, redirect];

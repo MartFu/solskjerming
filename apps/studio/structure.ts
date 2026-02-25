@@ -34,12 +34,14 @@ type CreateSingleTon = {
   S: StructureBuilder;
 } & Base<SingletonType>;
 
-const createSingleTon = ({ S, type, title, icon }: CreateSingleTon) => {
+const createSingleTon = ({ S, type, title, icon, siteId }: CreateSingleTon & { siteId?: string }) => {
   const newTitle = title ?? getTitleCase(type);
+  const docId = siteId ? `${siteId}-${type}` : type; // e.g., "terrasse-spesialisten-homePage"
+  
   return S.listItem()
     .title(newTitle)
     .icon(icon ?? File)
-    .child(S.document().schemaType(type).documentId(type));
+    .child(S.document().schemaType(type).documentId(docId));
 };
 
 type CreateList = {
@@ -51,12 +53,22 @@ type CreateList = {
 // and uses a default icon if not provided. It then returns a list item with the generated or
 // provided title and icon.
 
-const createList = ({ S, type, icon, title, id }: CreateList) => {
+const createList = ({ S, type, icon, title, id, siteId }: CreateList & { siteId?: string }) => {
   const newTitle = title ?? getTitleCase(type);
-  return S.documentTypeListItem(type)
-    .id(id ?? type)
-    .title(newTitle)
-    .icon(icon ?? File);
+  const listBuilder = S.documentTypeListItem(type).id(id ?? type).title(newTitle).icon(icon ?? File);
+
+  if (siteId) {
+    return S.listItem()
+      .title(newTitle)
+      .icon(icon ?? File)
+      .child(
+        S.documentList()
+          .title(newTitle)
+          .filter('_type == $type && siteId == $siteId')
+          .params({ type, siteId })
+      );
+  }
+  return listBuilder;
 };
 
 type CreateIndexList = {
@@ -101,14 +113,67 @@ const createIndexListWithOrderableItems = ({
     );
 };
 
+
 export const structure = (
   S: StructureBuilder,
-  context: StructureResolverContext
-) =>
-  S.list()
-    .title("Content")
+  context: StructureResolverContext,
+  workspaceName: string,
+) => {
+  const baseTitle = `${getTitleCase(workspaceName)} Content`;
+
+  switch (workspaceName) {
+    case "solskjerming":
+      return S.list()
+        .title(baseTitle)
+        .items([
+          S.listItem()
+            .title("Select a Site")
+            .child(
+              S.documentTypeList("site")
+                .title("Select Site")
+                .child((siteId) => 
+                  S.list()
+                    .title("Site Content")
+                    .items([
+                      createSingleTon({ S, type: "homePage", icon: HomeIcon, siteId }),
+                      S.divider(),
+                      createSlugBasedStructure(S, "page", siteId), // We must update this next
+                      createList({ S, type: "faq", title: "FAQs", icon: MessageCircle, siteId }),
+                      S.divider(),
+                      S.listItem()
+                        .title("Site Configuration")
+                        .icon(Settings2)
+                        .child(
+                          S.list()
+                            .title("Configuration")
+                            .items([
+                              createSingleTon({ S, type: "navbar", siteId, icon: PanelBottom }),
+                              createSingleTon({ S, type: "footer", siteId, icon: PanelBottomIcon }),
+                              createSingleTon({ S, type: "settings", siteId, icon: CogIcon }),
+                            ])
+                        ),
+                    ])
+                )
+            ),
+        ]);
+
+    default:
+      // Standard layout for other workspaces
+      return S.list().title(baseTitle).items([
+        createSingleTon({ S, type: "homePage", icon: HomeIcon }),
+        // ... rest of your default items
+      ]);
+  }
+};
+
+
+/* 
+
+ S.list()
+    .title(`${getTitleCase(workspaceName)} Content`)
     .items([
-      createSingleTon({ S, type: "homePage", icon: HomeIcon }),
+      createSingleTon({ S, type: "homePage", icon: HomeIcon, id: `${name}_homePage` }),
+
       S.divider(),
       createSlugBasedStructure(S, "page"),
       createIndexListWithOrderableItems({
@@ -159,3 +224,5 @@ export const structure = (
             ])
         ),
     ]);
+
+*/
