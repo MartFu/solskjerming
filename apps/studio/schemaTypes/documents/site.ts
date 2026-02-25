@@ -15,6 +15,8 @@ export const site = defineType({
       description: "e.g., Terrasse-Spesialisten",
       validation: (Rule) => Rule.required(),
     }),
+     defineField({ name: 'workspace', type: 'string' }),
+    defineField({ name: 'slug', type: 'slug' }),
     defineField({
       name: "url",
       title: "Production URL",
