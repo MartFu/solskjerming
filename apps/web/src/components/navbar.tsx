@@ -131,9 +131,11 @@ function NavbarSkeleton() {
 export function Navbar({
   navbarData: initialNavbarData,
   settingsData: initialSettingsData,
-}: NavigationData) {
+  siteId
+}: NavigationData & {siteId: string;}) {
+
   const { data, error, isLoading } = useSWR<NavigationData>(
-    "/api/navigation",
+    `/api/navigation?siteId=${siteId}`,
     fetcher,
     {
       fallbackData: {

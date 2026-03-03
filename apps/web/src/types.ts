@@ -1,7 +1,8 @@
 import type { FilterByType, Get } from "@sanity/codegen";
 import type {
-  QueryBlogIndexPageBlogsResult,
-  QueryBlogSlugPageDataResult,
+
+  QueryArticleIndexPageArticlesResult, 
+  QueryArticleSlugPageDataResult,
   QueryGlobalSeoSettingsResult,
   QueryHomePageDataResult,
   QueryImageTypeResult,
@@ -25,14 +26,14 @@ export type SanityButtonProps = Get<PagebuilderType<"hero">, "buttons", number>;
 
 export type SanityImageProps = NonNullable<QueryImageTypeResult>;
 
-export type SanityRichTextProps = Get<QueryBlogSlugPageDataResult, "richText">;
+export type SanityRichTextProps = Get<QueryArticleSlugPageDataResult, "richText">;
 
 export type SanityRichTextBlock = FilterByType<
   NonNullable<NonNullable<SanityRichTextProps>[number]>,
   "block"
 >;
 
-export type Article = Get<QueryBlogIndexPageBlogsResult, number>;
+export type Article = Get<QueryArticleIndexPageArticlesResult, number>;
 
 export type Maybe<T> = T | null | undefined;
 

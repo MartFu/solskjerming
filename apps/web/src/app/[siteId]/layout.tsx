@@ -21,7 +21,7 @@ export default async function Layout({
 
   return (
     <>
-      <Navbar navbarData={nav.navbarData} settingsData={nav.settingsData} />
+      <Navbar navbarData={nav.navbarData} settingsData={nav.settingsData} siteId={siteId} />
       {children}
       <Suspense fallback={<FooterSkeleton />}>
         <FooterServer siteId={siteId} />
