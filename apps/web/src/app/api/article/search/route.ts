@@ -1,5 +1,5 @@
 import { sanityFetch } from "@workspace/sanity/live";
-import { queryAllBlogDataForSearch } from "@workspace/sanity/query";
+import { queryAllArticleDataForSearch } from "@workspace/sanity/query";
 import Fuse from "fuse.js";
 import { NextResponse } from "next/server";
 
@@ -14,7 +14,7 @@ export async function GET(request: Request) {
   }
 
   const { data } = await sanityFetch({
-    query: queryAllBlogDataForSearch,
+    query: queryAllArticleDataForSearch,
     stega: false,
   });
 

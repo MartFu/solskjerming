@@ -1,8 +1,8 @@
 import { BlogCard } from "@/components/blog-card";
-import type { Blog } from "@/types";
+import type { Article } from "@/types";
 
 export type BlogListProps = {
-  blogs: Blog[];
+  blogs: Article[];
   isLoading?: boolean;
 };
 

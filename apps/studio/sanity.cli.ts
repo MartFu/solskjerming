@@ -63,6 +63,7 @@ export default defineCliConfig({
   schemaExtraction: {
     enabled: true,
     enforceRequiredFields: true,
+    workspace: "solskjerming"
   },
   typegen: {
     enabled: true,

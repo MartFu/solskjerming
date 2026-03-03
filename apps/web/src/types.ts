@@ -32,7 +32,7 @@ export type SanityRichTextBlock = FilterByType<
   "block"
 >;
 
-export type Blog = Get<QueryBlogIndexPageBlogsResult, number>;
+export type Article = Get<QueryBlogIndexPageBlogsResult, number>;
 
 export type Maybe<T> = T | null | undefined;
 

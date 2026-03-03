@@ -335,7 +335,7 @@ const combineItemsWithDividers = (
 export const createSlugBasedStructure = (
   S: StructureBuilder,
   schemaType: string,
-  siteId?: string // Added siteId parameter
+  siteId?: string 
 ) => {
   if (!schemaType || typeof schemaType !== "string") {
     throw new Error("Schema type is required and must be a string");

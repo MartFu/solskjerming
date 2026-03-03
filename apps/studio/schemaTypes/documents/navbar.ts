@@ -23,6 +23,18 @@ const navbarLink = defineField({
       title: "Link URL",
       description: "The URL that this link will navigate to when clicked",
     }),
+    defineField({
+      name: "siteId",
+      title: "Site ID",
+      type: "string",
+      readOnly: true,
+      hidden: true,
+    }),
+    defineField({
+      name: "deployment",
+      title: "Publishing Status",
+      type: "deploymentMeta",
+    }),
   ],
   preview: {
     select: {
@@ -31,8 +43,16 @@ const navbarLink = defineField({
       urlType: "url.type",
       internalUrl: "url.internal.slug.current",
       openInNewTab: "url.openInNewTab",
+      siteId: "siteId",
     },
-    prepare({ title, externalUrl, urlType, internalUrl, openInNewTab }) {
+    prepare({
+      title,
+      externalUrl,
+      urlType,
+      internalUrl,
+      siteId,
+      openInNewTab,
+    }) {
       const url = urlType === "external" ? externalUrl : internalUrl;
       const newTabIndicator = openInNewTab ? " ↗" : "";
       const truncatedUrl =
@@ -40,7 +60,7 @@ const navbarLink = defineField({
 
       return {
         title: title || "Untitled Link",
-        subtitle: `${urlType === "external" ? "External" : "Internal"} • ${truncatedUrl}${newTabIndicator}`,
+        subtitle: `${urlType === "external" ? "External" : "Internal"} • ${truncatedUrl}${newTabIndicator}  • ${siteId}`,
         media: Link,
       };
     },

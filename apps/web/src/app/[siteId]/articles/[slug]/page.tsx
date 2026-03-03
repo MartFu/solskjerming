@@ -1,7 +1,7 @@
 import { Logger } from "@workspace/logger";
 import { client } from "@workspace/sanity/client";
 import { sanityFetch } from "@workspace/sanity/live";
-import { queryBlogPaths, queryBlogSlugPageData } from "@workspace/sanity/query";
+import { queryArticlePaths, queryArticleSlugPageData } from "@workspace/sanity/query";
 import { notFound } from "next/navigation";
 
 import { RichText } from "@/components/elements/rich-text";
@@ -9,38 +9,45 @@ import { SanityImage } from "@/components/elements/sanity-image";
 import { TableOfContent } from "@/components/elements/table-of-content";
 import { ArticleJsonLd } from "@/components/json-ld";
 import { getSEOMetadata } from "@/lib/seo";
+import { QueryArticleSlugPageDataResult } from "@workspace/sanity/types";
 
-const logger = new Logger("BlogSlug");
+const logger = new Logger("ArticleSlug");
 
-async function fetchBlogSlugPageData(slug: string) {
+async function fetchArticleSlugPageData(slug: string, siteId: string) {
   return await sanityFetch({
-    query: queryBlogSlugPageData,
-    params: { slug },
+    query: queryArticleSlugPageData,
+    params: { slug, siteId },
   });
 }
 
-async function fetchBlogPaths() {
-  try {
-    const slugs = await client.fetch(queryBlogPaths);
+interface ArticlePath {
+  slug: string;
+  siteId: string;
+}
 
-    // If no slugs found, return empty array to prevent build errors
-    if (!Array.isArray(slugs) || slugs.length === 0) {
+async function fetchArticlePaths(): Promise<ArticlePath[]> {
+  try {
+    // queryArticlePaths now returns Array<{ slug: string; siteId: string }>
+    const data = await client.fetch<ArticlePath[]>(
+      queryArticlePaths,
+    );
+
+    // If no data found, return empty array to prevent build errors
+    if (!Array.isArray(data) || data.length === 0) {
       return [];
     }
 
-    const paths: { slug: string }[] = [];
-    for (const slug of slugs) {
-      if (!slug) {
-        continue;
-      }
-      const [, , path] = slug.split("/");
-      if (path) {
-        paths.push({ slug: path });
-      }
-    }
-    return paths;
+    // Filter out any potential malformed entries and return the clean param objects
+    return data
+      .filter((item): item is ArticlePath =>
+        Boolean(item?.slug && item?.siteId),
+      )
+      .map((item: { slug: string; siteId: string }) => ({
+        siteId: item.siteId,
+        slug: item.slug,
+      }));
   } catch (error) {
-    logger.error("Error fetching blog paths", error);
+    logger.error("Error fetching article paths", error);
     // Return empty array to allow build to continue
     return [];
   }
@@ -49,11 +56,11 @@ async function fetchBlogPaths() {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; siteId: string}>;
 }) {
-  const { slug } = await params;
-  const slugString = `/blog/${slug}`;
-  const { data } = await fetchBlogSlugPageData(slugString);
+  const { slug, siteId } = await params;
+  const slugString = `/articles/${slug}`;
+  const { data } = await fetchArticleSlugPageData(slugString, siteId);
   return getSEOMetadata({
     title: data?.title ?? data?.seoTitle,
     description: data?.description ?? data?.seoDescription,
@@ -65,21 +72,21 @@ export async function generateMetadata({
 }
 
 export async function generateStaticParams() {
-  const paths = await fetchBlogPaths();
+  const paths = await fetchArticlePaths();
   return paths;
 }
 
 // Allow dynamic params for paths not generated at build time
 export const dynamicParams = true;
 
-export default async function BlogSlugPage({
+export default async function ArticleSlugPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; siteId: string; }>;
 }) {
-  const { slug } = await params;
-  const slugString = `/blog/${slug}`;
-  const { data } = await fetchBlogSlugPageData(slugString);
+  const { slug, siteId } = await params;
+  const slugString = `/articles/${slug}`;
+  const { data } = await fetchArticleSlugPageData(slugString, siteId);
   if (!data) {
     return notFound();
   }

@@ -12,6 +12,8 @@ import {
   createSlugWarningValidator,
   getDocumentTypeConfig,
 } from "@/utils/slug-validation";
+import { isUnique } from "@/utils/slug";
+import { OklchColorInput } from "@/components/oklch-color-input";
 
 export const richTextField = defineField({
   name: "richText",
@@ -60,10 +62,11 @@ export const documentSlugField = (
 
   return defineField({
     name: "slug",
-    type: "slug",
+    type: "string",
     title,
     description,
     group,
+  
     components: {
       field: PathnameFieldComponent,
     },
@@ -109,4 +112,15 @@ export const imageWithAltField = ({
           "The text that describes the image for screen readers and search engines",
       }),
     ],
+  });
+
+
+export const oklchField = (name: string, title: string) =>
+  defineField({
+    name,
+    title,
+    type: "string",
+    components: {
+      input: OklchColorInput,
+    },
   });

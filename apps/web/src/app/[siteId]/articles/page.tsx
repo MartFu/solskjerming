@@ -1,8 +1,8 @@
 import { sanityFetch } from "@workspace/sanity/live";
 import {
-  queryBlogIndexPageBlogs,
-  queryBlogIndexPageBlogsCount,
-  queryBlogIndexPageData,
+  queryArticleIndexPageArticles,
+  queryArticleIndexPageArticlesCount,
+  queryArticleIndexPageData,
 } from "@workspace/sanity/query";
 import { notFound } from "next/navigation";
 
@@ -17,13 +17,13 @@ import {
 } from "@/utils";
 
 async function fetchBlogIndexPageData() {
-  const res = await sanityFetch({ query: queryBlogIndexPageData });
+  const res = await sanityFetch({ query: queryArticleIndexPageData });
   return res.data;
 }
 
 async function fetchBlogIndexPageBlogs(start: number, end: number) {
   const res = await sanityFetch({
-    query: queryBlogIndexPageBlogs,
+    query: queryArticleIndexPageArticles,
     params: { start, end },
   });
   return res.data;
@@ -31,14 +31,14 @@ async function fetchBlogIndexPageBlogs(start: number, end: number) {
 
 async function fetchBlogIndexPageBlogsCount() {
   const res = await sanityFetch({
-    query: queryBlogIndexPageBlogsCount,
+    query: queryArticleIndexPageArticlesCount,
   });
   return res.data;
 }
 
 export async function generateMetadata() {
   const { data: result } = await sanityFetch({
-    query: queryBlogIndexPageData,
+    query: queryArticleIndexPageData,
   });
   return getSEOMetadata({
     title: result?.title ?? result?.seoTitle,

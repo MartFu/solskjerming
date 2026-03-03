@@ -8,13 +8,13 @@ import { BlogSearchResults } from "@/components/blog-search-results";
 import { BlogSection } from "@/components/blog-section";
 import { PageBuilder } from "@/components/pagebuilder";
 import { useBlogSearch } from "@/hooks/use-blog-search";
-import type { Blog } from "@/types";
+import type { Article } from "@/types";
 import type { PaginationMetadata } from "@/utils";
 import { SearchInput } from "./blog-search";
 
 type BlogPageContentProps = {
   indexPageData: NonNullable<QueryBlogIndexPageDataResult>;
-  blogs: Blog[];
+  blogs: Article[];
   paginationMetadata: PaginationMetadata;
 };
 

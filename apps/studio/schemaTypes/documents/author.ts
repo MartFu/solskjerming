@@ -47,7 +47,7 @@ export const author = defineType({
     prepare: ({ title, position, media, bio }) => {
       const positionInfo = position ? `💼 ${position}` : "🎭 Mystery Writer";
       return {
-        title: `✍️ ${title || "Unnamed Author"}`,
+        title: `${title || "Unnamed Author"}`,
         subtitle: `${positionInfo} | ${bio}`,
         media,
       };

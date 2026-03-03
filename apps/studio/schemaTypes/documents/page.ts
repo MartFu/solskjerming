@@ -40,12 +40,12 @@ export const page = defineType({
         rule
           .min(140)
           .warning(
-            "The meta description should be at least 140 characters for optimal SEO visibility in search results"
+            "The meta description should be at least 140 characters for optimal SEO visibility in search results",
           ),
         rule
           .max(160)
           .warning(
-            "The meta description should not exceed 160 characters as it will be truncated in search results"
+            "The meta description should not exceed 160 characters as it will be truncated in search results",
           ),
       ],
     }),
@@ -58,6 +58,18 @@ export const page = defineType({
         "A main picture for this page that can be used when sharing on social media or in search results",
       group: GROUP.MAIN_CONTENT,
     }),
+    defineField({
+      name: "siteId",
+      title: "Site ID",
+      type: "string",
+      readOnly: true,
+      hidden: true,
+    }),
+    defineField({
+      name: "deployment",
+      title: "Publishing Status",
+      type: "deploymentMeta",
+    }),
     pageBuilderField,
     ...seoFields.filter((field) => field.name !== "seoHideFromLists"),
     ...ogFields,
@@ -67,10 +79,11 @@ export const page = defineType({
       title: "title",
       slug: "slug.current",
       media: "image",
+      siteId: "siteId",
       isPrivate: "seoNoIndex",
       hasPageBuilder: "pageBuilder",
     },
-    prepare: ({ title, slug, media, isPrivate, hasPageBuilder }) => {
+    prepare: ({ title, slug, media, isPrivate, siteId, hasPageBuilder }) => {
       const statusEmoji = isPrivate ? "🔒" : "🌎";
       const builderEmoji = hasPageBuilder?.length
         ? `🧱 ${hasPageBuilder.length}`
@@ -78,7 +91,7 @@ export const page = defineType({
 
       return {
         title: `${title || "Untitled Page"}`,
-        subtitle: `${statusEmoji} ${builderEmoji} | 🔗 ${slug || "no-slug"}`,
+        subtitle: `${statusEmoji} ${builderEmoji} | 🔗 /${slug || "no-slug"} • ${siteId}`,
         media,
       };
     },

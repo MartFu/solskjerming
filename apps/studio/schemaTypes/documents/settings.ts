@@ -87,13 +87,27 @@ export const settings = defineType({
       validation: (rule) => rule.email(),
     }),
     socialLinks,
+    defineField({
+      name: "siteId",
+      title: "Site ID",
+      type: "string",
+      readOnly: true,
+      hidden: true,
+    }),
+    defineField({
+      name: "deployment",
+      title: "Publishing Status",
+      type: "deploymentMeta",
+    }),
   ],
   preview: {
     select: {
       title: "label",
+      siteId: "siteId"
     },
-    prepare: ({ title }) => ({
+    prepare: ({ title, siteId }) => ({
       title: title || "Untitled Settings",
+      subtitle: `Site ID: ${siteId}`,
       media: CogIcon,
     }),
   },

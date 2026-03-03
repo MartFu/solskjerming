@@ -2,8 +2,7 @@ import "@workspace/env/client";
 import "@workspace/env/server";
 
 import { env } from "@workspace/env/client";
-import { client } from "@workspace/sanity/client";
-import { queryRedirects } from "@workspace/sanity/query";
+
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -25,14 +24,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  async redirects() {
-    const redirects = await client.fetch(queryRedirects);
-    return redirects.map((redirect) => ({
-      source: redirect.source,
-      destination: redirect.destination,
-      permanent: redirect.permanent ?? false,
-    }));
-  },
+
 };
 
 export default nextConfig;

@@ -16,6 +16,18 @@ const footerColumnLink = defineField({
       name: "url",
       type: "customUrl",
     }),
+     defineField({
+      name: "siteId",
+      title: "Site ID",
+      type: "string",
+      readOnly: true,
+      hidden: true,
+    }),
+    defineField({
+      name: "deployment",
+      title: "Publishing Status",
+      type: "deploymentMeta",
+    }),
   ],
   preview: {
     select: {
@@ -24,8 +36,9 @@ const footerColumnLink = defineField({
       urlType: "url.type",
       internalUrl: "url.internal.slug.current",
       openInNewTab: "url.openInNewTab",
+      siteId: "siteId"
     },
-    prepare({ title, externalUrl, urlType, internalUrl, openInNewTab }) {
+    prepare({ title, externalUrl, urlType, internalUrl, siteId, openInNewTab }) {
       const url = urlType === "external" ? externalUrl : internalUrl;
       const newTabIndicator = openInNewTab ? " ↗" : "";
       const truncatedUrl =
@@ -33,7 +46,7 @@ const footerColumnLink = defineField({
 
       return {
         title: title || "Untitled Link",
-        subtitle: `${urlType === "external" ? "External" : "Internal"} • ${truncatedUrl}${newTabIndicator}`,
+        subtitle: `${urlType === "external" ? "External" : "Internal"} • ${truncatedUrl}${newTabIndicator} • ${siteId}`,
         media: Link,
       };
     },

@@ -6,6 +6,7 @@ import {
   type ObjectFieldProps,
   type SanityDocument,
   type SlugValue,
+  type StringFieldProps,
   set,
   unset,
   useFormValue,
@@ -18,7 +19,7 @@ const presentationOriginUrl = process.env.SANITY_STUDIO_PRESENTATION_URL;
 
 const monoStyle = { fontFamily: "monospace" } as const;
 
-export function PathnameFieldComponent(props: ObjectFieldProps<SlugValue>) {
+export function PathnameFieldComponent(props: StringFieldProps) {
   const {
     inputProps: { onChange, value, readOnly },
     title,
@@ -27,7 +28,7 @@ export function PathnameFieldComponent(props: ObjectFieldProps<SlugValue>) {
   } = props;
 
   const document = useFormValue([]) as SanityDocument;
-  const currentSlug = value?.current || "";
+  const currentSlug = typeof value === 'string' ? value : "";
 
   const errors = useMemo(
     () => [
@@ -50,22 +51,15 @@ export function PathnameFieldComponent(props: ObjectFieldProps<SlugValue>) {
     [validation]
   );
 
-  const localizedPathname = currentSlug.startsWith("/")
+  const localizedPathname = currentSlug?.startsWith("/")
     ? currentSlug
     : `/${currentSlug}`;
   const fullUrl = `${presentationOriginUrl ?? ""}${localizedPathname}`;
 
   const handleChange = useCallback(
     (newValue?: string) => {
-      try {
-        const patch =
-          typeof newValue === "string"
-            ? set({ current: newValue, _type: "slug" })
-            : unset();
-        onChange(patch);
-      } catch {
-        // Validation will show user-friendly messages
-      }
+      const patch = typeof newValue === "string" ? set(newValue) : unset();
+      onChange(patch);
     },
     [onChange]
   );

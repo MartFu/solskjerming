@@ -1,34 +1,7 @@
-import { sanityFetch } from "@workspace/sanity/live";
-import { queryHomePageData } from "@workspace/sanity/query";
+import { redirect } from "next/navigation";
 
-import { PageBuilder } from "@/components/pagebuilder";
-import { getSEOMetadata } from "@/lib/seo";
+const DEFAULT_SITE_ID = process.env.NEXT_PUBLIC_DEFAULT_SITE_ID ?? "terrassemarkise";
 
-async function fetchHomePageData() {
-  return await sanityFetch({
-    query: queryHomePageData,
-  });
-}
-
-export async function generateMetadata() {
-  const { data: homePageData } = await fetchHomePageData();
-  return getSEOMetadata({
-    title: homePageData?.title ?? homePageData?.seoTitle,
-    description: homePageData?.description ?? homePageData?.seoDescription,
-    slug: "/",
-    contentId: homePageData?._id,
-    contentType: homePageData?._type,
-  });
-}
-
-export default async function Page() {
-  const { data: homePageData } = await fetchHomePageData();
-
-  if (!homePageData) {
-    return <div>No home page data</div>;
-  }
-
-  const { _id, _type, pageBuilder } = homePageData ?? {};
-
-  return <PageBuilder id={_id} pageBuilder={pageBuilder ?? []} type={_type} />;
+export default function RootPage() {
+  redirect(`/${DEFAULT_SITE_ID}`);
 }

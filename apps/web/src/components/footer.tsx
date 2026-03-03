@@ -27,12 +27,14 @@ type FooterProps = {
   settingsData: NonNullable<QueryGlobalSeoSettingsResult>;
 };
 
-export async function FooterServer() {
+export async function FooterServer({siteId}: {siteId: string}) {
   const [response, settingsResponse] = await Promise.all([
-    sanityFetch({
+    sanityFetch({ 
+      params: { siteId },
       query: queryFooterData,
     }),
     sanityFetch({
+      params: { siteId },
       query: queryGlobalSeoSettings,
     }),
   ]);

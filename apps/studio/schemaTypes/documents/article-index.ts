@@ -5,36 +5,36 @@ import { GROUP, GROUPS } from "@/utils/constant";
 import { ogFields } from "@/utils/og-fields";
 import { seoFields } from "@/utils/seo-fields";
 
-export const blogIndex = defineType({
-  name: "blogIndex",
+export const articleIndex = defineType({
+  name: "articleIndex",
   type: "document",
-  title: "Blog Listing Page",
+  title: "Article Listing Page",
   description:
-    "This is the main page that shows all your blog posts. You can customize how your blog listing page looks, what title it has, and which blog post you want to highlight at the top.",
+    "This is the main page that shows all your articles. You can customize how your article listing page looks, what title it has, and which articles you want to highlight at the top.",
   groups: GROUPS,
   fields: [
     defineField({
       name: "title",
       type: "string",
       description:
-        "The main heading that will appear at the top of your blog listing page",
+        "The main heading that will appear at the top of your article listing page",
       group: GROUP.MAIN_CONTENT,
     }),
     defineField({
       name: "description",
       type: "text",
       description:
-        "A short summary of what visitors can find on your blog. This helps people understand what your blog is about.",
+        "A short summary of what visitors can find on in your articles. This helps people understand what your articles are about.",
       group: GROUP.MAIN_CONTENT,
     }),
-    documentSlugField("blogIndex", {
+    documentSlugField("articleIndex", {
       group: GROUP.MAIN_CONTENT,
     }),
     defineField({
-      name: "displayFeaturedBlogs",
-      title: "Display Featured Blogs",
+      name: "displayFeaturedArticles",
+      title: "Display Featured Articles",
       description:
-        "When enabled, this will take the top blogs from the ordered blog list and display them as featured at the top of the page",
+        "When enabled, this will take the top articles from the ordered article list and display them as featured at the top of the page",
       type: "string",
       options: {
         list: [
@@ -47,9 +47,9 @@ export const blogIndex = defineType({
       group: GROUP.MAIN_CONTENT,
     }),
     defineField({
-      name: "featuredBlogsCount",
-      title: "Number of Featured Blogs",
-      description: "Select the number of blogs to display as featured.",
+      name: "featuredArticlesCount",
+      title: "Number of Featured Articles",
+      description: "Select the number of articles to display as featured.",
       type: "string",
       options: {
         list: [
@@ -61,7 +61,7 @@ export const blogIndex = defineType({
         direction: "horizontal",
       },
       initialValue: "1",
-      hidden: ({ parent }) => parent?.displayFeaturedBlogs !== "yes",
+      hidden: ({ parent }) => parent?.displayFeaturedArticles !== "yes",
       group: GROUP.MAIN_CONTENT,
     }),
     pageBuilderField,
@@ -77,8 +77,8 @@ export const blogIndex = defineType({
       slug: "slug.current",
     },
     prepare: ({ title, description, slug }) => ({
-      title: title || "Untitled Blog Index",
-      subtitle: description || slug || "Blog Index",
+      title: title || "Untitled Article Index",
+      subtitle: description || slug || "Article Index",
     }),
   },
 });

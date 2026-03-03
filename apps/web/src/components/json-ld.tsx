@@ -261,6 +261,7 @@ export function WebSiteJsonLd({ settings }: WebSiteJsonLdProps) {
 
 // Combined JSON-LD Component for pages with multiple structured data
 type CombinedJsonLdProps = {
+  siteId: string;
   settings?: QuerySettingsDataResult;
   article?: QueryBlogSlugPageDataResult;
   faqs?: FlexibleFaq[];
@@ -269,10 +270,11 @@ type CombinedJsonLdProps = {
 };
 
 export async function CombinedJsonLd({
+  siteId,
   includeWebsite = false,
   includeOrganization = false,
 }: CombinedJsonLdProps) {
-  const [res] = await handleErrors(client.fetch(querySettingsData));
+  const [res] = await handleErrors(client.fetch(querySettingsData, { siteId }));
 
   const cleanSettings = stegaClean(res);
   return (

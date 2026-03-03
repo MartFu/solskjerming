@@ -3,11 +3,11 @@
 import { cn } from "@workspace/ui/lib/utils";
 
 import { BlogList } from "@/components/blog-list";
-import type { Blog } from "@/types";
+import type { Article } from "@/types";
 
 type BlogSearchResultsProps = {
   className?: string;
-  results: Blog[];
+  results: Article[];
   isSearching: boolean;
   hasQuery: boolean;
   searchQuery: string;

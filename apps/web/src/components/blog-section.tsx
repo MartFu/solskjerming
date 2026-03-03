@@ -1,9 +1,9 @@
 import { FeaturedBlogCard } from "@/components/blog-card";
 import { BlogList } from "@/components/blog-list";
-import type { Blog } from "@/types";
+import type { Article } from "@/types";
 
 export type BlogSectionProps = {
-  blogs: Blog[];
+  blogs: Article[];
   title: string;
   isFeatured?: boolean;
 };

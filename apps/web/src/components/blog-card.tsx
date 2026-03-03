@@ -1,10 +1,10 @@
 import Link from "next/link";
 
-import type { Blog } from "@/types";
+import type { Article } from "@/types";
 import { SanityImage } from "./elements/sanity-image";
 
 type BlogImageProps = {
-  image: Blog["image"];
+  image: Article["image"];
   title?: string | null;
 };
 
@@ -15,7 +15,7 @@ function BlogImage({ image, title }: BlogImageProps) {
 
   return (
     <SanityImage
-      alt={title ?? "Blog post image"}
+      alt={title ?? "Article post image"}
       className="aspect-video w-full rounded-2xl bg-gray-100 object-cover sm:aspect-2/1 lg:aspect-3/2"
       height={400}
       image={image}
@@ -25,7 +25,7 @@ function BlogImage({ image, title }: BlogImageProps) {
 }
 
 type AuthorImageProps = {
-  author: Blog["authors"];
+  author: Article["authors"];
 };
 
 function AuthorImage({ author }: AuthorImageProps) {
@@ -45,7 +45,7 @@ function AuthorImage({ author }: AuthorImageProps) {
 }
 
 type BlogAuthorProps = {
-  author: Blog["authors"];
+  author: Article["authors"];
 };
 
 export function BlogAuthor({ author }: BlogAuthorProps) {
@@ -62,7 +62,7 @@ export function BlogAuthor({ author }: BlogAuthorProps) {
 }
 
 type BlogCardProps = {
-  blog: Blog;
+  blog: Article;
 };
 
 function BlogMeta({ publishedAt }: { publishedAt: string | null }) {

@@ -229,20 +229,24 @@ export function getDocumentTypeConfig(docType: string): SlugValidationOptions {
 
 /** Create a Sanity schema error validator from options. */
 export function createSlugErrorValidator(
-  options: SlugValidationOptions
-): (slug: { current?: string } | undefined) => string | true {
+  options: SlugValidationOptions,
+): (slug: { current?: string } | string | undefined) => string | true {
   return (slug) => {
-    const { errors } = validateSlug(slug?.current, options);
+    // Handle both { current: string } and plain string
+    const slugValue = typeof slug === "string" ? slug : slug?.current;
+    const { errors } = validateSlug(slugValue, options);
     return errors.length > 0 ? errors.join("; ") : true;
   };
 }
 
 /** Create a Sanity schema warning validator from options. */
 export function createSlugWarningValidator(
-  options: SlugValidationOptions
-): (slug: { current?: string } | undefined) => string | true {
+  options: SlugValidationOptions,
+): (slug: { current?: string } | string | undefined) => string | true {
   return (slug) => {
-    const { warnings } = validateSlug(slug?.current, options);
+    // Handle both { current: string } and plain string
+    const slugValue = typeof slug === "string" ? slug : slug?.current;
+    const { warnings } = validateSlug(slugValue, options);
     return warnings.length > 0 ? warnings.join("; ") : true;
   };
 }
@@ -272,8 +276,8 @@ export function generateSlugFromTitle(
   switch (documentType) {
     case "homePage":
       return "/";
-    case "blogIndex":
-      return "/blog";
+    case "articleIndex":
+      return "/artikler";
     case "author":
       return `/author/${clean}`;
     case "blog":

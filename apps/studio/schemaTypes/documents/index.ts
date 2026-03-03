@@ -1,6 +1,6 @@
 import { author } from "@/schemaTypes/documents/author";
-import { blog } from "@/schemaTypes/documents/blog";
-import { blogIndex } from "@/schemaTypes/documents/blog-index";
+import { article } from "@/schemaTypes/documents/article";
+import { articleIndex } from "@/schemaTypes/documents/article-index";
 import { faq } from "@/schemaTypes/documents/faq";
 import { footer } from "@/schemaTypes/documents/footer";
 import { homePage } from "@/schemaTypes/documents/home-page";
@@ -9,7 +9,18 @@ import { page } from "@/schemaTypes/documents/page";
 import { redirect } from "@/schemaTypes/documents/redirect";
 import { settings } from "@/schemaTypes/documents/settings";
 import { site } from "@/schemaTypes/documents/site";
+import { video } from "./video";
+import { product } from "./product";
+import { siteTheme, themeDefaults } from "./css-tokens";
 
-export const singletons = [homePage, blogIndex, settings, footer, navbar];
+export const singletons = [
+  homePage,
+  articleIndex,
+  settings,
+  footer,
+  navbar,
+  siteTheme,
+  themeDefaults,
+];
 
-export const documents = [site, blog, page, faq, author, ...singletons, redirect];
+export const documents = [site, article, video, product, page, faq, author, ...singletons, redirect];

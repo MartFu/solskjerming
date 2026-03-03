@@ -1,31 +1,34 @@
-// schemaTypes/site.ts
-import { EarthIcon } from "lucide-react";
+import { Globe } from "lucide-react";
 import { defineField, defineType } from "sanity";
 
 export const site = defineType({
   name: "site",
   title: "Site",
   type: "document",
-  icon: EarthIcon,
+  icon: Globe,
   fields: [
     defineField({
-      name: "title",
-      title: "Site Name",
+      name: "id",
+      title: "Site ID",
       type: "string",
-      description: "e.g., Terrasse-Spesialisten",
+      validation: (Rule) => Rule.required(),
+      description: "Unique identifier (e.g., terrasse-spesialisten)",
+    }),
+    defineField({
+      name: "title",
+      title: "Site Title",
+      type: "string",
       validation: (Rule) => Rule.required(),
     }),
-     defineField({ name: 'workspace', type: 'string' }),
-    defineField({ name: 'slug', type: 'slug' }),
     defineField({
-      name: "url",
-      title: "Production URL",
+      name: "domain",
+      title: "Live Domain",
       type: "url",
-      description: "The live domain for this site",
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "market",
-      title: "Market",
+      name: "workspace",
+      title: "Workspace",
       type: "string",
       options: {
         list: [
@@ -35,5 +38,49 @@ export const site = defineType({
       },
       validation: (Rule) => Rule.required(),
     }),
+    defineField({
+      name: "logo",
+      title: "Logo",
+      type: "image",
+      options: { hotspot: true },
+    }),
+    defineField({
+      name: "favicon",
+      title: "Favicon",
+      type: "image",
+    }),
+    defineField({
+      name: "contact",
+      title: "Contact Information",
+      type: "object",
+      fields: [
+        { name: "phone", type: "string", title: "Phone" },
+        { name: "email", type: "string", title: "Email" },
+        { name: "address", type: "address" },
+      ],
+    }),
+    defineField({
+      name: "social",
+      title: "Social Media",
+      type: "socialLinks",
+    }),
+    defineField({
+      name: "deployment",
+      title: "Deployment Status",
+      type: "deploymentMeta",
+    }),
   ],
+  preview: {
+    select: {
+      title: "title",
+      id: "id",
+      workspace: "workspace",
+    },
+    prepare({ title, id, workspace }) {
+      return {
+        title: `${title} (${id})`,
+        subtitle: workspace === "solskjerming" ? "Solskjerming" : "Vannsport",
+      };
+    },
+  },
 });

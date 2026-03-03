@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
-import type { Blog } from "@/types";
+import type { Article } from "@/types";
 import { useDebounce } from "./use-debounce";
 
 const SEARCH_DEBOUNCE_MS = 400;
@@ -13,7 +13,7 @@ async function searchBlog(query: string, signal: AbortSignal) {
   }
 
   const response = await fetch(
-    `/api/blog/search?q=${encodeURIComponent(query)}`,
+    `/api/article/search?q=${encodeURIComponent(query)}`,
     { signal }
   );
 
@@ -21,7 +21,7 @@ async function searchBlog(query: string, signal: AbortSignal) {
     throw new Error("Failed to search");
   }
 
-  return response.json() as Promise<Blog[]>;
+  return response.json() as Promise<Article[]>;
 }
 
 export function useBlogSearch() {
@@ -30,7 +30,7 @@ export function useBlogSearch() {
 
   const hasQuery = debouncedQuery.trim().length > 0;
   const { data, isLoading, error } = useQuery({
-    queryKey: ["blog-search", debouncedQuery],
+    queryKey: ["article-search", debouncedQuery],
     queryFn: ({ signal }) => searchBlog(debouncedQuery, signal),
     enabled: hasQuery,
     staleTime: CACHE_STALE_TIME_MS,
