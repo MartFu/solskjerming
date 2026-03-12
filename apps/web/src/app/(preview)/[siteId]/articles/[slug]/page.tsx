@@ -68,7 +68,7 @@ export async function generateMetadata({
     contentId: data?._id,
     contentType: data?._type,
     pageType: "article",
-  });
+  }, siteId);
 }
 
 export async function generateStaticParams() {

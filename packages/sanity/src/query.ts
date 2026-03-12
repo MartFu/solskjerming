@@ -256,12 +256,26 @@ export const queryHomePageOGData = defineQuery(`
   }
 `);
 
+// ─── Sites ────────────────────────────────────────────────────────────────────
+
+export const querySitesList = defineQuery(`*[_type == "site"] | order(title asc) {
+  _id,
+  title,
+  "slug": id
+}`);
+
+
 // ─── Pages ────────────────────────────────────────────────────────────────────
 
 export const querySlugPageData = defineQuery(`
   *[_type == "page" && siteId == $siteId && defined(slug.current) && slug.current == $slug][0]{
-    ...,
+    _id,
+    _type,
     "slug": slug.current,
+    title,
+    description,
+    seoTitle,
+    seoDescription,
     ${pageBuilderFragment}
   }
 `);
@@ -278,6 +292,16 @@ export const querySlugPageOGData = defineQuery(`
     ${ogFieldsFragment}
   }
 `);
+
+
+export const queryAllPageSlugs = defineQuery(`
+  *[_type in ["page", "homePage", "articleIndex", "article"] && siteId == $siteId && defined(slug.current)] {
+    _type,
+    "slug": slug.current,
+    "isHomePage": _type == "homePage"
+  }
+`);
+
 
 // ─── Articles (formerly blog) ─────────────────────────────────────────────────
 

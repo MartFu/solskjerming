@@ -18,6 +18,7 @@ export type PageBuilderProps = {
   readonly pageBuilder?: PageBuilderBlock[];
   readonly id: string;
   readonly type: string;
+  readonly siteId: string;
 };
 
 type SanityDataAttributeConfig = {
@@ -84,7 +85,7 @@ function UnknownBlockError({
  */
 function useOptimisticPageBuilder(
   initialBlocks: PageBuilderBlock[],
-  documentId: string
+  documentId: string,
 ) {
   // biome-ignore lint/suspicious/noExplicitAny: <any is used to allow for dynamic component rendering>
   return useOptimistic<PageBuilderBlock[], any>(
@@ -94,14 +95,14 @@ function useOptimisticPageBuilder(
         return action.document.pageBuilder;
       }
       return currentBlocks;
-    }
+    },
   );
 }
 
 /**
  * Custom hook for block component rendering logic
  */
-function useBlockRenderer(id: string, type: string) {
+function useBlockRenderer(id: string, type: string, siteId: string) {
   const createBlockDataAttribute = useCallback(
     (blockKey: string) =>
       createSanityDataAttribute({
@@ -109,7 +110,7 @@ function useBlockRenderer(id: string, type: string) {
         type,
         path: `pageBuilder[_key=="${blockKey}"]`,
       }),
-    [id, type]
+    [id, type],
   );
 
   const renderBlock = useCallback(
@@ -133,11 +134,11 @@ function useBlockRenderer(id: string, type: string) {
           key={`${block._type}-${block._key}`}
         >
           {/** biome-ignore lint/suspicious/noExplicitAny: <any is used to allow for dynamic component rendering> */}
-          <Component {...(block as any)} />
+          <Component {...(block as any)} siteId={siteId} />
         </div>
       );
     },
-    [createBlockDataAttribute]
+    [createBlockDataAttribute],
   );
 
   return { renderBlock };
@@ -150,13 +151,14 @@ export function PageBuilder({
   pageBuilder: initialBlocks = [],
   id,
   type,
+  siteId,
 }: PageBuilderProps) {
   const blocks = useOptimisticPageBuilder(initialBlocks, id);
-  const { renderBlock } = useBlockRenderer(id, type);
+  const { renderBlock } = useBlockRenderer(id, type, siteId);
 
   const containerDataAttribute = useMemo(
     () => createSanityDataAttribute({ id, type, path: "pageBuilder" }),
-    [id, type]
+    [id, type, siteId],
   );
 
   if (!blocks.length) {

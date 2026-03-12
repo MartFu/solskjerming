@@ -10,7 +10,8 @@
     "lint": "biome lint .",
     "format": "biome format --write .",
     "format:check": "biome format .",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "build:site": "node scripts/build.js"
   },
   "dependencies": {
     "@sanity/asset-utils": "^2.3.0",

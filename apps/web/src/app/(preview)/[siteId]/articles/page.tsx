@@ -8,7 +8,7 @@ import { notFound } from "next/navigation";
 
 import { BlogHeader } from "@/components/blog-card";
 import { BlogPageContent } from "@/components/blog-page-content";
-import { PageBuilder } from "@/components/pagebuilder";
+import { PageBuilderPreview as PageBuilder } from "@/components/pagebuilder.v2";
 import { getSEOMetadata } from "@/lib/seo";
 import {
   calculatePaginationMetadata,
@@ -16,54 +16,68 @@ import {
   handleErrors,
 } from "@/utils";
 
-async function fetchBlogIndexPageData() {
-  const res = await sanityFetch({ query: queryArticleIndexPageData });
+async function fetchArticleIndexPageData(siteId: string) {
+  const res = await sanityFetch({ query: queryArticleIndexPageData, params: { siteId } });
   return res.data;
 }
 
-async function fetchBlogIndexPageBlogs(start: number, end: number) {
+async function fetchArticleIndexPageBlogs(start: number, end: number, siteId: string) {
   const res = await sanityFetch({
     query: queryArticleIndexPageArticles,
-    params: { start, end },
+    params: { start, end, siteId },
   });
   return res.data;
 }
 
-async function fetchBlogIndexPageBlogsCount() {
+async function fetchArticleIndexPageArticlesCount(siteId: string) {
   const res = await sanityFetch({
     query: queryArticleIndexPageArticlesCount,
+    params: { siteId }
   });
   return res.data;
 }
 
-export async function generateMetadata() {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ siteId: string }>;
+}) {
+  const { siteId } = await params;
   const { data: result } = await sanityFetch({
     query: queryArticleIndexPageData,
   });
-  return getSEOMetadata({
-    title: result?.title ?? result?.seoTitle,
-    description: result?.description ?? result?.seoDescription,
-    slug: "/blog",
-    contentId: result?._id,
-    contentType: result?._type,
-  });
+  return getSEOMetadata(
+    {
+      title: result?.title ?? result?.seoTitle,
+      description: result?.description ?? result?.seoDescription,
+      slug: "/blog",
+      contentId: result?._id,
+      contentType: result?._type,
+    },
+    siteId,
+  );
 }
 
 type BlogPageProps = {
   searchParams: Promise<{
     page?: string;
   }>;
+  params: Promise<{ siteId: string }>;
 };
 
-export default async function BlogIndexPage({ searchParams }: BlogPageProps) {
+export default async function BlogIndexPage({
+  searchParams,
+  params,
+}: BlogPageProps) {
   const { page } = await searchParams;
+  const { siteId } = await params;
   const currentPage = page ? Number(page) : 1;
 
   // Fetch page data and total count in parallel
   const [[indexPageData, errIndexPageData], [totalCount, errTotalCount]] =
     await Promise.all([
-      handleErrors(fetchBlogIndexPageData()),
-      handleErrors(fetchBlogIndexPageBlogsCount()),
+      handleErrors(fetchArticleIndexPageData(siteId)),
+      handleErrors(fetchArticleIndexPageArticlesCount(siteId)),
     ]);
 
   if (errIndexPageData || !indexPageData) {
@@ -84,6 +98,7 @@ export default async function BlogIndexPage({ searchParams }: BlogPageProps) {
         </div>
         {indexPageData.pageBuilder && indexPageData.pageBuilder.length > 0 && (
           <PageBuilder
+            siteId={siteId}
             id={indexPageData._id}
             pageBuilder={indexPageData.pageBuilder}
             type={indexPageData._type}
@@ -93,13 +108,13 @@ export default async function BlogIndexPage({ searchParams }: BlogPageProps) {
     );
   }
 
-  const featuredBlogsCount = indexPageData.displayFeaturedBlogs
-    ? Number(indexPageData.featuredBlogsCount) || 0
+  const featuredBlogsCount = indexPageData.displayFeaturedArticles
+    ? Number(indexPageData.featuredArticlesCount) || 0
     : 0;
 
   const paginationMetadata = calculatePaginationMetadata(
     totalCount,
-    currentPage
+    currentPage,
   );
 
   const { start, end } = getBlogPaginationStartEnd(currentPage);
@@ -107,7 +122,7 @@ export default async function BlogIndexPage({ searchParams }: BlogPageProps) {
   const blogEnd = end + featuredBlogsCount;
 
   const [blogs, errBlogs] = await handleErrors(
-    fetchBlogIndexPageBlogs(blogStart, blogEnd)
+    fetchArticleIndexPageBlogs(blogStart, blogEnd, siteId),
   );
 
   if (errBlogs || !blogs) {
@@ -124,6 +139,7 @@ export default async function BlogIndexPage({ searchParams }: BlogPageProps) {
         </div>
         {indexPageData.pageBuilder && indexPageData.pageBuilder.length > 0 && (
           <PageBuilder
+            siteId={siteId}
             id={indexPageData._id}
             pageBuilder={indexPageData.pageBuilder}
             type={indexPageData._type}

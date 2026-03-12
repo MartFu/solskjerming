@@ -1,6 +1,6 @@
 import { client } from "@workspace/sanity/client";
 import {
-  queryBlogPageOGData,
+  queryArticlePageOGData,
   queryGenericPageOGData,
   queryHomePageOGData,
   querySlugPageOGData,
@@ -17,7 +17,7 @@ export async function getSlugPageOGData(id: string) {
 }
 
 export async function getBlogPageOGData(id: string) {
-  return await handleErrors(client.fetch(queryBlogPageOGData, { id }));
+  return await handleErrors(client.fetch(queryArticlePageOGData, { id }));
 }
 
 export async function getGenericPageOGData(id: string) {

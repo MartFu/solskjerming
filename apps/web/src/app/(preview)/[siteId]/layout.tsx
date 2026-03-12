@@ -1,3 +1,5 @@
+// (preview)/[siteId]/layout.tsx
+
 import { draftMode } from "next/headers";
 import { VisualEditing } from "next-sanity/visual-editing";
 import { Suspense } from "react";
@@ -9,6 +11,10 @@ import { PreviewBar } from "@/components/preview-bar";
 import { getNavigationData } from "@/lib/navigation";
 import { SanityLive } from "@workspace/sanity/live";
 
+export function generateStaticParams() {
+  return [];
+}
+
 export default async function Layout({
   children,
   params,
@@ -19,9 +25,14 @@ export default async function Layout({
   const { siteId } = await params;
   const nav = await getNavigationData(siteId);
 
+
   return (
     <>
-      <Navbar navbarData={nav.navbarData} settingsData={nav.settingsData} siteId={siteId} />
+      <Navbar
+        navbarData={nav.navbarData}
+        settingsData={nav.settingsData}
+        siteId={siteId}
+      />
       {children}
       <Suspense fallback={<FooterSkeleton />}>
         <FooterServer siteId={siteId} />

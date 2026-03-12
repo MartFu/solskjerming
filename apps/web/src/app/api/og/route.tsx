@@ -11,6 +11,7 @@ import {
   getHomePageOGData,
   getSlugPageOGData,
 } from "./og-data";
+import { toPlainText } from "next-sanity";
 
 export const runtime = "edge";
 
@@ -253,6 +254,11 @@ const getBlogPageContent = async ({ id }: ContentProps) => {
   return dominantColorSeoImageRender(result);
 };
 
+
+function slashedToPlainText(blocks: any[]): string {
+  return toPlainText(blocks).slice(0, 160); 
+}
+
 const getGenericPageContent = async ({ id }: ContentProps) => {
   if (!id) {
     return;
@@ -264,7 +270,15 @@ const getGenericPageContent = async ({ id }: ContentProps) => {
   if (result?.seoImage) {
     return seoImageRender({ seoImage: result.seoImage });
   }
-  return dominantColorSeoImageRender(result);
+
+  const formattedResult = {
+    ...result,
+    description: Array.isArray(result.description)
+      ? slashedToPlainText(result.description)
+      : result.description,
+  };
+
+  return dominantColorSeoImageRender(formattedResult);
 };
 
 const block = {

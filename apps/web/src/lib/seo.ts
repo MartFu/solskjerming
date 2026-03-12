@@ -4,12 +4,15 @@ import type { Maybe } from "@/types";
 import { capitalize, getBaseUrl } from "@/utils";
 
 // Site-wide configuration interface
-type SiteConfig = {
+type SiteSeoConfig = {
   title: string;
   description: string;
   twitterHandle: string;
   keywords: string[];
 };
+
+// Cache per build (not request)
+const siteConfigCache = new Map<string, SiteSeoConfig>();
 
 // Page-specific SEO data interface
 interface PageSeoData extends Metadata {
@@ -30,7 +33,7 @@ type OgImageParams = {
 };
 
 // Default site configuration
-const siteConfig: SiteConfig = {
+const siteConfig: SiteSeoConfig = {
   title: "Roboto Studio Demo",
   description: "Roboto Studio Demo",
   twitterHandle: "@studioroboto",
@@ -81,7 +84,7 @@ function extractTitle({
   return siteTitle;
 }
 
-export function getSEOMetadata(page: PageSeoData = {}): Metadata {
+export function getSEOMetadata(page: PageSeoData = {}, siteId: string): Metadata {
   const {
     title: pageTitle,
     description: pageDescription,
