@@ -3,19 +3,21 @@ import { visionTool } from "@sanity/vision";
 import { definePlugin, WorkspaceOptions } from "sanity";
 import { presentationTool } from "sanity/presentation";
 import { structureTool } from "sanity/structure";
+import { dashboardTool, sanityTutorialsWidget } from "@sanity/dashboard";
 import { unsplashImageAsset } from "sanity-plugin-asset-source-unsplash";
 import { lucideIconPicker } from "sanity-plugin-lucide-icon-picker";
 import { media } from "sanity-plugin-media";
 import { workflow } from "sanity-plugin-workflow";
-import {nbNOLocale} from "@sanity/locale-nb-no"
+import { nbNOLocale } from "@sanity/locale-nb-no";
 
 import { Logo } from "@/components/logo";
 import { createLocations } from "@/location";
 import { presentationUrl } from "@/plugins/presentation-url";
 import { schemaTypes } from "@/schemaTypes/index";
 import { structure, defaultDocumentNode } from "@/structure";
-import { SiteRegistryConfig } from "@/sanity.config";
 import { product } from "@/schemaTypes/documents/product";
+import { workspaceStatsWidget } from "./widgets/workspaceStatsWidget";
+import { workspaceSitesWidget } from "./widgets/workspaceSitesWidget";
 // import { getPresentationUrl } from "@/utils/helper"; // later
 
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID ?? "";
@@ -25,7 +27,7 @@ const PREVIEW_ORIGIN =
 const customDocumentActions = (
   prev: any[],
   context: any,
-  options: { workspaceName: string; siteConfig: SiteRegistryConfig },
+  options: { workspaceName: string },
 ) => {
   const filtered = prev.filter((action) => action.name !== "publish");
 
@@ -96,20 +98,12 @@ const customDocumentActions = (
   ];
 };
 
-const sharedConfig = definePlugin<{
-  workspaceName: string;
-  siteConfig: SiteRegistryConfig;
-}>((options) => ({
+const sharedConfig = definePlugin<{ workspaceName: string }>(() => ({
   name: "shared-config",
-
   document: {
-    // Filter new document templates by workspace context
     newDocumentOptions: (prev, { creationContext }) => {
-      const { type } = creationContext;
-
-      if (type === "global") {
+      if (creationContext.type === "global") {
         return prev.filter((template) => {
-          // Exclude singletons that are site-specific from global creation
           const siteSingletons = [
             "homePage",
             "navbar",
@@ -120,61 +114,65 @@ const sharedConfig = definePlugin<{
           return !siteSingletons.includes(template.templateId);
         });
       }
-
       return prev;
     },
-
-    // Inject custom actions (Preview + Deploy)
-    // actions: (prev, context) => customDocumentActions(prev, context, options),
   },
-
   schema: {
     types: schemaTypes,
     templates: (prev) => [
       ...prev,
-      // Create a template for each multi-site type
-      ...["article", "video", "faq", "product", "page", "articleIndex", "homePage"].map((type) => ({
+      ...[
+        "article",
+        "video",
+        "faq",
+        "product",
+        "page",
+        "articleIndex",
+        "homePage",
+      ].map((type) => ({
         id: `${type}-with-site`,
         title: `${type.charAt(0).toUpperCase() + type.slice(1)} with Site ID`,
         schemaType: type,
         parameters: [{ name: "siteId", type: "string" }],
-        value: (params: { siteId: string }) => ({
-          siteId: params.siteId,
-        }),
+        value: (params: { siteId: string }) => ({ siteId: params.siteId }),
       })),
     ],
   },
 }));
 
-export const defineWorkspace = (
-  name: string,
-  config: SiteRegistryConfig,
-  dataset: string,
-): WorkspaceOptions => ({
+export const defineWorkspace = (name: string, dataset: string): WorkspaceOptions => ({
   name,
-  title: config.title,
+  title: name.charAt(0).toUpperCase() + name.slice(1),
   icon: Logo,
   projectId,
   dataset,
-  basePath: `/${name}`, // Studio URL becomes /solskjerming or /efoil
+  basePath: `/${name}`,
   releases: {
     enabled: true,
   },
- 
   plugins: [
     nbNOLocale(),
     lucideIconPicker(),
     unsplashImageAsset(),
     assist(),
-    sharedConfig({ workspaceName: name, siteConfig: config }),
+    sharedConfig({ workspaceName: name }),
+
+    dashboardTool({
+      title: "Oversikt",
+      widgets: [
+        workspaceStatsWidget({ workspace: name }),
+        workspaceSitesWidget({ workspace: name }),
+      ],
+    }),
 
     // Plugins that produce additional views
     structureTool({
       title: "Innhold",
       defaultDocumentNode,
-      
-      structure: (S, context) => structure(S, context, name, config),
+
+      structure: (S, context) => structure(S, context, name),
     }),
+    media(),
 
     workflow({
       schemaTypes: ["product", "article", "page", "video", "faq"],
@@ -213,9 +211,8 @@ export const defineWorkspace = (
         },
       ],
     }),
-    media(),
     visionTool({
-      title: "GROQ Vision",
+      title: "GROQ",
     }),
   ],
 });

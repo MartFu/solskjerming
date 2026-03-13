@@ -31,8 +31,8 @@ import { Iframe } from "sanity-plugin-iframe-pane";
 import { createSlugBasedStructure } from "@/components/nested-pages-structure";
 import type { SchemaType, SingletonType } from "@/schemaTypes/index";
 import { getTitleCase } from "@/utils/helper";
-import { SiteRegistryConfig } from "./sanity.config";
 import { DeploymentDashboard } from "./components/deployment-dashboard";
+import { API_VERSION } from "./utils/constant";
 
 const PREVIEW_ORIGIN =
   process.env.SANITY_STUDIO_PREVIEW_ORIGIN ?? "http://localhost:3000";
@@ -41,32 +41,24 @@ const PREVIEW_ORIGIN =
 // Preview URL resolution
 // ─────────────────────────────────────────────────────────────
 
-// Extend this map when you add new previewable schema types.
-// Each resolver receives the full document and returns a path (or null if
-// the document doesn't have enough data to resolve a URL yet).
 const previewPathResolvers: Record<
   string,
   (doc: Record<string, any>) => string | null
 > = {
   homePage: (doc) => (doc?.siteId ? `/${doc.siteId}` : null),
-
   articleIndex: (doc) => (doc?.siteId ? `/${doc.siteId}/artikler` : null),
-
   page: (doc) =>
     doc?.siteId && doc?.slug?.current
       ? `/${doc.siteId}/${doc.slug.current}`
       : null,
-
   article: (doc) =>
     doc?.siteId && doc?.slug?.current
       ? `/${doc.siteId}/artikler/${doc.slug.current}`
       : null,
-
   product: (doc) =>
     doc?.siteId && doc?.slug?.current
       ? `/${doc.siteId}/produkter/${doc.slug.current}`
       : null,
-
   video: (doc) =>
     doc?.siteId && doc?.slug?.current
       ? `/${doc.siteId}/videoer/${doc.slug.current}`
@@ -76,10 +68,7 @@ const previewPathResolvers: Record<
 const PREVIEWABLE_TYPES = new Set(Object.keys(previewPathResolvers));
 
 // ─────────────────────────────────────────────────────────────
-// Default document node — adds a "Forhåndsvisning" tab to
-// documents that have a preview URL resolver defined above.
-// This is passed to structureTool({ defaultDocumentNode }) in
-// workspace.ts and applies across all sites in the workspace.
+// Default document node
 // ─────────────────────────────────────────────────────────────
 
 export const defaultDocumentNode: DefaultDocumentNodeResolver = (
@@ -107,7 +96,7 @@ export const defaultDocumentNode: DefaultDocumentNodeResolver = (
 };
 
 // ─────────────────────────────────────────────────────────────
-// Structure helpers (unchanged)
+// Structure helpers
 // ─────────────────────────────────────────────────────────────
 
 type Base<T = SchemaType> = {
@@ -128,8 +117,8 @@ const createSingleTon = ({
   title,
   icon,
   siteId,
-  workspace
-}: CreateSingleTon & { siteId?: string; workspace?: string; }) => {
+  workspace,
+}: CreateSingleTon & { siteId?: string; workspace?: string }) => {
   const docId = siteId ? `${siteId}-${type}` : `${workspace}-${type}`;
 
   return S.listItem()
@@ -147,7 +136,6 @@ const createSingleTon = ({
             .component(Iframe)
             .options({
               url: (doc: Record<string, any>) => {
-                console.log("----- doc in iframe resolver -----:", doc);
                 const path = previewPathResolvers[type]?.({ ...doc, siteId });
                 return path ? `${PREVIEW_ORIGIN}${path}` : PREVIEW_ORIGIN;
               },
@@ -186,186 +174,136 @@ const createList = ({
     );
 };
 
-type CreateIndexList = {
-  S: StructureBuilder;
-  list: Base;
-  index: Base<SingletonType>;
-  context: StructureResolverContext;
-};
-
-const createIndexListWithOrderableItems = ({
-  S,
-  index,
-  list,
-  context,
-}: CreateIndexList) => {
-  const indexTitle = index.title ?? getTitleCase(index.type);
-  const listTitle = list.title ?? getTitleCase(list.type);
-  return S.listItem()
-    .title(listTitle)
-    .icon(index.icon ?? File)
-    .child(
-      S.list()
-        .title(indexTitle)
-        .items([
-          S.listItem()
-            .title(indexTitle)
-            .icon(index.icon ?? File)
-            .child(
-              S.document()
-                .views([S.view.form()])
-                .schemaType(index.type)
-                .documentId(index.type),
-            ),
-          orderableDocumentListDeskItem({
-            type: list.type,
-            S,
-            context,
-            icon: list.icon ?? File,
-            title: `${listTitle}`,
-          }),
-        ]),
-    );
-};
-
 // ─────────────────────────────────────────────────────────────
-// Site-Specific Structure Builder
+// Returns the flat list of items for a given site.
+// Used both for inlining into the top-level pane and for
+// building a wrapped S.list() when needed.
 // ─────────────────────────────────────────────────────────────
 
-const buildSiteStructure = (
+const buildSiteItems = (
   S: StructureBuilder,
-  siteId: string,
-  siteTitle: string,
+  site: { _id: string; title: string; id: string },
   context: StructureResolverContext,
-) => {
-  return S.list()
-    .title(siteTitle)
-    .items([
-      createSingleTon({
-        S,
-        type: "homePage",
-        title: "Forside",
-        icon: HomeIcon,
-        siteId,
-      }),
-      createSingleTon({
-        S,
-        type: "articleIndex",
-        title: "Innleggsside",
-        icon: BookOpen,
-        siteId,
-      }),
-
-      S.divider(),
-
-      createList({
-        S,
-        type: "page",
-        title: "Sider",
-        icon: FileCodeCorner,
-        siteId,
-      }),
-
-      createList({
-        S,
-        type: "article",
-        title: "Artikler",
-        icon: FileText,
-        siteId,
-      }),
-
-      createList({
-        S,
-        type: "video",
-        title: "Videor",
-        icon: PlayCircle,
-        siteId,
-      }),
-
-      createList({
-        S,
-        type: "faq",
-        title: "FAQs",
-        icon: MessageCircle,
-        siteId,
-      }),
-
-      S.divider(),
-
-      createList({
-        S,
-        type: "product",
-        title: "Produkter",
-        icon: Handbag,
-        siteId,
-      }),
-
-      S.divider(),
-
-      S.listItem()
-        .title("Innstilinger")
-        .icon(Settings2)
-        .child(
-          S.list()
-            .title("Configuration")
-            .items([
-              createSingleTon({
-                S,
-                type: "navbar",
-                title: "Header",
-                icon: PanelBottom,
-                siteId,
-              }),
-              createSingleTon({
-                S,
-                type: "footer",
-                title: "Footer",
-                icon: PanelBottom,
-                siteId,
-              }),
-              createSingleTon({
-                S,
-                type: "settings",
-                title: "Sideinnstillinger",
-                icon: CogIcon,
-                siteId,
-              }),
-            ]),
-        ),
-    ]);
-};
+) => [
+  createSingleTon({
+    S,
+    type: "homePage",
+    title: "Forside",
+    icon: HomeIcon,
+    siteId: site._id,
+  }),
+  createSingleTon({
+    S,
+    type: "articleIndex",
+    title: "Artikkelarkiv",
+    icon: BookOpen,
+    siteId: site._id,
+  }),
+  createList({
+    S,
+    type: "page",
+    title: "Andre sider",
+    icon: FileCodeCorner,
+    siteId: site._id,
+  }),
+  S.divider(),
+  createList({
+    S,
+    type: "article",
+    title: "Artikler",
+    icon: FileText,
+    siteId: site._id,
+  }),
+  createList({
+    S,
+    type: "video",
+    title: "Videor",
+    icon: PlayCircle,
+    siteId: site._id,
+  }),
+  createList({
+    S,
+    type: "faq",
+    title: "FAQs",
+    icon: MessageCircle,
+    siteId: site._id,
+  }),
+  createList({
+    S,
+    type: "product",
+    title: "Produkter",
+    icon: Handbag,
+    siteId: site._id,
+  }),
+  S.divider(),
+  createSingleTon({
+    S,
+    id: `${site._id}-navbar`,
+    type: "navbar",
+    title: "Header",
+    icon: PanelBottom,
+    siteId: site._id,
+  }),
+  createSingleTon({
+    S,
+    id: `${site._id}-footer`,
+    type: "footer",
+    title: "Footer",
+    icon: PanelBottom,
+    siteId: site._id,
+  }),
+  // Title divider — acts as a visual section header for this site
+  S.listItem()
+    .title(`Sideinnstillinger`)
+    .id(`${site.
+      _id
+    }-settings`)
+    .icon(Globe)
+    .child(
+      // Clicking the title opens the site document itself for editing
+      S.document().schemaType("site").documentId(site._id).title(site.title),
+    ),
+];
 
 // ─────────────────────────────────────────────────────────────
 // Main Structure Export
 // ─────────────────────────────────────────────────────────────
 
-export const structure = (
+export const structure = async (
   S: StructureBuilder,
   context: StructureResolverContext,
   workspace: string,
-  config: SiteRegistryConfig,
 ) => {
-  const baseTitle = getTitleCase(workspace);
+  const client = context.getClient({ apiVersion: API_VERSION });
 
-  const siteItems = config.sites.map((site) =>
-    S.listItem()
-      .title(site.title)
-      .id(site.id)
-      .icon(Globe)
-      .child((childId) => {
-        console.log("----- childId -----:", childId);
-
-        return buildSiteStructure(S, site.id, site.title, context);
-      }),
+  const sites = await client.fetch<
+    { _id: string; title: string; id: string }[]
+  >(
+    `*[_type == "site" && workspace == $workspace] | order(title asc) {
+      _id, title, id
+    }`,
+    { workspace },
   );
 
+  const activeSite = sites[0];
+
+  const siteItems = buildSiteItems(S, activeSite, context);
+
+  // For each site: a non-navigable title divider followed by its items inline.
+  // const siteItems = sites.flatMap((site, i) => [
+  //   // All site content items rendered directly in this pane
+  //   ...buildSiteItems(S, site, context),
+
+  //   // Divider between sites (skip after last)
+  //   ...(i < sites.length - 1 ? [S.divider()] : []),
+  // ]);
+
   return S.list()
-    .title(`${baseTitle}`)
+    .title(`${getTitleCase(workspace)} > ${sites[0].title}`)
     .items([
       ...siteItems,
 
       S.divider(),
-
       S.listItem()
         .title("Distribusjonssenter")
         .id("deployment-center")
@@ -378,24 +316,24 @@ export const structure = (
         .title("Globale ressurser")
         .id("global-resources")
         .icon(Package)
-        .child(
-          S.list().title("Globale ressurser").items([]), // empty for now
-        ),
+        .child(S.list().title("Globale ressurser").items([])),
 
       S.listItem()
         .title("Globale innstillinger")
         .id("global-settings")
         .icon(CogIcon)
         .child(
-          S.list().title("Globale innstillinger").items([
-            createSingleTon({
-              S,
-              type: "themeDefaults",
-              icon: Brush,
-              title: "Standard CSS",
-              workspace
-            })
-          ]), // empty for now
+          S.list()
+            .title("Globale innstillinger")
+            .items([
+              createSingleTon({
+                S,
+                type: "themeDefaults",
+                icon: Brush,
+                title: "Standard CSS",
+                workspace,
+              }),
+            ]),
         ),
     ]);
 };

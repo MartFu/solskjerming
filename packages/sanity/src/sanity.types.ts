@@ -43,6 +43,18 @@ export type ImageLinkCardImage = {
   _type: "image";
 };
 
+export type WorkflowMetadata = {
+  _id: string;
+  _type: "workflow.metadata";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  state?: "changesRequested" | "inProgress" | "completed";
+  documentId?: string;
+  orderRank?: string;
+  assignees?: Array<string>;
+};
+
 export type MediaTag = {
   _id: string;
   _type: "media.tag";
@@ -56,18 +68,6 @@ export type Slug = {
   _type: "slug";
   current: string;
   source?: string;
-};
-
-export type WorkflowMetadata = {
-  _id: string;
-  _type: "workflow.metadata";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  state?: "changesRequested" | "inProgress" | "completed";
-  documentId?: string;
-  orderRank?: string;
-  assignees?: Array<string>;
 };
 
 export type SubscribeNewsletter = {
@@ -1205,9 +1205,9 @@ export type AllSanitySchemaTypes =
   | SeoImage
   | Link
   | ImageLinkCardImage
+  | WorkflowMetadata
   | MediaTag
   | Slug
-  | WorkflowMetadata
   | SubscribeNewsletter
   | RichTextBlock
   | ImageLinkCards
