@@ -16,12 +16,17 @@ const footerColumnLink = defineField({
       name: "url",
       type: "customUrl",
     }),
-     defineField({
+    defineField({
       name: "siteId",
       title: "Site ID",
       type: "string",
       readOnly: true,
       hidden: true,
+    }),
+    defineField({
+      name: "site",
+      type: "reference",
+      to: [{ type: "site" }],
     }),
     defineField({
       name: "deployment",
@@ -36,9 +41,16 @@ const footerColumnLink = defineField({
       urlType: "url.type",
       internalUrl: "url.internal.slug.current",
       openInNewTab: "url.openInNewTab",
-      siteId: "siteId"
+      siteId: "siteId",
     },
-    prepare({ title, externalUrl, urlType, internalUrl, siteId, openInNewTab }) {
+    prepare({
+      title,
+      externalUrl,
+      urlType,
+      internalUrl,
+      siteId,
+      openInNewTab,
+    }) {
       const url = urlType === "external" ? externalUrl : internalUrl;
       const newTabIndicator = openInNewTab ? " ↗" : "";
       const truncatedUrl =

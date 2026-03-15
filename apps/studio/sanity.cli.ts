@@ -60,10 +60,14 @@ export default defineCliConfig({
   deployment: {
     autoUpdates: false,
   },
+  server: {
+    hostname: process.env.SANITY_STUDIO_LOCAL_HOSTNAME ?? '0.0.0.0',
+    port: 3333,
+  },
   schemaExtraction: {
     enabled: true,
     enforceRequiredFields: true,
-    workspace: "solskjerming"
+    workspace: "solskjerming",
   },
   typegen: {
     enabled: true,

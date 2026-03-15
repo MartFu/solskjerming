@@ -130,6 +130,11 @@ export const redirect = defineType({
       },
       initialValue: () => "true",
     }),
+    defineField({
+      name: "site",
+      type: "reference",
+      to: [{ type: "site" }],
+    }),
   ],
   preview: {
     select: {

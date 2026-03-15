@@ -164,163 +164,6 @@
     }
   },
   {
-    "name": "workflow.metadata",
-    "type": "document",
-    "attributes": {
-      "_id": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "_type": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string",
-          "value": "workflow.metadata"
-        }
-      },
-      "_createdAt": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "_updatedAt": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "_rev": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "state": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "union",
-          "of": [
-            {
-              "type": "string",
-              "value": "changesRequested"
-            },
-            {
-              "type": "string",
-              "value": "inProgress"
-            },
-            {
-              "type": "string",
-              "value": "completed"
-            }
-          ]
-        },
-        "optional": true
-      },
-      "documentId": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "orderRank": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "assignees": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "array",
-          "of": {
-            "type": "string"
-          }
-        },
-        "optional": true
-      }
-    }
-  },
-  {
-    "name": "media.tag",
-    "type": "document",
-    "attributes": {
-      "_id": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "_type": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string",
-          "value": "media.tag"
-        }
-      },
-      "_createdAt": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "_updatedAt": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "_rev": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "name": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "slug"
-        },
-        "optional": true
-      }
-    }
-  },
-  {
-    "name": "slug",
-    "type": "type",
-    "value": {
-      "type": "object",
-      "attributes": {
-        "_type": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string",
-            "value": "slug"
-          }
-        },
-        "current": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
-          },
-          "optional": false
-        },
-        "source": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
-          },
-          "optional": true
-        }
-      }
-    }
-  },
-  {
     "name": "subscribeNewsletter",
     "type": "type",
     "value": {
@@ -2459,10 +2302,6 @@
               },
               {
                 "type": "string",
-                "value": "preview"
-              },
-              {
-                "type": "string",
                 "value": "staged"
               },
               {
@@ -3153,6 +2992,36 @@
     }
   },
   {
+    "type": "type",
+    "name": "site.reference",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_ref": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          }
+        },
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "reference"
+          }
+        },
+        "_weak": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        }
+      },
+      "dereferencesTo": "site"
+    }
+  },
+  {
     "name": "redirect",
     "type": "document",
     "attributes": {
@@ -3236,6 +3105,44 @@
           ]
         },
         "optional": true
+      },
+      "site": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "site.reference"
+        },
+        "optional": true
+      }
+    }
+  },
+  {
+    "name": "slug",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "slug"
+          }
+        },
+        "current": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": false
+        },
+        "source": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        }
       }
     }
   },
@@ -4117,6 +4024,14 @@
                     },
                     "optional": true
                   },
+                  "site": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "inline",
+                      "name": "site.reference"
+                    },
+                    "optional": true
+                  },
                   "deployment": {
                     "type": "objectAttribute",
                     "value": {
@@ -4263,6 +4178,14 @@
                         "type": "objectAttribute",
                         "value": {
                           "type": "string"
+                        },
+                        "optional": true
+                      },
+                      "site": {
+                        "type": "objectAttribute",
+                        "value": {
+                          "type": "inline",
+                          "name": "site.reference"
                         },
                         "optional": true
                       },
@@ -4483,6 +4406,14 @@
         },
         "optional": true
       },
+      "site": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "site.reference"
+        },
+        "optional": true
+      },
       "deployment": {
         "type": "objectAttribute",
         "value": {
@@ -4675,6 +4606,14 @@
         },
         "optional": true
       },
+      "site": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "site.reference"
+        },
+        "optional": true
+      },
       "pageBuilder": {
         "type": "objectAttribute",
         "value": {
@@ -4825,6 +4764,14 @@
         "type": "objectAttribute",
         "value": {
           "type": "string"
+        },
+        "optional": true
+      },
+      "site": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "site.reference"
         },
         "optional": true
       },
@@ -5338,6 +5285,14 @@
         "type": "objectAttribute",
         "value": {
           "type": "string"
+        },
+        "optional": true
+      },
+      "site": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "site.reference"
         },
         "optional": true
       },
@@ -6259,6 +6214,14 @@
         },
         "optional": true
       },
+      "site": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "site.reference"
+        },
+        "optional": true
+      },
       "deployment": {
         "type": "objectAttribute",
         "value": {
@@ -6354,21 +6317,7 @@
           "type": "string"
         }
       },
-      "id": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": false
-      },
       "title": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": false
-      },
-      "domain": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
@@ -6391,6 +6340,21 @@
           ]
         },
         "optional": false
+      },
+      "domain": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": false
+      },
+      "deployment": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "deploymentMeta"
+        },
+        "optional": true
       },
       "logo": {
         "type": "objectAttribute",
@@ -6486,37 +6450,6 @@
         },
         "optional": true
       },
-      "contact": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "object",
-          "attributes": {
-            "phone": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "string"
-              },
-              "optional": true
-            },
-            "email": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "string"
-              },
-              "optional": true
-            },
-            "address": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "inline",
-                "name": "address"
-              },
-              "optional": true
-            }
-          }
-        },
-        "optional": true
-      },
       "social": {
         "type": "objectAttribute",
         "value": {
@@ -6525,11 +6458,11 @@
         },
         "optional": true
       },
-      "deployment": {
+      "contact": {
         "type": "objectAttribute",
         "value": {
           "type": "inline",
-          "name": "deploymentMeta"
+          "name": "address"
         },
         "optional": true
       }

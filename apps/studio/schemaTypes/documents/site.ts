@@ -1,35 +1,42 @@
-import { Globe } from "lucide-react";
-import { defineField, defineType } from "sanity";
+import { ComposeIcon, ColorWheelIcon, WrenchIcon } from "@sanity/icons";
+import { defineField, defineType, FieldGroupDefinition } from "sanity";
+
+export const _GROUP = {
+  MAIN_CONTENT: "main-content",
+  BRANDING: "branding",
+};
+
+export const _GROUPS: FieldGroupDefinition[] = [
+  {
+    name: _GROUP.MAIN_CONTENT,
+    icon: ComposeIcon,
+    title: "Innhold",
+    default: true,
+  },
+  { name: _GROUP.BRANDING, icon: ColorWheelIcon, title: "Branding" },
+];
 
 export const site = defineType({
   name: "site",
-  title: "Site",
+  title: "Nettside",
   type: "document",
-  icon: Globe,
+  groups: _GROUPS,
+  icon: WrenchIcon,
   fields: [
     defineField({
-      name: "id",
-      title: "Site ID",
-      type: "string",
-      validation: (Rule) => Rule.required(),
-      description: "Unique identifier (e.g., terrasse-spesialisten)",
-    }),
-    defineField({
       name: "title",
-      title: "Site Title",
+      title: "Tittel",
       type: "string",
+      group: _GROUP.MAIN_CONTENT,
       validation: (Rule) => Rule.required(),
     }),
-    defineField({
-      name: "domain",
-      title: "Live Domain",
-      type: "url",
-      validation: (Rule) => Rule.required(),
-    }),
+
     defineField({
       name: "workspace",
-      title: "Workspace",
+      title: "Arbeidsrom",
       type: "string",
+      group: _GROUP.MAIN_CONTENT,
+      readOnly: true,
       options: {
         list: [
           { title: "Solskjerming", value: "solskjerming" },
@@ -39,35 +46,46 @@ export const site = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "domain",
+      title: "Domene",
+      type: "string",
+      group: _GROUP.MAIN_CONTENT,
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "deployment",
+      group: _GROUP.MAIN_CONTENT,
+      title: "Distribusjonsstatus",
+      type: "deploymentMeta",
+    }),
+
+    defineField({
       name: "logo",
       title: "Logo",
       type: "image",
+      group: _GROUP.BRANDING,
       options: { hotspot: true },
     }),
     defineField({
       name: "favicon",
       title: "Favicon",
       type: "image",
+      group: _GROUP.BRANDING,
     }),
-    defineField({
-      name: "contact",
-      title: "Contact Information",
-      type: "object",
-      fields: [
-        { name: "phone", type: "string", title: "Phone" },
-        { name: "email", type: "string", title: "Email" },
-        { name: "address", type: "address" },
-      ],
-    }),
+
     defineField({
       name: "social",
-      title: "Social Media",
+      group: _GROUP.BRANDING,
+      title: "SOME-lenker",
       type: "socialLinks",
     }),
+
     defineField({
-      name: "deployment",
-      title: "Deployment Status",
-      type: "deploymentMeta",
+      name: "contact",
+      group: _GROUP.BRANDING,
+      title: "Kontaktinformasjon",
+      description: "Arver fra organisasjon hvis tom",
+      type: "address",
     }),
   ],
   preview: {

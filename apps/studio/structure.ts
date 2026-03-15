@@ -1,71 +1,34 @@
-import { orderableDocumentListDeskItem } from "@sanity/orderable-document-list";
 import {
-  BookMarked,
   BookOpen,
   Brush,
   CogIcon,
   File,
   FileCodeCorner,
   FileText,
-  Globe,
   Handbag,
   HomeIcon,
   type LucideIcon,
   MessageCircle,
   Package,
   PanelBottom,
-  PanelBottomIcon,
+  PanelTop,
   PlayCircle,
   Rocket,
-  Settings2,
-  TrendingUpDown,
-  User,
+  Wrench,
 } from "lucide-react";
 import type {
   DefaultDocumentNodeResolver,
   StructureBuilder,
   StructureResolverContext,
 } from "sanity/structure";
-import { Iframe } from "sanity-plugin-iframe-pane";
 
-import { createSlugBasedStructure } from "@/components/nested-pages-structure";
 import type { SchemaType, SingletonType } from "@/schemaTypes/index";
 import { getTitleCase } from "@/utils/helper";
+import { PREVIEWABLE_TYPES } from "@/utils/preview";
 import { DeploymentDashboard } from "./components/deployment-dashboard";
+import { PreviewPane } from "./components/PreviewPane";
 import { API_VERSION } from "./utils/constant";
-
-const PREVIEW_ORIGIN =
-  process.env.SANITY_STUDIO_PREVIEW_ORIGIN ?? "http://localhost:3000";
-
-// ─────────────────────────────────────────────────────────────
-// Preview URL resolution
-// ─────────────────────────────────────────────────────────────
-
-const previewPathResolvers: Record<
-  string,
-  (doc: Record<string, any>) => string | null
-> = {
-  homePage: (doc) => (doc?.siteId ? `/${doc.siteId}` : null),
-  articleIndex: (doc) => (doc?.siteId ? `/${doc.siteId}/artikler` : null),
-  page: (doc) =>
-    doc?.siteId && doc?.slug?.current
-      ? `/${doc.siteId}/${doc.slug.current}`
-      : null,
-  article: (doc) =>
-    doc?.siteId && doc?.slug?.current
-      ? `/${doc.siteId}/artikler/${doc.slug.current}`
-      : null,
-  product: (doc) =>
-    doc?.siteId && doc?.slug?.current
-      ? `/${doc.siteId}/produkter/${doc.slug.current}`
-      : null,
-  video: (doc) =>
-    doc?.siteId && doc?.slug?.current
-      ? `/${doc.siteId}/videoer/${doc.slug.current}`
-      : null,
-};
-
-const PREVIEWABLE_TYPES = new Set(Object.keys(previewPathResolvers));
+import { getStudioContext } from "./utils/context";
 
 // ─────────────────────────────────────────────────────────────
 // Default document node
@@ -81,17 +44,7 @@ export const defaultDocumentNode: DefaultDocumentNodeResolver = (
 
   return S.document().views([
     S.view.form(),
-    S.view
-      .component(Iframe)
-      .options({
-        url: (doc: Record<string, any>) => {
-          const path = previewPathResolvers[schemaType]?.(doc);
-          return path ? `${PREVIEW_ORIGIN}${path}` : PREVIEW_ORIGIN;
-        },
-        reload: { button: true },
-        showDisplayUrl: true,
-      })
-      .title("Forhåndsvisning"),
+    S.view.component(PreviewPane).title("Forhåndsvisning"),
   ]);
 };
 
@@ -132,17 +85,7 @@ const createSingleTon = ({
         .initialValueTemplate(`${type}-with-site`, { siteId })
         .views([
           S.view.form(),
-          S.view
-            .component(Iframe)
-            .options({
-              url: (doc: Record<string, any>) => {
-                const path = previewPathResolvers[type]?.({ ...doc, siteId });
-                return path ? `${PREVIEW_ORIGIN}${path}` : PREVIEW_ORIGIN;
-              },
-              reload: { button: true },
-              showDisplayUrl: true,
-            })
-            .title("Forhåndsvisning"),
+          S.view.component(PreviewPane).title("Forhåndsvisning"),
         ]),
     );
 };
@@ -176,8 +119,6 @@ const createList = ({
 
 // ─────────────────────────────────────────────────────────────
 // Returns the flat list of items for a given site.
-// Used both for inlining into the top-level pane and for
-// building a wrapped S.list() when needed.
 // ─────────────────────────────────────────────────────────────
 
 const buildSiteItems = (
@@ -238,29 +179,23 @@ const buildSiteItems = (
   S.divider(),
   createSingleTon({
     S,
-    id: `${site._id}-navbar`,
     type: "navbar",
     title: "Header",
-    icon: PanelBottom,
+    icon: PanelTop,
     siteId: site._id,
   }),
   createSingleTon({
     S,
-    id: `${site._id}-footer`,
     type: "footer",
     title: "Footer",
     icon: PanelBottom,
     siteId: site._id,
   }),
-  // Title divider — acts as a visual section header for this site
   S.listItem()
-    .title(`Sideinnstillinger`)
-    .id(`${site.
-      _id
-    }-settings`)
-    .icon(Globe)
+    .title("Sideinnstillinger")
+    .id(`${site._id}-settings`)
+    .icon(Wrench)
     .child(
-      // Clicking the title opens the site document itself for editing
       S.document().schemaType("site").documentId(site._id).title(site.title),
     ),
 ];
@@ -276,30 +211,34 @@ export const structure = async (
 ) => {
   const client = context.getClient({ apiVersion: API_VERSION });
 
-  const sites = await client.fetch<
-    { _id: string; title: string; id: string }[]
-  >(
-    `*[_type == "site" && workspace == $workspace] | order(title asc) {
-      _id, title, id
-    }`,
-    { workspace },
-  );
+  const studioContext = getStudioContext(workspace);
 
-  const activeSite = sites[0];
+  let activeSite: {
+    _id: string;
+    title: string;
+    id: string;
+  } | null = null;
+
+  if (studioContext.siteId) {
+    activeSite = await client.fetch<{ _id: string; title: string; id: string }>(
+      `*[_type == "site" && _id == $siteId][0] { _id, title, id }`,
+      { siteId: studioContext.siteId },
+    );
+  } else {
+    const sites = await client.fetch<
+      { _id: string; title: string; id: string }[]
+    >(
+      `*[_type == "site" && workspace == $workspace] | order(title asc) { _id, title, id }`,
+      { workspace },
+    );
+
+    activeSite = sites[0];
+  }
 
   const siteItems = buildSiteItems(S, activeSite, context);
 
-  // For each site: a non-navigable title divider followed by its items inline.
-  // const siteItems = sites.flatMap((site, i) => [
-  //   // All site content items rendered directly in this pane
-  //   ...buildSiteItems(S, site, context),
-
-  //   // Divider between sites (skip after last)
-  //   ...(i < sites.length - 1 ? [S.divider()] : []),
-  // ]);
-
   return S.list()
-    .title(`${getTitleCase(workspace)} > ${sites[0].title}`)
+    .title("Innhold")
     .items([
       ...siteItems,
 

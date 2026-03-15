@@ -95,6 +95,11 @@ export const settings = defineType({
       hidden: true,
     }),
     defineField({
+      name: "site",
+      type: "reference",
+      to: [{ type: "site" }],
+    }),
+    defineField({
       name: "deployment",
       title: "Publishing Status",
       type: "deploymentMeta",
@@ -103,7 +108,7 @@ export const settings = defineType({
   preview: {
     select: {
       title: "label",
-      siteId: "siteId"
+      siteId: "siteId",
     },
     prepare: ({ title, siteId }) => ({
       title: title || "Untitled Settings",

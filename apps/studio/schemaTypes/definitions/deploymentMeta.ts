@@ -14,14 +14,12 @@ export const deploymentMeta = defineType({
   fields: [
     defineField({
       name: "status",
-      title: "Status",
       type: "string",
       options: {
         list: [
-          { title: "📝 Draft (Studio only)", value: "draft" },
-          { title: "👁️ Ready for Preview", value: "preview" },
-          { title: "🚀 Staged for Deploy", value: "staged" },
-          { title: "✅ Published Live", value: "published" },
+          { title: "Utkast", value: "draft" },
+          { title: "Staged", value: "staged" },
+          { title: "Publisert", value: "published" },
         ],
         layout: "radio",
       },

@@ -18,6 +18,7 @@ import { AddIcon, SearchIcon } from "@sanity/icons";
 import { API_VERSION } from "@/utils/constant";
 import { ExternalLink, SettingsIcon } from "lucide-react";
 import { Link, useRouter } from "sanity/router";
+import { setStudioContext } from "@/utils/context";
 
 interface Site {
   _id: string;
@@ -27,6 +28,8 @@ interface Site {
   url?: string;
   status?: "active" | "inactive" | "draft";
   locale?: string;
+  domain?: string;
+  deployment: { status: string };
 }
 
 interface Options {
@@ -47,11 +50,10 @@ function WorkspaceSitesWidget({ workspace }: Options) {
     setLoading(true);
     client
       .fetch<Site[]>(
-        `*[_type == "site" && workspace == $workspace] | order(title asc) {
+        `*[_type == "site" && workspace == $workspace && !(_id in path("drafts.**"))] | order(title asc) {
         _id, 
         _updatedAt, 
         title, 
-        id, 
         domain, 
         deployment
       }`,
@@ -62,6 +64,7 @@ function WorkspaceSitesWidget({ workspace }: Options) {
         setLoading(false);
       });
   };
+
 
   useEffect(() => {
     fetchSites();
@@ -99,42 +102,51 @@ function WorkspaceSitesWidget({ workspace }: Options) {
   const statusTone = (s?: string) =>
     s === "active" ? "positive" : s === "inactive" ? "critical" : "caution";
 
+
+
+  const handleSelectSite = (siteId: string, siteTitle: string) => {
+    setStudioContext({
+      level: "site",
+      siteId,
+      siteTitle,
+      workspace: workspace
+    })
+  }
+
   return (
     <DashboardWidgetContainer header="Sites">
       <Stack
         space={4}
         padding={3}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyItems: "stretch",
-            gap: "1rem",
-            width: "100%",
-          }}
+        <Flex
+          align="center"
+          gap={3}
+          style={{ width: "100%" }}
         >
-          <TextInput
-            icon={SearchIcon}
-            placeholder="Search by name or slug…"
-            value={search}
-            onChange={(e) => setSearch(e.currentTarget.value)}
-            clearButton={search.length > 0}
-            onClear={() => setSearch("")}
-            style={{ flexGrow: 1 }}
-          />
+          <Box flex={1}>
+            <TextInput
+              icon={SearchIcon}
+              placeholder="Søk i sider…"
+              value={search}
+              onChange={(e) => setSearch(e.currentTarget.value)}
+              clearButton={search.length > 0}
+              onClear={() => setSearch("")}
+              width="100%" 
+            />
+          </Box>
           <Button
             fontSize={2}
             icon={AddIcon}
             padding={3}
-            text="Create New Site"
-            tone="primary"
+            text="Lag ny side"
+            tone="neutral"
             onClick={() => setIsDialogOpen(true)}
             loading={creating}
             disabled={creating}
             mode="ghost"
           />
-        </div>
+        </Flex>
 
         {loading ? (
           <Flex
@@ -161,6 +173,7 @@ function WorkspaceSitesWidget({ workspace }: Options) {
               <Card
                 key={site._id}
                 as="a"
+                onClick={() => handleSelectSite(site._id, site.title)}
                 href={`/${workspace}/structure/${site._id}`}
                 radius={2}
                 border
@@ -180,12 +193,12 @@ function WorkspaceSitesWidget({ workspace }: Options) {
                       {site.status ?? "draft"}
                     </Badge>
                   </Flex>
-                  <Text
+                  {site?.domain &&<Text
                     size={1}
                     muted
                   >
-                    /{site.slug?.current}
-                  </Text>
+                    Domain: {site.domain}
+                  </Text>}
                   {site.url && (
                     <Flex
                       align="center"
@@ -218,12 +231,11 @@ function WorkspaceSitesWidget({ workspace }: Options) {
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
-                        router.navigateUrl(
-                          {
-                            path: `/${workspace}/structure/${site._id}-settings`,
-                            replace: true,
-                          }
-                        );
+                        handleSelectSite(site._id, site.title);
+                        router.navigateUrl({
+                          path: `/${workspace}/structure/${site._id}-settings`,
+                          replace: true,
+                        });
                       }}
                       mode="ghost"
                       fontSize={0}

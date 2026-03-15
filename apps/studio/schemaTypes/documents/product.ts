@@ -91,6 +91,7 @@ export const product = defineType({
       title: "Publishing Status",
       type: "deploymentMeta",
     }),
+    
     ...seoFields,
     ...ogFields
   ],

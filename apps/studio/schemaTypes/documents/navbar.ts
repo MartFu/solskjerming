@@ -31,6 +31,11 @@ const navbarLink = defineField({
       hidden: true,
     }),
     defineField({
+      name: "site",
+      type: "reference",
+      to: [{ type: "site" }],
+    }),
+    defineField({
       name: "deployment",
       title: "Publishing Status",
       type: "deploymentMeta",

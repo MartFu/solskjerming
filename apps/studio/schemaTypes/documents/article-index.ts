@@ -64,9 +64,14 @@ export const articleIndex = defineType({
       hidden: ({ parent }) => parent?.displayFeaturedArticles !== "yes",
       group: GROUP.MAIN_CONTENT,
     }),
+    defineField({
+      name: "site",
+      type: "reference",
+      to: [{ type: "site" }],
+    }),
     pageBuilderField,
     ...seoFields.filter(
-      (field) => !["seoNoIndex", "seoHideFromLists"].includes(field.name)
+      (field) => !["seoNoIndex", "seoHideFromLists"].includes(field.name),
     ),
     ...ogFields,
   ],

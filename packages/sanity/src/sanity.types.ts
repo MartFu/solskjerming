@@ -43,33 +43,6 @@ export type ImageLinkCardImage = {
   _type: "image";
 };
 
-export type WorkflowMetadata = {
-  _id: string;
-  _type: "workflow.metadata";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  state?: "changesRequested" | "inProgress" | "completed";
-  documentId?: string;
-  orderRank?: string;
-  assignees?: Array<string>;
-};
-
-export type MediaTag = {
-  _id: string;
-  _type: "media.tag";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name?: Slug;
-};
-
-export type Slug = {
-  _type: "slug";
-  current: string;
-  source?: string;
-};
-
 export type SubscribeNewsletter = {
   _type: "subscribeNewsletter";
   title?: string;
@@ -343,7 +316,7 @@ export type Pricing = {
 
 export type DeploymentMeta = {
   _type: "deploymentMeta";
-  status: "draft" | "preview" | "staged" | "published";
+  status: "draft" | "staged" | "published";
   lastModified?: string;
   lastDeployed?: string;
   deployedBy?: string;
@@ -460,6 +433,13 @@ export type CustomUrl = {
     | VideoReference;
 };
 
+export type SiteReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "site";
+};
+
 export type Redirect = {
   _id: string;
   _type: "redirect";
@@ -470,6 +450,13 @@ export type Redirect = {
   source: Slug;
   destination: Slug;
   permanent?: "true" | "false";
+  site?: SiteReference;
+};
+
+export type Slug = {
+  _type: "slug";
+  current: string;
+  source?: string;
 };
 
 export type ThemeDefaults = {
@@ -601,6 +588,7 @@ export type Navbar = {
         name?: string;
         url?: CustomUrl;
         siteId?: string;
+        site?: SiteReference;
         deployment?: DeploymentMeta;
         _type: "navbarLink";
         _key: string;
@@ -627,6 +615,7 @@ export type Footer = {
       name?: string;
       url?: CustomUrl;
       siteId?: string;
+      site?: SiteReference;
       deployment?: DeploymentMeta;
       _type: "footerColumnLink";
       _key: string;
@@ -661,6 +650,7 @@ export type Settings = {
     youtube?: string;
   };
   siteId?: string;
+  site?: SiteReference;
   deployment?: DeploymentMeta;
 };
 
@@ -691,6 +681,7 @@ export type ArticleIndex = {
   slug?: string;
   displayFeaturedArticles?: "yes" | "no";
   featuredArticlesCount?: "1" | "2" | "3";
+  site?: SiteReference;
   pageBuilder?: PageBuilder;
   seoTitle?: string;
   seoDescription?: string;
@@ -715,6 +706,7 @@ export type HomePage = {
   ogTitle?: string;
   ogDescription?: string;
   siteId?: string;
+  site?: SiteReference;
   deployment?: DeploymentMeta;
 };
 
@@ -787,6 +779,7 @@ export type Page = {
     _type: "image";
   };
   siteId?: string;
+  site?: SiteReference;
   deployment?: DeploymentMeta;
   pageBuilder?: PageBuilder;
   seoTitle?: string;
@@ -923,6 +916,7 @@ export type Article = {
   };
   richText?: RichText;
   siteId?: string;
+  site?: SiteReference;
   deployment?: DeploymentMeta;
   seoTitle?: string;
   seoDescription?: string;
@@ -939,10 +933,10 @@ export type Site = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  id: string;
   title: string;
-  domain: string;
   workspace: "solskjerming" | "vannsport";
+  domain: string;
+  deployment?: DeploymentMeta;
   logo?: {
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -957,13 +951,8 @@ export type Site = {
     crop?: SanityImageCrop;
     _type: "image";
   };
-  contact?: {
-    phone?: string;
-    email?: string;
-    address?: Address;
-  };
   social?: SocialLinks;
-  deployment?: DeploymentMeta;
+  contact?: Address;
 };
 
 export type SanityAssistInstructionTask = {
@@ -1205,9 +1194,6 @@ export type AllSanitySchemaTypes =
   | SeoImage
   | Link
   | ImageLinkCardImage
-  | WorkflowMetadata
-  | MediaTag
-  | Slug
   | SubscribeNewsletter
   | RichTextBlock
   | ImageLinkCards
@@ -1229,7 +1215,9 @@ export type AllSanitySchemaTypes =
   | ProductReference
   | VideoReference
   | CustomUrl
+  | SiteReference
   | Redirect
+  | Slug
   | ThemeDefaults
   | SiteTheme
   | Navbar
@@ -1755,6 +1743,7 @@ export type QueryHomePageDataResult = {
   ogTitle?: string;
   ogDescription?: string;
   siteId?: string;
+  site?: SiteReference;
   deployment?: DeploymentMeta;
 } | null;
 
@@ -1779,7 +1768,7 @@ export type QueryHomePageOGDataResult = {
 export type QuerySitesListResult = Array<{
   _id: string;
   title: string;
-  slug: string;
+  slug: null;
 }>;
 
 // Source: ../../packages/sanity/src/query.ts
@@ -1826,6 +1815,7 @@ export type QueryArticleIndexPageDataResult = {
   slug: null;
   displayFeaturedArticles: false | true;
   featuredArticlesCount: "1" | "2" | "3" | null;
+  site?: SiteReference;
   pageBuilder: Array<
     | {
         _key: string;
@@ -2380,6 +2370,7 @@ export type QueryArticleSlugPageDataResult = {
       }
   > | null;
   siteId?: string;
+  site?: SiteReference;
   deployment?: DeploymentMeta;
   seoTitle?: string;
   seoDescription?: string;
