@@ -9,43 +9,54 @@ import {
 import { GROUP, GROUPS } from "@/utils/constant";
 import { ogFields } from "@/utils/og-fields";
 import { seoFields } from "@/utils/seo-fields";
+import { createElement, Fragment } from "react";
+import { AutoSplitPreview } from "@/components/AutoSplitPreview";
 
 export const page = defineType({
   name: "page",
-  title: "Page",
+  title: "Side",
   type: "document",
   icon: DocumentIcon,
   description:
-    "Create a new page for your website, like an 'About Us' or 'Contact' page. Each page has its own web address and content that you can customize.",
+    "Opprett en ny side for nettstedet ditt, som for eksempel en 'Om oss'- eller 'Kontakt'-side. Hver side har sin egen nettadresse og innhold som du kan tilpasse.",
   groups: GROUPS,
+  components: {
+    input: (props) =>
+      createElement(
+        Fragment,
+        null,
+        createElement(AutoSplitPreview, null),
+        props.renderDefault(props),
+      ),
+  },
   fields: [
     defineField({
       name: "title",
       type: "string",
-      title: "Title",
+      title: "Tittel",
       description:
-        "The main heading that appears at the top of your page and in browser tabs",
+        "Dokumenttittelen som vises i nettleserfaner",
       group: GROUP.MAIN_CONTENT,
-      validation: (Rule) => Rule.required().error("A page title is required"),
+      validation: (Rule) => Rule.required().error("En sidetittel er påkrevd"),
     }),
     defineField({
       name: "description",
       type: "text",
-      title: "Description",
+      title: "Beskrivelse",
       description:
-        "A brief summary of what this page is about. This text helps search engines understand your page and may appear in search results.",
+        "Et kort sammendrag av hva denne siden handler om. Denne teksten hjelper søkemotorer å forstå siden din og kan vises i søkeresultater.",
       rows: 3,
       group: GROUP.MAIN_CONTENT,
       validation: (rule) => [
         rule
           .min(140)
           .warning(
-            "The meta description should be at least 140 characters for optimal SEO visibility in search results",
+            "Metabeskrivelsen bør være på minst 140 tegn for optimal SEO-synlighet i søkeresultater",
           ),
         rule
           .max(160)
           .warning(
-            "The meta description should not exceed 160 characters as it will be truncated in search results",
+            "Metabeskrivelsen bør ikke overstige 160 tegn, da den vil bli avkortet i søkeresultater",
           ),
       ],
     }),
@@ -53,26 +64,27 @@ export const page = defineType({
       group: GROUP.MAIN_CONTENT,
     }),
     imageWithAltField({
-      title: "Image",
+      title: "Bilde",
       description:
-        "A main picture for this page that can be used when sharing on social media or in search results",
+        "Et hovedbilde for denne siden som kan brukes ved deling i sosiale medier eller i søkeresultater",
       group: GROUP.MAIN_CONTENT,
     }),
     defineField({
       name: "siteId",
-      title: "Site ID",
+      title: "Nettsteds-ID",
       type: "string",
       readOnly: true,
       hidden: true,
     }),
     defineField({
       name: "site",
+      title: "Nettsted",
       type: "reference",
       to: [{ type: "site" }],
     }),
     defineField({
       name: "deployment",
-      title: "Publishing Status",
+      title: "Publiseringsstatus",
       type: "deploymentMeta",
     }),
     pageBuilderField,
@@ -82,21 +94,17 @@ export const page = defineType({
   preview: {
     select: {
       title: "title",
-      slug: "slug.current",
+      slug: "slug",
       media: "image",
       siteId: "siteId",
       isPrivate: "seoNoIndex",
-      hasPageBuilder: "pageBuilder",
     },
-    prepare: ({ title, slug, media, isPrivate, siteId, hasPageBuilder }) => {
-      const statusEmoji = isPrivate ? "🔒" : "🌎";
-      const builderEmoji = hasPageBuilder?.length
-        ? `🧱 ${hasPageBuilder.length}`
-        : "🏗️";
+    prepare: ({ title, slug, media, isPrivate, siteId }) => {
+      const statusEmoji = isPrivate ? "🔒 Privat" : "🌎 Indeksert";
 
       return {
-        title: `${title || "Untitled Page"}`,
-        subtitle: `${statusEmoji} ${builderEmoji} | 🔗 /${slug || "no-slug"} • ${siteId}`,
+        title: `${title || "Side uten tittel"}`,
+        subtitle: `${statusEmoji} ${slug && typeof slug === "string" ? `• ${slug}` : ""}`,
         media,
       };
     },

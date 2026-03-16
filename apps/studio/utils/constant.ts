@@ -20,7 +20,7 @@ export const GROUPS: FieldGroupDefinition[] = [
   {
     name: GROUP.MAIN_CONTENT,
     icon: ComposeIcon,
-    title: "Content",
+    title: "Innhold",
     default: true,
   },
   { name: GROUP.SEO, icon: SearchIcon, title: "SEO" },
@@ -37,7 +37,7 @@ export const GROUPS: FieldGroupDefinition[] = [
   {
     name: GROUP.RELATED,
     icon: InlineElementIcon,
-    title: "Related",
+    title: "Relatert",
   },
 ];
 

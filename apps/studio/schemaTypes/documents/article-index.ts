@@ -8,23 +8,24 @@ import { seoFields } from "@/utils/seo-fields";
 export const articleIndex = defineType({
   name: "articleIndex",
   type: "document",
-  title: "Article Listing Page",
+  title: "Arkiv",
   description:
-    "This is the main page that shows all your articles. You can customize how your article listing page looks, what title it has, and which articles you want to highlight at the top.",
+    "Dette er hovedsiden som viser alle artiklene dine. Her kan du tilpasse hvordan oversiktssiden ser ut, hvilken tittel den har, og hvilke artikler du ønsker å fremheve øverst.",
   groups: GROUPS,
   fields: [
     defineField({
       name: "title",
+      title: "Tittel",
       type: "string",
-      description:
-        "The main heading that will appear at the top of your article listing page",
+      description: "Dokumenttittelen som vises i nettleserfaner",
       group: GROUP.MAIN_CONTENT,
     }),
     defineField({
       name: "description",
+      title: "Beskrivelse",
       type: "text",
       description:
-        "A short summary of what visitors can find on in your articles. This helps people understand what your articles are about.",
+        "Et kort sammendrag av hva besøkende kan finne i artiklene dine. Dette hjelper folk å forstå hva innholdet handler om.",
       group: GROUP.MAIN_CONTENT,
     }),
     documentSlugField("articleIndex", {
@@ -32,14 +33,14 @@ export const articleIndex = defineType({
     }),
     defineField({
       name: "displayFeaturedArticles",
-      title: "Display Featured Articles",
+      title: "Vis fremhevede artikler",
       description:
-        "When enabled, this will take the top articles from the ordered article list and display them as featured at the top of the page",
+        "Når denne er aktivert, vil de øverste artiklene fra den sorterte listen vises som fremhevede elementer øverst på siden.",
       type: "string",
       options: {
         list: [
-          { title: "Yes", value: "yes" },
-          { title: "No", value: "no" },
+          { title: "Ja", value: "yes" },
+          { title: "Nei", value: "no" },
         ],
         layout: "radio",
       },
@@ -48,8 +49,8 @@ export const articleIndex = defineType({
     }),
     defineField({
       name: "featuredArticlesCount",
-      title: "Number of Featured Articles",
-      description: "Select the number of articles to display as featured.",
+      title: "Antall fremhevede artikler",
+      description: "Velg hvor mange artikler som skal vises som fremhevet.",
       type: "string",
       options: {
         list: [
@@ -66,8 +67,14 @@ export const articleIndex = defineType({
     }),
     defineField({
       name: "site",
+      title: "Nettsted",
       type: "reference",
       to: [{ type: "site" }],
+    }),
+    defineField({
+      name: "siteId",
+      title: "Nettsteds-ID",
+      type: "string",
     }),
     pageBuilderField,
     ...seoFields.filter(
@@ -82,8 +89,8 @@ export const articleIndex = defineType({
       slug: "slug.current",
     },
     prepare: ({ title, description, slug }) => ({
-      title: title || "Untitled Article Index",
-      subtitle: description || slug || "Article Index",
+      title: title || "Arkiv uten tittel",
+      subtitle: description || slug || "Artikkelarkiv",
     }),
   },
 });

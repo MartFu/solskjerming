@@ -91,12 +91,11 @@ export const site = defineType({
   preview: {
     select: {
       title: "title",
-      id: "id",
       workspace: "workspace",
     },
-    prepare({ title, id, workspace }) {
+    prepare({  title, workspace }) {
       return {
-        title: `${title} (${id})`,
+        title: title.slice(0, 1).toUpperCase() + title.slice(1) || "Side uten tittel",
         subtitle: workspace === "solskjerming" ? "Solskjerming" : "Vannsport",
       };
     },

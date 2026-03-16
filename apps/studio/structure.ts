@@ -28,23 +28,20 @@ import { PREVIEWABLE_TYPES } from "@/utils/preview";
 import { DeploymentDashboard } from "./components/deployment-dashboard";
 import { PreviewPane } from "./components/PreviewPane";
 import { API_VERSION } from "./utils/constant";
-import { getStudioContext } from "./utils/context";
+import { getActiveSite } from "./utils/context";
+import { Iframe } from "sanity-plugin-iframe-pane"
 
 // ─────────────────────────────────────────────────────────────
 // Default document node
 // ─────────────────────────────────────────────────────────────
 
+
 export const defaultDocumentNode: DefaultDocumentNodeResolver = (
-  S,
-  { schemaType },
+  S
 ) => {
-  if (!PREVIEWABLE_TYPES.has(schemaType)) {
-    return S.document().views([S.view.form()]);
-  }
 
   return S.document().views([
-    S.view.form(),
-    S.view.component(PreviewPane).title("Forhåndsvisning"),
+    S.view.form().title("Innhold") 
   ]);
 };
 
@@ -83,10 +80,8 @@ const createSingleTon = ({
         .schemaType(type)
         .documentId(docId)
         .initialValueTemplate(`${type}-with-site`, { siteId })
-        .views([
-          S.view.form(),
-          S.view.component(PreviewPane).title("Forhåndsvisning"),
-        ]),
+        .views([S.view.form().title("Innhold")]),
+        
     );
 };
 
@@ -196,7 +191,7 @@ const buildSiteItems = (
     .id(`${site._id}-settings`)
     .icon(Wrench)
     .child(
-      S.document().schemaType("site").documentId(site._id).title(site.title),
+      S.document().schemaType("site").documentId(site._id),
     ),
 ];
 
@@ -211,7 +206,9 @@ export const structure = async (
 ) => {
   const client = context.getClient({ apiVersion: API_VERSION });
 
-  const studioContext = getStudioContext(workspace);
+  const studioContext = getActiveSite(workspace);
+
+  console.log("CONTEXT: ", studioContext)
 
   let activeSite: {
     _id: string;
@@ -219,10 +216,10 @@ export const structure = async (
     id: string;
   } | null = null;
 
-  if (studioContext.siteId) {
+  if (studioContext?._id) {
     activeSite = await client.fetch<{ _id: string; title: string; id: string }>(
       `*[_type == "site" && _id == $siteId][0] { _id, title, id }`,
-      { siteId: studioContext.siteId },
+      { siteId: studioContext._id },
     );
   } else {
     const sites = await client.fetch<

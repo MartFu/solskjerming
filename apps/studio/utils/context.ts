@@ -1,22 +1,36 @@
+import { ActiveSite } from "./types";
 
-
-export const STUDIO_CONTEXT_LS_KEY = "studioContext";
+export const STUDIO_CONTEXT_LS_KEY = (
+  workspace: string | undefined = "solskjerming",
+) => `studio.navigator:${workspace}:active-site`;
 export type StudioContext = {
-    level: 'workspace' | 'site';
-    workspace: string;
-    siteId: string | null; 
-    siteTitle: string | null;
+  level: "workspace" | "site";
+  workspace: string;
+  siteId: string | null;
+  siteTitle: string | null;
+};
+
+export function getActiveSite(workspace: string): ActiveSite | null {
+  try {
+    const raw = sessionStorage.getItem(STUDIO_CONTEXT_LS_KEY(workspace));
+    return raw ? (JSON.parse(raw) as ActiveSite) : null;
+  } catch {
+    return null;
+  }
 }
 
-export function getStudioContext(workspace?: string): StudioContext {
-    return localStorage.getItem(STUDIO_CONTEXT_LS_KEY) ? JSON.parse(localStorage.getItem(STUDIO_CONTEXT_LS_KEY)!) : {
-        level: 'workspace',
-        workspace: workspace ?? 'solskjerming',
-        siteId: null,
-        siteTitle: null,
+// Unified helper to write the site
+export function setActiveSite(workspace: string, site: ActiveSite | null) {
+  try {
+    if (site) {
+      sessionStorage.setItem(
+        STUDIO_CONTEXT_LS_KEY(workspace),
+        JSON.stringify(site),
+      );
+    } else {
+      sessionStorage.removeItem(STUDIO_CONTEXT_LS_KEY(workspace));
     }
-}
-
-export function setStudioContext(context: StudioContext) {
-    localStorage.setItem(STUDIO_CONTEXT_LS_KEY, JSON.stringify(context));
+  } catch {
+    // Fail silently
+  }
 }

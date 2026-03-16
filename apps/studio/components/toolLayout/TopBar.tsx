@@ -11,7 +11,7 @@ interface TopBarProps {
 }
 
 export function TopBar({ isDirty = false }: TopBarProps) {
-  const { clearSite, previewUrl } = useToolLayout();
+  const { clearSite, previewUrl, selectSite } = useToolLayout();
   const [confirmBack, setConfirmBack] = useState(false);
 
   const handleBack = () => {
@@ -22,6 +22,7 @@ export function TopBar({ isDirty = false }: TopBarProps) {
     }
   };
 
+  
   return (
     <>
       <Card
@@ -112,6 +113,8 @@ export function TopBar({ isDirty = false }: TopBarProps) {
           onCancel={() => setConfirmBack(false)}
         />
       )}
+
+     
     </>
   );
 }

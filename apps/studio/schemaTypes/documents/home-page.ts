@@ -5,41 +5,43 @@ import { documentSlugField, pageBuilderField } from "@/schemaTypes/common";
 import { GROUP, GROUPS } from "@/utils/constant";
 import { ogFields } from "@/utils/og-fields";
 import { seoFields } from "@/utils/seo-fields";
+import { AutoSplitPreview } from "@/components/AutoSplitPreview";
+import { createElement, Fragment } from "react";
 
 export const homePage = defineType({
   name: "homePage",
   type: "document",
-  title: "Home Page",
+  title: "Forside",
   icon: HomeIcon,
   description:
-    "This is where you create the main page visitors see when they first come to your website. Think of it like the front door to your online home - you can add a welcoming title, a short description, and build the page with different sections like pictures, text, and buttons.",
+    "Her oppretter du hovedsiden besøkende ser når de først kommer til nettstedet ditt. Tenk på det som inngangspartiet til ditt digitale hjem – du kan legge til en velkomsttittel, en kort beskrivelse og bygge siden med ulike seksjoner som bilder, tekst og knapper.",
   groups: GROUPS,
   fields: [
     defineField({
       name: "title",
       type: "string",
-      description:
-        "The main heading that will appear at the top of your home page",
+      title: "Tittel",
+      description: "Dokumenttittelen som vises i nettleserfaner",
       group: GROUP.MAIN_CONTENT,
     }),
     defineField({
       name: "description",
-      title: "Description",
+      title: "Beskrivelse",
       type: "text",
       description:
-        "A short summary that tells visitors what your website is about. This text also helps your page show up in Google searches.",
+        "Et kort sammendrag som forteller besøkende hva nettstedet handler om. Denne teksten hjelper også siden din med å bli synlig i Google-søk.",
       rows: 3,
       group: GROUP.MAIN_CONTENT,
       validation: (rule) => [
         rule
           .min(140)
           .warning(
-            "The meta description should be at least 140 characters for optimal SEO visibility in search results",
+            "Metabeskrivelsen bør være på minst 140 tegn for optimal SEO-synlighet i søkeresultater",
           ),
         rule
           .max(160)
           .warning(
-            "The meta description should not exceed 160 characters as it will be truncated in search results",
+            "Metabeskrivelsen bør ikke overstige 160 tegn, da den vil bli avkortet i søkeresultater",
           ),
       ],
     }),
@@ -53,19 +55,18 @@ export const homePage = defineType({
     ...ogFields,
     defineField({
       name: "siteId",
-      title: "Site ID",
+      title: "Nettsteds-ID",
       type: "string",
-      // readOnly: true,
-      // hidden: true,
     }),
     defineField({
       name: "site",
+      title: "Nettsted",
       type: "reference",
       to: [{ type: "site" }],
     }),
     defineField({
       name: "deployment",
-      title: "Publishing Status",
+      title: "Publiseringsstatus",
       type: "deploymentMeta",
     }),
   ],
@@ -75,9 +76,9 @@ export const homePage = defineType({
       slug: "slug.current",
     },
     prepare: ({ title, slug }) => ({
-      title: title || "Untitled Home Page",
+      title: title || "Forside uten tittel",
       media: HomeIcon,
-      subtitle: slug || "Home Page",
+      subtitle: slug || "Forside",
     }),
   },
 });

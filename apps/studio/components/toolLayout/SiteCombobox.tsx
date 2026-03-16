@@ -5,26 +5,22 @@ import {
   Button,
   Card,
   Flex,
+  Menu,
+  MenuButton,
+  MenuItem,
   Popover,
   Spinner,
   Stack,
   Text,
   TextInput,
 } from "@sanity/ui";
-import {  SearchIcon } from "@sanity/icons";
+import { SearchIcon } from "@sanity/icons";
 import { API_VERSION } from "@/utils/constant";
-import {
-  type ActiveSite,
-  useToolLayout,
-} from "@/context/ToolLayoutProvider";
+import {  useToolLayout } from "@/context/ToolLayoutProvider";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { ChevronsUpDown } from "lucide-react";
-
-interface Site {
-  _id: string;
-  title: string;
-  id: string;
-}
+import { useRouter } from "sanity/router";
+import { ActiveSite, Site } from "@/utils/types";
 
 interface SiteComboboxProps {
   /** Whether there is a dirty (unsaved) document open — triggers confirmation */
@@ -35,45 +31,25 @@ export function SiteCombobox({ isDirty = false }: SiteComboboxProps) {
   const { workspace, activeSite, selectSite } = useToolLayout();
   const client = useClient({ apiVersion: API_VERSION });
 
-  const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [sites, setSites] = useState<Site[]>([]);
   const [loading, setLoading] = useState(false);
   const [pendingSite, setPendingSite] = useState<ActiveSite | null>(null);
+  const router = useRouter();
 
-  const inputRef = useRef<HTMLInputElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Fetch sites when popover opens
-  useEffect(() => {
-    if (!open) return;
+  const fetchSites = () => {
     setLoading(true);
     client
       .fetch<Site[]>(
-        `*[_type == "site" && workspace == $workspace && !(_id in path("drafts.**"))]
-         | order(title asc) { _id, title, id }`,
+        `*[_type == "site" && workspace == $workspace && !(_id in path("drafts.**"))] | order(title asc) { _id, title }`,
         { workspace },
       )
       .then((result) => {
         setSites(result);
         setLoading(false);
-        setTimeout(() => inputRef.current?.focus(), 50);
       })
       .catch(() => setLoading(false));
-  }, [open, workspace, client]);
-
-  // Close on outside click
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (!containerRef.current?.contains(e.target as Node)) {
-        setOpen(false);
-        setSearch("");
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [open]);
+  };
 
   const filtered = sites.filter(
     (s) =>
@@ -82,132 +58,90 @@ export function SiteCombobox({ isDirty = false }: SiteComboboxProps) {
   );
 
   const handleSelect = (site: Site) => {
+    console.log("RAW SITE", site);
     const next: ActiveSite = { _id: site._id, title: site.title };
-    setOpen(false);
     setSearch("");
     if (isDirty) {
       setPendingSite(next);
     } else {
       selectSite(next);
+      /* router.navigateUrl({
+        path: `/${workspace}/structure/${site._id}-settings`,
+        replace: true,
+      }); */
     }
   };
 
   const confirmSwitch = () => {
-    if (pendingSite) selectSite(pendingSite);
+    if (!pendingSite) return;
+
+    selectSite(pendingSite);
     setPendingSite(null);
+   /*  router.navigateUrl({
+      path: `/${workspace}/structure/${pendingSite._id}-settings`,
+      replace: true,
+    }); */
   };
 
   return (
     <>
-      <div
-        ref={containerRef}
-        style={{ position: "relative" }}
-      >
-        <Popover
-          open={open}
-          placement="bottom-start"
-          portal
-          content={
-            <Box
-              style={{ width: 220 }}
-              padding={2}
-            >
-              <Stack space={1}>
-                {filtered?.length > 3 && (
-                  <Box padding={1}>
-                    <TextInput
-                      ref={inputRef}
-                      icon={SearchIcon}
-                      placeholder="Søk i nettsider…"
-                      value={search}
-                      onChange={(e) => setSearch(e.currentTarget.value)}
-                      fontSize={1}
-                    />
-                  </Box>
-                )}
-
-                {loading ? (
-                  <Flex
-                    justify="center"
-                    padding={3}
-                  >
-                    <Spinner muted />
-                  </Flex>
-                ) : filtered.length === 0 ? (
-                  <Box padding={3}>
-                    <Text
-                      size={1}
-                      muted
-                    >
-                      {search
-                        ? `Ingen treff på "${search}"`
-                        : "Ingen andre nettsider."}
-                    </Text>
-                  </Box>
-                ) : (
-                  <Stack>
-                    {filtered.map((site) => (
-                      <Button
-                        key={site._id}
-                        as="button"
-                        padding={3}
-                        radius={2}
-                        tone="neutral"
-                        mode="bleed"
-                        onClick={() => handleSelect(site)}
-                        style={{
-                          cursor: "pointer",
-                          border: "none",
-                          width: "100%",
-                          textAlign: "left",
-                        }}
-                      >
-                        <Text size={1}>{site.title}</Text>
-                      </Button>
-                    ))}
-                  </Stack>
-                )}
-              </Stack>
-            </Box>
-          }
-        >
-          {/* Trigger */}
+      <MenuButton
+        id="site-selector-menu"
+        // Use 'onOpen' to trigger the fetch instead of manual useEffect
+        onOpen={fetchSites}
+        button={
           <Button
-            as="button"
-            padding={2}
-            radius={2}
-            tone="neutral"
             mode="bleed"
-            selected={open}
-            onClick={() => setOpen((v) => !v)}
-            style={{
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-            }}
-          >
-            <Flex
-              align="center"
-              gap={2}
-            >
-              <Text
-                weight="semibold"
-                size={1}
-              >
-                {activeSite?.title}
-              </Text>
+            padding={2}
+            fontSize={1}
+            iconRight={
               <ChevronsUpDown
-                style={{
-                  width: 16,
-                  height: 16,
-                  flexShrink: 0,
-                }}
+                style={{ width: 16, height: 16, flexShrink: 0 }}
               />
-            </Flex>
-          </Button>
-        </Popover>
-      </div>
+            }
+            text={activeSite?.title || "Velg nettside"}
+          />
+        }
+        menu={
+          <Menu style={{ width: 220 }}>
+            {/* Search Input stays inside the Menu area */}
+            {filtered.length > 4 && (
+              <Box padding={2}>
+                <TextInput
+                  icon={SearchIcon}
+                  placeholder="Søk..."
+                  value={search}
+                  onChange={(e) => setSearch(e.currentTarget.value)}
+                  autoFocus
+                />
+              </Box>
+            )}
+
+            {loading ? (
+              <Flex
+                justify="center"
+                padding={2}
+              >
+                <Spinner />
+              </Flex>
+            ) : filtered.length === 0 ? (
+              <MenuItem
+                disabled
+                text="Ingen treff"
+              />
+            ) : (
+              filtered.map((site) => (
+                <MenuItem
+                  key={site._id}
+                  text={site.title}
+                  onClick={() => handleSelect(site)}
+                />
+              ))
+            )}
+          </Menu>
+        }
+        popover={{ portal: true, placement: "bottom-start" }}
+      />
 
       {/* Confirmation dialog when switching with unsaved changes */}
       {pendingSite && (

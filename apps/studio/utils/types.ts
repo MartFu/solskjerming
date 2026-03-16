@@ -155,3 +155,19 @@ export type PathnameParams = Omit<
   name?: string;
   options?: PathnameOptions;
 };
+
+// Internal Studio context types
+
+export interface ActiveSite {
+  _id: string;
+  title: string;
+}
+
+export interface Site {
+  _id: string;
+  _updatedAt: string;
+  title: string;
+  workspace: string;
+  domain?: string;
+  deployment?: { status: string };
+}

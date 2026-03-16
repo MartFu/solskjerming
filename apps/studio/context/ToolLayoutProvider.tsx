@@ -1,3 +1,5 @@
+import { STUDIO_CONTEXT_LS_KEY } from "@/utils/context";
+import { ActiveSite } from "@/utils/types";
 import {
   createContext,
   useCallback,
@@ -8,10 +10,7 @@ import {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-export interface ActiveSite {
-  _id: string;
-  title: string;
-}
+
 
 interface ToolLayoutContextValue {
   /** The Sanity workspace name this tool instance belongs to */
@@ -37,12 +36,11 @@ const ToolLayoutContext = createContext<ToolLayoutContextValue | null>(null);
 
 // ─── Storage helpers ──────────────────────────────────────────────────────────
 
-const storageKey = (workspace: string) =>
-  `studio.navigator:${workspace}:active-site`;
+
 
 function readFromSession(workspace: string): ActiveSite | null {
   try {
-    const raw = sessionStorage.getItem(storageKey(workspace));
+    const raw = sessionStorage.getItem(STUDIO_CONTEXT_LS_KEY(workspace));
     return raw ? (JSON.parse(raw) as ActiveSite) : null;
   } catch {
     return null;
@@ -52,9 +50,9 @@ function readFromSession(workspace: string): ActiveSite | null {
 function writeToSession(workspace: string, site: ActiveSite | null) {
   try {
     if (site) {
-      sessionStorage.setItem(storageKey(workspace), JSON.stringify(site));
+      sessionStorage.setItem(STUDIO_CONTEXT_LS_KEY(workspace), JSON.stringify(site));
     } else {
-      sessionStorage.removeItem(storageKey(workspace));
+      sessionStorage.removeItem(STUDIO_CONTEXT_LS_KEY(workspace));
     }
   } catch {
     // sessionStorage unavailable — degrade gracefully, state lives in memory only
@@ -88,6 +86,7 @@ export function ToolLayoutProvider({
     (site: ActiveSite) => {
       writeToSession(workspace, site);
       setActiveSiteState(site);
+      window.location.reload();
     },
     [workspace],
   );

@@ -15,23 +15,14 @@ import {
   TextInput,
 } from "@sanity/ui";
 import { AddIcon, SearchIcon } from "@sanity/icons";
-import { Globe } from "lucide-react";
+import { Globe, Settings } from "lucide-react";
 import { API_VERSION } from "@/utils/constant";
 import {
   useToolLayout,
-  type ActiveSite,
 } from "@/context/ToolLayoutProvider";
+import { useRouter } from "sanity/router";
+import { ActiveSite, Site } from "@/utils/types";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-interface Site {
-  _id: string;
-  _updatedAt: string;
-  title: string;
-  workspace: string;
-  domain?: string;
-  deployment?: { status: string };
-}
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -183,11 +174,13 @@ function CreateSiteDialog({
 
 interface SiteCardProps {
   site: Site;
+  workspace: string;
   onSelect: (site: ActiveSite) => void;
 }
 
-function SiteCard({ site, onSelect }: SiteCardProps) {
+function SiteCard({ site, workspace, onSelect }: SiteCardProps) {
   const status = site.deployment?.status;
+  const router = useRouter();
 
   return (
     <Card
@@ -195,9 +188,7 @@ function SiteCard({ site, onSelect }: SiteCardProps) {
       border
       padding={4}
       style={{ cursor: "pointer" }}
-      onClick={() =>
-        onSelect({ _id: site._id, title: site.title })
-      }
+      onClick={() => onSelect({ _id: site._id, title: site.title })}
     >
       <Stack space={3}>
         <Flex
@@ -244,12 +235,34 @@ function SiteCard({ site, onSelect }: SiteCardProps) {
           </Text>
         )}
 
-        <Text
-          size={0}
-          muted
+        <Flex
+          align={"center"}
+          justify={"space-between"}
         >
-          Oppdatert {new Date(site._updatedAt).toLocaleDateString("nb-NO")}
-        </Text>
+          <Text
+            size={0}
+            muted
+          >
+            Oppdatert {new Date(site._updatedAt).toLocaleDateString("nb-NO")}
+          </Text>
+
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              router.navigateUrl({
+                path: `/${workspace}/structure/${site._id}-settings`,
+                replace: true,
+              });
+              onSelect({ _id: site._id, title: site.title })
+            }}
+            mode="bleed"
+            tone="neutral"
+            padding={[2]}
+            fontSize={0}
+            icon={<Settings style={{ height: 12, width: 12 }} />}
+          />
+        </Flex>
       </Stack>
     </Card>
   );
@@ -303,8 +316,8 @@ export function WorkspaceView() {
 
   return (
     <Box
-      padding={7}
-      style={{ maxWidth: 960, margin: "0 auto" }}
+      padding={5}
+      style={{ maxWidth: 1440, margin: "0 auto" }}
     >
       <Stack space={5}>
         {/* ── Header ── */}
@@ -385,13 +398,14 @@ export function WorkspaceView() {
           </Card>
         ) : (
           <Grid
-            columns={[1, 2, 3]}
+            columns={[1, 2]}
             gap={3}
           >
             {filtered.map((site) => (
               <SiteCard
                 key={site._id}
                 site={site}
+                workspace={workspace}
                 onSelect={selectSite}
               />
             ))}

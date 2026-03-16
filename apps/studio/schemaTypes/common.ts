@@ -56,7 +56,7 @@ export const documentSlugField = (
 ) => {
   const {
     group,
-    description = `The web address where people can find your ${documentType} (automatically created from title)`,
+    description = `Nettaddressen der man kan finne din ${documentType} (genereres automatisk fra tittelen)`,
     title = "URL",
   } = options;
 

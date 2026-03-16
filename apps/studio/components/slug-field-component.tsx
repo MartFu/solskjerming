@@ -28,27 +28,27 @@ export function PathnameFieldComponent(props: StringFieldProps) {
   } = props;
 
   const document = useFormValue([]) as SanityDocument;
-  const currentSlug = typeof value === 'string' ? value : "";
+  const currentSlug = typeof value === "string" ? value : "";
 
   const errors = useMemo(
     () => [
       ...new Set(
         validation
           .filter((v) => v.level === "error")
-          .flatMap((v) => v.message.split("; "))
+          .flatMap((v) => v.message.split("; ")),
       ),
     ],
-    [validation]
+    [validation],
   );
   const warnings = useMemo(
     () => [
       ...new Set(
         validation
           .filter((v) => v.level === "warning")
-          .flatMap((v) => v.message.split("; "))
+          .flatMap((v) => v.message.split("; ")),
       ),
     ],
-    [validation]
+    [validation],
   );
 
   const localizedPathname = currentSlug?.startsWith("/")
@@ -61,14 +61,14 @@ export function PathnameFieldComponent(props: StringFieldProps) {
       const patch = typeof newValue === "string" ? set(newValue) : unset();
       onChange(patch);
     },
-    [onChange]
+    [onChange],
   );
 
   const handleSlugChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       handleChange(e.target.value);
     },
-    [handleChange]
+    [handleChange],
   );
 
   const handleGenerate = useCallback(() => {
@@ -83,7 +83,7 @@ export function PathnameFieldComponent(props: StringFieldProps) {
       const generatedSlug = generateSlugFromTitle(
         documentTitle,
         documentType,
-        currentSlug
+        currentSlug,
       );
 
       if (generatedSlug) {
@@ -117,79 +117,118 @@ export function PathnameFieldComponent(props: StringFieldProps) {
     !(typeof document?.title === "string" && document.title.trim()) || readOnly;
 
   return (
-    <Stack space={4}>
+    <Stack space={3}>
       {(title || description) && (
         <Stack space={2}>
           {title && (
-            <Text size={1} weight="semibold">
+            <Text
+              size={1}
+              weight="semibold"
+            >
               {title}
             </Text>
           )}
           {description && (
-            <Text muted size={1}>
+            <Text
+              muted
+              size={1}
+            >
               {description}
             </Text>
           )}
         </Stack>
       )}
+      <Card borderLeft paddingLeft={4} paddingTop={4}>
+        <Stack space={6}>
+          <Stack space={4}>
+            <Stack space={2}>
+              <Text
+                size={1}
+                weight="medium"
+              >
+                Sti
+              </Text>
+              <Flex
+                align="center"
+                gap={2}
+              >
+                <Box flex={1}>
+                  <TextInput
+                    disabled={readOnly}
+                    fontSize={1}
+                    onChange={handleSlugChange}
+                    placeholder="f.eks. /om-oss"
+                    style={monoStyle}
+                    value={currentSlug}
+                  />
+                </Box>
+                <Button
+                  disabled={generateDisabled}
+                  fontSize={1}
+                  mode="ghost"
+                  onClick={handleGenerate}
+                  text="Generate"
+                  tone="primary"
+                />
+              </Flex>
+            </Stack>
 
-      <Stack space={4}>
-        <Stack space={2}>
-          <Text size={1} weight="medium">
-            URL Path
-          </Text>
-          <Flex align="center" gap={2}>
-            <Box flex={1}>
-              <TextInput
-                disabled={readOnly}
-                fontSize={1}
-                onChange={handleSlugChange}
-                placeholder="e.g., /about-us or /blog/my-post"
-                style={monoStyle}
-                value={currentSlug}
-              />
-            </Box>
-            <Button
-              disabled={generateDisabled}
-              fontSize={1}
-              mode="ghost"
-              onClick={handleGenerate}
-              text="Generate"
-              tone="primary"
+            <ValidationMessages
+              errors={errors}
+              warnings={warnings}
             />
-          </Flex>
-        </Stack>
 
-        <ValidationMessages errors={errors} warnings={warnings} />
+            <Text
+              muted
+              size={1}
+            >
 
-        <Text muted size={1}>
-          Must start with a forward slash (/). Use forward slashes to create
-          nested paths. Only lowercase letters, numbers, hyphens, and slashes
-          are allowed.
-        </Text>
+              Må starte med slash ("/"). Bruk ytterligere "/" for å uttrykke 
+              nestede stier (f.eks. "/arkiv/laer-om-sanity"). Kun små bokstaver, 
+              tall, bindestreker og "/" er tillatt.
 
-        {currentSlug && errors.length === 0 && (
-          <Stack space={2}>
-            <Text size={1} weight="medium">
-              Preview
             </Text>
-            <Flex align="center" gap={2}>
-              <Card border flex={1} padding={3} radius={2} tone="transparent">
-                <Text muted size={1} style={monoStyle}>
-                  {fullUrl}
-                </Text>
-              </Card>
-              <Button
-                icon={CopyIcon}
-                mode="ghost"
-                onClick={handleCopyUrl}
-                padding={2}
-                title="Copy URL"
-              />
-            </Flex>
           </Stack>
-        )}
-      </Stack>
+
+          {currentSlug && errors.length === 0 && (
+            <Stack space={2}>
+              <Text
+                size={1}
+                weight="medium"
+              >
+                Forhåndsvisning
+              </Text>
+              <Flex
+                align="center"
+                gap={2}
+              >
+                <Card
+                  border
+                  flex={1}
+                  padding={3}
+                  radius={2}
+                  tone="transparent"
+                >
+                  <Text
+                    muted
+                    size={1}
+                    style={monoStyle}
+                  >
+                    {fullUrl}
+                  </Text>
+                </Card>
+                <Button
+                  icon={CopyIcon}
+                  mode="ghost"
+                  onClick={handleCopyUrl}
+                  padding={3}
+                  title="Kopier URL"
+                />
+              </Flex>
+            </Stack>
+          )}
+        </Stack>
+      </Card>
     </Stack>
   );
 }

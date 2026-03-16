@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { Flex, Text, Spinner, Card } from "@sanity/ui";
-import type { UserViewComponent } from "sanity/structure";
+import { usePaneRouter, type UserViewComponent } from "sanity/structure";
 import { resolvePreviewUrl } from "@/utils/preview";
 import { useToolLayout } from "@/context/ToolLayoutProvider";
 
@@ -20,6 +20,14 @@ export const PreviewPane: UserViewComponent = ({
   schemaType,
 }) => {
   const { setPreviewUrl } = useToolLayout();
+  const { setView, groupIndex, hasGroupSiblings } = usePaneRouter();
+
+  useEffect(() => {
+    // If this pane is the sibling (index 1), force it to show 'preview' view
+    if (hasGroupSiblings && groupIndex === 1) {
+      setView("preview");
+    }
+  }, []);
 
   const url = useMemo(
     () =>

@@ -79,17 +79,11 @@ export const defineWorkspace = (name: string, dataset: string): WorkspaceOptions
     unsplashImageAsset(),
     assist(),
     sharedConfig({ workspace: name }),
-
-    /* studioNavigator({ workspace: name }), */
-
     structureTool({
       title: "Studio",
-      defaultDocumentNode,
-
       structure: (S, context) => structure(S, context, name),
     }),
     /*   media(), */
-   
     visionTool({
       title: "GROQ Vision",
       icon: JsonIcon,
