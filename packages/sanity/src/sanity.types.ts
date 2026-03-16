@@ -459,6 +459,89 @@ export type Slug = {
   source?: string;
 };
 
+export type WorkspaceDefault = {
+  _id: string;
+  _type: "workspaceDefault";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  seoTitle: string;
+  seoDescription: string;
+  logo?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  favicon?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  light?: {
+    background?: string;
+    foreground?: string;
+    card?: string;
+    cardForeground?: string;
+    popover?: string;
+    popoverForeground?: string;
+    primary?: string;
+    primaryForeground?: string;
+    secondary?: string;
+    secondaryForeground?: string;
+    muted?: string;
+    mutedForeground?: string;
+    accent?: string;
+    accentForeground?: string;
+    destructive?: string;
+    destructiveForeground?: string;
+    border?: string;
+    input?: string;
+    ring?: string;
+  };
+  dark?: {
+    background?: string;
+    foreground?: string;
+    card?: string;
+    cardForeground?: string;
+    popover?: string;
+    popoverForeground?: string;
+    primary?: string;
+    primaryForeground?: string;
+    secondary?: string;
+    secondaryForeground?: string;
+    muted?: string;
+    mutedForeground?: string;
+    accent?: string;
+    accentForeground?: string;
+    destructive?: string;
+    destructiveForeground?: string;
+    border?: string;
+    input?: string;
+    ring?: string;
+  };
+  radius?: "0rem" | "0.25rem" | "0.5rem" | "0.75rem" | "1rem";
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x: number;
+  y: number;
+  height: number;
+  width: number;
+};
+
 export type ThemeDefaults = {
   _id: string;
   _type: "themeDefaults";
@@ -653,22 +736,6 @@ export type Settings = {
   siteId?: string;
   site?: SiteReference;
   deployment?: DeploymentMeta;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top: number;
-  bottom: number;
-  left: number;
-  right: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x: number;
-  y: number;
-  height: number;
-  width: number;
 };
 
 export type ArticleIndex = {
@@ -937,7 +1004,7 @@ export type Site = {
   _rev: string;
   title: string;
   workspace: "solskjerming" | "vannsport";
-  domain: string;
+  domain?: string;
   status?: "setting-up" | "active" | "suspended";
   logo?: {
     asset?: SanityImageAssetReference;
@@ -1220,13 +1287,14 @@ export type AllSanitySchemaTypes =
   | SiteReference
   | Redirect
   | Slug
+  | WorkspaceDefault
+  | SanityImageCrop
+  | SanityImageHotspot
   | ThemeDefaults
   | SiteTheme
   | Navbar
   | Footer
   | Settings
-  | SanityImageCrop
-  | SanityImageHotspot
   | ArticleIndex
   | HomePage
   | Author
