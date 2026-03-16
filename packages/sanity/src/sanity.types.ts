@@ -682,6 +682,7 @@ export type ArticleIndex = {
   displayFeaturedArticles?: "yes" | "no";
   featuredArticlesCount?: "1" | "2" | "3";
   site?: SiteReference;
+  siteId?: string;
   pageBuilder?: PageBuilder;
   seoTitle?: string;
   seoDescription?: string;
@@ -1816,6 +1817,7 @@ export type QueryArticleIndexPageDataResult = {
   displayFeaturedArticles: false | true;
   featuredArticlesCount: "1" | "2" | "3" | null;
   site?: SiteReference;
+  siteId?: string;
   pageBuilder: Array<
     | {
         _key: string;
