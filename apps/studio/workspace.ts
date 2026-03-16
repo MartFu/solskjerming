@@ -13,6 +13,7 @@ import { ToolLayout } from "./components/toolLayout";
 
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID ?? "";
 
+
 const sharedConfig = definePlugin<{ workspace: string }>(() => ({
   name: "shared-config",
   document: {
@@ -46,22 +47,28 @@ const sharedConfig = definePlugin<{ workspace: string }>(() => ({
         "homePage",
       ].map((type) => ({
         id: `${type}-with-site`,
-        title: `${type.charAt(0).toUpperCase() + type.slice(1)} with Site ID`,
+        title: `${type.charAt(0).toUpperCase() + type.slice(1)}`,
         schemaType: type,
         parameters: [{ name: "siteId", type: "string" }],
         value: (params: { siteId: string }) => ({ siteId: params.siteId }),
       })),
+       {
+        schemaType: `workspaceDefault`,
+        type: `document`,
+        parameters: [{ name: "workspace", type: "string"}],
+        value: (params: { workspace: string }) => ({ workspace: params.workspace, title: `${params.workspace.charAt(0).toUpperCase() + params.workspace.slice(1)} - Standardinnstillinger}` }),
+      }
     ],
   },
 }));
 
-export const defineWorkspace = (name: string, dataset: string): WorkspaceOptions => ({
-  name,
-  title: name.charAt(0).toUpperCase() + name.slice(1),
+export const defineWorkspace = (workspace: string, dataset: string): WorkspaceOptions => ({
+  name: workspace,
+  title: workspace.charAt(0).toUpperCase() + workspace.slice(1),
   icon: Logo,
   projectId,
   dataset,
-  basePath: `/${name}`,
+  basePath: `/${workspace}`,
   releases: {
     enabled: true,
   },
@@ -69,7 +76,7 @@ export const defineWorkspace = (name: string, dataset: string): WorkspaceOptions
   studio: {
     components: {
       activeToolLayout: (defaultProps) =>
-        ToolLayout({ config: { workspace: name } }, defaultProps),
+        ToolLayout({ config: { workspace } }, defaultProps),
     },
   },
 
@@ -78,10 +85,10 @@ export const defineWorkspace = (name: string, dataset: string): WorkspaceOptions
     lucideIconPicker(),
     unsplashImageAsset(),
     assist(),
-    sharedConfig({ workspace: name }),
+    sharedConfig({ workspace }),
     structureTool({
       title: "Studio",
-      structure: (S, context) => structure(S, context, name),
+      structure: (S, context) => structure(S, context, workspace),
     }),
     /*   media(), */
     visionTool({

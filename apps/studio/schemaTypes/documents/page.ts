@@ -19,7 +19,7 @@ export const page = defineType({
   icon: DocumentIcon,
   description:
     "Opprett en ny side for nettstedet ditt, som for eksempel en 'Om oss'- eller 'Kontakt'-side. Hver side har sin egen nettadresse og innhold som du kan tilpasse.",
-  groups: GROUPS,
+  groups: GROUPS(),
   components: {
     input: (props) =>
       createElement(

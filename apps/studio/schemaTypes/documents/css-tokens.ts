@@ -81,7 +81,13 @@ export const siteTheme = defineType({
       type: "string",
       options: { list: ["0rem", "0.25rem", "0.5rem", "0.75rem", "1rem"] },
     }),
+    defineField({
+      name: "site",
+      type: "reference",
+      to: [{ type: "site" }],
+      readOnly: true,
+    }),
   ],
   // Hide all theme fields when inheriting global
-  // You'd conditionally hide light/dark/radius based on useGlobalDefaults
+  // Conditionally hide light/dark/radius based on useGlobalDefaults
 });

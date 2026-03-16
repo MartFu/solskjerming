@@ -1,6 +1,5 @@
 import type { FilterByType, Get } from "@sanity/codegen";
 import type {
-
   QueryArticleIndexPageArticlesResult, 
   QueryArticleSlugPageDataResult,
   QueryGlobalSeoSettingsResult,

@@ -7,7 +7,7 @@ export const product = defineType({
   name: "product",
   title: "Product",
   type: "document",
-  groups: GROUPS,
+  groups: GROUPS(),
   fields: [
     defineField({
       name: "title",

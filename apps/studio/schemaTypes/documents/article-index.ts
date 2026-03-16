@@ -11,7 +11,7 @@ export const articleIndex = defineType({
   title: "Arkiv",
   description:
     "Dette er hovedsiden som viser alle artiklene dine. Her kan du tilpasse hvordan oversiktssiden ser ut, hvilken tittel den har, og hvilke artikler du ønsker å fremheve øverst.",
-  groups: GROUPS,
+  groups: GROUPS(),
   fields: [
     defineField({
       name: "title",
