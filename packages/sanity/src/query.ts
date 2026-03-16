@@ -22,6 +22,12 @@ const ogFieldsFragment = /* groq */ `
   "date": coalesce(date, _createdAt)
 `;
 
+const seoFragment = /* groq */ `
+  seoTitle,
+  seoDescription,
+  seoNoIndex,
+`;
+
 export const queryGenericPageOGData = defineQuery(`
   *[defined(slug.current) && _id == $id][0]{
     ${ogFieldsFragment}
@@ -239,7 +245,7 @@ export const queryImageType = defineQuery(`
 // ─── Home Page ────────────────────────────────────────────────────────────────
 
 export const queryHomePageData = defineQuery(`
-  *[_type == "homePage" && siteId == $siteId][0]{
+  *[_type == "homePage" && site._ref == $siteId][0]{
     ...,
     _id,
     _type,
@@ -268,7 +274,7 @@ export const querySitesList = defineQuery(`*[_type == "site"] | order(title asc)
 // ─── Pages ────────────────────────────────────────────────────────────────────
 
 export const querySlugPageData = defineQuery(`
-  *[_type == "page" && siteId == $siteId && defined(slug.current) && slug.current == $slug][0]{
+  *[_type == "page" && site._ref == $siteId && defined(slug.current) && slug.current == $slug][0]{
     _id,
     _type,
     "slug": slug.current,
@@ -295,18 +301,55 @@ export const querySlugPageOGData = defineQuery(`
 
 
 export const queryAllPageSlugs = defineQuery(`
-  *[_type in ["page", "homePage", "articleIndex", "article"] && siteId == $siteId && defined(slug.current)] {
+  *[_type in ["page", "homePage", "articleIndex", "article"] && site._ref == $siteId && defined(slug.current)] {
     _type,
     "slug": slug.current,
     "isHomePage": _type == "homePage"
   }
 `);
 
+export const queryAllPageSlugsForBuild = defineQuery(`
+  *[_type in ["page", "homePage", "articleIndex", "article"] && defined(slug.current)] {
+    "slug": slug.current
+  }
+`);
+
+
+export const queryPageBySlug = defineQuery(`
+  coalesce(
+    *[_type == "homePage" && site._ref == $siteId && slug.current == $slug][0]{
+      _id, _type, title, description,
+      ${seoFragment},
+      ${pageBuilderFragment}
+    },
+    *[_type == "page" && site._ref == $siteId && slug.current == $slug][0]{
+      _id, _type, title, description,
+      ${seoFragment},
+      ${pageBuilderFragment}
+    },
+    *[_type == "articleIndex" && site._ref == $siteId && slug.current == $slug][0]{
+      _id, _type, title, description,
+      seoTitle, seoDescription,
+      "displayFeaturedArticles": displayFeaturedArticles == "yes",
+      featuredArticlesCount,
+      ${pageBuilderFragment}
+    },
+    *[_type == "article" && site._ref == $siteId && slug.current == $slug][0]{
+      _id, _type, title, description,
+      ${seoFragment},
+      "slug": slug.current,
+      ${articleAuthorFragment},
+      ${imageFragment},
+      ${richTextFragment},
+      ${pageBuilderFragment}
+    }
+  )
+`);
 
 // ─── Articles (formerly blog) ─────────────────────────────────────────────────
 
 export const queryArticleIndexPageData = defineQuery(`
-  *[_type == "articleIndex" && siteId == $siteId][0]{
+  *[_type == "articleIndex" && site._ref == $siteId][0]{
     ...,
     _id,
     _type,
@@ -320,24 +363,24 @@ export const queryArticleIndexPageData = defineQuery(`
 `);
 
 export const queryArticleIndexPageArticles = defineQuery(`
-  *[_type == "article" && siteId == $siteId && (seoHideFromLists != true)]
+  *[_type == "article" && site._ref == $siteId && (seoHideFromLists != true)]
     | order(orderRank asc) [$start...$end]{
     ${articleCardFragment}
   }
 `);
 
 export const queryAllArticleDataForSearch = defineQuery(`
-  *[_type == "article" && siteId == $siteId && defined(slug.current) && (seoHideFromLists != true)]{
+  *[_type == "article" && site._ref == $siteId && defined(slug.current) && (seoHideFromLists != true)]{
     ${articleCardFragment}
   }
 `);
 
 export const queryArticleIndexPageArticlesCount = defineQuery(`
-  count(*[_type == "article" && siteId == $siteId && (seoHideFromLists != true)])
+  count(*[_type == "article" && site._ref == $siteId && (seoHideFromLists != true)])
 `);
 
 export const queryArticleSlugPageData = defineQuery(`
-  *[_type == "article" && siteId == $siteId && slug.current == $slug][0]{
+  *[_type == "article" && site._ref == $siteId && slug.current == $slug][0]{
     ...,
     "slug": slug.current,
     ${articleAuthorFragment},
@@ -365,7 +408,7 @@ export const queryArticlePageOGData = defineQuery(`
 // ─── Navigation & Layout ──────────────────────────────────────────────────────
 
 export const queryFooterData = defineQuery(`
-  *[_type == "footer" && siteId == $siteId][0]{
+  *[_type == "footer" && site._ref == $siteId][0]{
     _id,
     subtitle,
     columns[]{
@@ -386,7 +429,7 @@ export const queryFooterData = defineQuery(`
 `);
 
 export const queryNavbarData = defineQuery(`
-  *[_type == "navbar" && siteId == $siteId][0]{
+  *[_type == "navbar" && site._ref == $siteId][0]{
     _id,
     columns[]{
       _key,
@@ -425,7 +468,7 @@ export const queryNavbarData = defineQuery(`
 // ─── Settings ─────────────────────────────────────────────────────────────────
 
 export const queryGlobalSeoSettings = defineQuery(`
-  *[_type == "settings" && siteId == $siteId][0]{
+  *[_type == "settings" && site._ref == $siteId][0]{
     _id,
     _type,
     siteTitle,
@@ -444,7 +487,7 @@ export const queryGlobalSeoSettings = defineQuery(`
 `);
 
 export const querySettingsData = defineQuery(`
-  *[_type == "settings" && siteId == $siteId][0]{
+  *[_type == "settings" && site._ref == $siteId][0]{
     _id,
     _type,
     siteTitle,
@@ -458,11 +501,11 @@ export const querySettingsData = defineQuery(`
 // ─── Sitemap ──────────────────────────────────────────────────────────────────
 
 export const querySitemapData = defineQuery(`{
-  "slugPages": *[_type == "page" && siteId == $siteId && defined(slug.current)]{
+  "slugPages": *[_type == "page" && site._ref == $siteId && defined(slug.current)]{
     "slug": slug.current,
     "lastModified": _updatedAt
   },
-  "articlePages": *[_type == "article" && siteId == $siteId && defined(slug.current)]{
+  "articlePages": *[_type == "article" && site._ref == $siteId && defined(slug.current)]{
     "slug": slug.current,
     "lastModified": _updatedAt
   }
@@ -471,7 +514,7 @@ export const querySitemapData = defineQuery(`{
 // ─── Redirects ────────────────────────────────────────────────────────────────
 
 export const queryRedirects = defineQuery(`
-  *[_type == "redirect" && siteId == $siteId && status == "active" && defined(source.current) && defined(destination.current)]{
+  *[_type == "redirect" && site._ref == $siteId && status == "active" && defined(source.current) && defined(destination.current)]{
     "source": source.current,
     "destination": destination.current,
     "permanent": permanent == "true"

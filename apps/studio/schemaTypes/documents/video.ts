@@ -7,7 +7,7 @@ export const video = defineType({
   name: "video",
   title: "Video",
   type: "document",
-  groups: GROUPS,
+  groups: GROUPS(),
   fields: [
     defineField({
       name: "title",

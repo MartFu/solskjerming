@@ -15,7 +15,7 @@ export const article = defineType({
   title: "Article",
   type: "document",
   // icon: FileTextIcon,
-  groups: GROUPS,
+  groups: GROUPS(),
   orderings: [orderRankOrdering],
   description:
     "An article that will be published on the website. Add a title, description, author, and content to create a new article for readers.",

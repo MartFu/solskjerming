@@ -15,7 +15,7 @@ export const homePage = defineType({
   icon: HomeIcon,
   description:
     "Her oppretter du hovedsiden besøkende ser når de først kommer til nettstedet ditt. Tenk på det som inngangspartiet til ditt digitale hjem – du kan legge til en velkomsttittel, en kort beskrivelse og bygge siden med ulike seksjoner som bilder, tekst og knapper.",
-  groups: GROUPS,
+  groups: GROUPS(),
   fields: [
     defineField({
       name: "title",

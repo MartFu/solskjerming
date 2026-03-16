@@ -12,6 +12,7 @@ import { site } from "@/schemaTypes/documents/site";
 import { video } from "./video";
 import { product } from "./product";
 import { siteTheme, themeDefaults } from "./css-tokens";
+import { workspaceDefaults } from "./workspace-defaults";
 
 export const singletons = [
   homePage,
@@ -21,6 +22,7 @@ export const singletons = [
   navbar,
   siteTheme,
   themeDefaults,
+  workspaceDefaults
 ];
 
 export const documents = [site, article, video, product, page, faq, author, ...singletons, redirect];

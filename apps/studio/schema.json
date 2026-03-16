@@ -3857,6 +3857,14 @@
           ]
         },
         "optional": true
+      },
+      "site": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "site.reference"
+        },
+        "optional": true
       }
     }
   },
@@ -4611,6 +4619,13 @@
         "value": {
           "type": "inline",
           "name": "site.reference"
+        },
+        "optional": true
+      },
+      "siteId": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
         },
         "optional": true
       },
@@ -6348,11 +6363,24 @@
         },
         "optional": false
       },
-      "deployment": {
+      "status": {
         "type": "objectAttribute",
         "value": {
-          "type": "inline",
-          "name": "deploymentMeta"
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "setting-up"
+            },
+            {
+              "type": "string",
+              "value": "active"
+            },
+            {
+              "type": "string",
+              "value": "suspended"
+            }
+          ]
         },
         "optional": true
       },

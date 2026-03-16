@@ -29,20 +29,14 @@ import { DeploymentDashboard } from "./components/deployment-dashboard";
 import { PreviewPane } from "./components/PreviewPane";
 import { API_VERSION } from "./utils/constant";
 import { getActiveSite } from "./utils/context";
-import { Iframe } from "sanity-plugin-iframe-pane"
+import { Iframe } from "sanity-plugin-iframe-pane";
 
 // ─────────────────────────────────────────────────────────────
 // Default document node
 // ─────────────────────────────────────────────────────────────
 
-
-export const defaultDocumentNode: DefaultDocumentNodeResolver = (
-  S
-) => {
-
-  return S.document().views([
-    S.view.form().title("Innhold") 
-  ]);
+export const defaultDocumentNode: DefaultDocumentNodeResolver = (S) => {
+  return S.document().views([S.view.form().title("Innhold")]);
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -81,7 +75,6 @@ const createSingleTon = ({
         .documentId(docId)
         .initialValueTemplate(`${type}-with-site`, { siteId })
         .views([S.view.form().title("Innhold")]),
-        
     );
 };
 
@@ -190,9 +183,7 @@ const buildSiteItems = (
     .title("Sideinnstillinger")
     .id(`${site._id}-settings`)
     .icon(Wrench)
-    .child(
-      S.document().schemaType("site").documentId(site._id),
-    ),
+    .child(S.document().schemaType("site").documentId(site._id)),
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -208,7 +199,7 @@ export const structure = async (
 
   const studioContext = getActiveSite(workspace);
 
-  console.log("CONTEXT: ", studioContext)
+  console.log("CONTEXT: ", studioContext);
 
   let activeSite: {
     _id: string;
@@ -245,31 +236,15 @@ export const structure = async (
         .id("deployment-center")
         .icon(Rocket)
         .child(
-          S.component().component(DeploymentDashboard).title("Site Status"),
+          S.component().component(DeploymentDashboard).title("Distribusjonssenter"),
         ),
 
-      S.listItem()
-        .title("Globale ressurser")
-        .id("global-resources")
-        .icon(Package)
-        .child(S.list().title("Globale ressurser").items([])),
-
-      S.listItem()
-        .title("Globale innstillinger")
-        .id("global-settings")
-        .icon(CogIcon)
-        .child(
-          S.list()
-            .title("Globale innstillinger")
-            .items([
-              createSingleTon({
-                S,
-                type: "themeDefaults",
-                icon: Brush,
-                title: "Standard CSS",
-                workspace,
-              }),
-            ]),
-        ),
+      createSingleTon({
+        S,
+        type: "workspaceDefault",
+        icon: CogIcon,
+        title: "Standardinnstillinger",
+        workspace,
+      }),
     ]);
 };
