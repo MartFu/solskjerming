@@ -11,7 +11,7 @@ import { createElement, Fragment } from "react";
 export const homePage = defineType({
   name: "homePage",
   type: "document",
-  title: "Forside",
+  title: "Index",
   icon: HomeIcon,
   description:
     "Her oppretter du hovedsiden besøkende ser når de først kommer til nettstedet ditt. Tenk på det som inngangspartiet til ditt digitale hjem – du kan legge til en velkomsttittel, en kort beskrivelse og bygge siden med ulike seksjoner som bilder, tekst og knapper.",
@@ -75,8 +75,8 @@ export const homePage = defineType({
       title: "title",
       slug: "slug.current",
     },
-    prepare: ({ title, slug }) => ({
-      title: title || "Forside uten tittel",
+    prepare: ({ slug }) => ({
+      title: "Forside",
       media: HomeIcon,
       subtitle: slug || "Forside",
     }),

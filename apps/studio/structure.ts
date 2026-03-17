@@ -157,13 +157,7 @@ const buildSiteItems = (
     icon: MessageCircle,
     siteId: site._id,
   }),
-  createList({
-    S,
-    type: "product",
-    title: "Produkter",
-    icon: Handbag,
-    siteId: site._id,
-  }),
+
   S.divider(),
   createSingleTon({
     S,
@@ -231,12 +225,28 @@ export const structure = async (
       ...siteItems,
 
       S.divider(),
+
+      S.listItem()
+        .title("Produkter")
+        .id("products")
+        .icon(Handbag)
+        .child(
+          S.documentList()
+            .title("Produkter")
+            .filter("_type == $type")
+            .params({ type: "product" })
+            .defaultOrdering([{ field: "title", direction: "asc" }]),
+        ),
+
+      S.divider(),
       S.listItem()
         .title("Distribusjonssenter")
         .id("deployment-center")
         .icon(Rocket)
         .child(
-          S.component().component(DeploymentDashboard).title("Distribusjonssenter"),
+          S.component()
+            .component(DeploymentDashboard)
+            .title("Distribusjonssenter"),
         ),
 
       createSingleTon({

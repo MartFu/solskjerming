@@ -100,11 +100,11 @@ export const page = defineType({
       isPrivate: "seoNoIndex",
     },
     prepare: ({ title, slug, media, isPrivate, siteId }) => {
-      const statusEmoji = isPrivate ? "🔒 Privat" : "🌎 Indeksert";
+      const status = isPrivate ? "privat" : "indeksert";
 
       return {
         title: `${title || "Side uten tittel"}`,
-        subtitle: `${statusEmoji} ${slug && typeof slug === "string" ? `• ${slug}` : ""}`,
+        subtitle: `${slug && typeof slug === "string" ? `${slug} • ${status}` : status}`,
         media,
       };
     },
