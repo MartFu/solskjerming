@@ -161,6 +161,9 @@ export type PathnameParams = Omit<
 export interface ActiveSite {
   _id: string;
   title: string;
+  domain?: string;
+  workspace?: string;
+  slug?: string;
 }
 
 export interface Site {
@@ -169,5 +172,6 @@ export interface Site {
   title: string;
   workspace: string;
   domain?: string;
+  slug?: string;
   deployment?: { status: string };
 }

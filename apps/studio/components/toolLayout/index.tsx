@@ -15,7 +15,7 @@ function ToolLayoutShell(props: ActiveToolLayoutProps) {
       height="fill"
       overflow="hidden"
     >
-      {activeSite ? <Layout {...props} /> : <WorkspaceView />}
+      {activeSite  ? <Layout {...props} /> : <WorkspaceView />}
     </Card>
   );
 }
@@ -27,8 +27,8 @@ export function ToolLayout(
   props: ActiveToolLayoutProps,
 ) {
   return (
-    <ToolLayoutProvider workspace={config.workspace}>
-      <ToolLayoutShell {...props} />
-    </ToolLayoutProvider>
+      <ToolLayoutProvider workspace={config.workspace}>
+         <ToolLayoutShell {...props} />
+      </ToolLayoutProvider>
   );
 }

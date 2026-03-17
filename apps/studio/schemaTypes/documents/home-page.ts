@@ -5,8 +5,6 @@ import { documentSlugField, pageBuilderField } from "@/schemaTypes/common";
 import { GROUP, GROUPS } from "@/utils/constant";
 import { ogFields } from "@/utils/og-fields";
 import { seoFields } from "@/utils/seo-fields";
-import { AutoSplitPreview } from "@/components/AutoSplitPreview";
-import { createElement, Fragment } from "react";
 
 export const homePage = defineType({
   name: "homePage",

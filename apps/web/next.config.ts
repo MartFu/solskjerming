@@ -20,39 +20,40 @@ const buildConfig = async (): Promise<NextConfig> => {
   const routes = siteConfig?.routes ?? { shop: "shop", articles: "articles" };
 
   return {
-    transpilePackages: ["@workspace/ui"],
-    output: isStaticBuild ? "export" : undefined,
-    reactCompiler: true,
-    trailingSlash: true,
-    distDir: isStaticBuild ? process.env.DIST_DIR : "out-preview",
-    experimental: {
-      inlineCss: true,
-    },
-    logging: {
-      fetches: {},
-    },
-    images: {
-      minimumCacheTTL: 31_536_000,
-      remotePatterns: [
-        {
-          protocol: "https",
-          hostname: "cdn.sanity.io",
-          pathname: `/images/${env.NEXT_PUBLIC_SANITY_PROJECT_ID}/**`,
-        },
-      ],
-    },
-    async rewrites() {
-      return [
-        {
-          source: `/:siteId/${routes.shop}/:path*`,
-          destination: `/:siteId/shop/:path*`,
-        },
-        {
-          source: `/:siteId/${routes.articles}/:path*`,
-          destination: `/:siteId/articles/:path*`,
-        },
-      ];
-    },
+      transpilePackages: ["@workspace/ui"],
+      output: isStaticBuild ? "export" : undefined,
+      reactCompiler: true,
+      trailingSlash: true,
+      distDir: isStaticBuild ? process.env.DIST_DIR : "out-preview",
+      experimental: {
+          inlineCss: true,
+      },
+      allowedDevOrigins: ["localhost", "*.localhost", "lvh.me", "*.lvh.me"],
+      logging: {
+          fetches: {},
+      },
+      images: {
+          minimumCacheTTL: 31_536_000,
+          remotePatterns: [
+              {
+                  protocol: "https",
+                  hostname: "cdn.sanity.io",
+                  pathname: `/images/${env.NEXT_PUBLIC_SANITY_PROJECT_ID}/**`,
+              },
+          ],
+      },
+      async rewrites() {
+          return [
+              {
+                  source: `/:siteId/${routes.shop}/:path*`,
+                  destination: `/:siteId/shop/:path*`,
+              },
+              {
+                  source: `/:siteId/${routes.articles}/:path*`,
+                  destination: `/:siteId/articles/:path*`,
+              },
+          ];
+      },
   };
 };
 

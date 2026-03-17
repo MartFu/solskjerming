@@ -264,12 +264,20 @@ export const queryHomePageOGData = defineQuery(`
 
 // ─── Sites ────────────────────────────────────────────────────────────────────
 
-export const querySitesList = defineQuery(`*[_type == "site"] | order(title asc) {
+export const querySitesList =
+    defineQuery(`*[_type == "site"] | order(title asc) {
   _id,
   title,
   "slug": id
 }`);
 
+export const querySiteDomains = defineQuery(`
+  *[_type == "site" && !(_id in path("drafts.**"))] {
+    _id,
+    "slug": slug.current,
+    domain
+  }
+`);
 
 // ─── Pages ────────────────────────────────────────────────────────────────────
 
@@ -299,7 +307,6 @@ export const querySlugPageOGData = defineQuery(`
   }
 `);
 
-
 export const queryAllPageSlugs = defineQuery(`
   *[_type in ["page", "homePage", "articleIndex", "article"] && site._ref == $siteId && defined(slug.current)] {
     _type,
@@ -314,36 +321,23 @@ export const queryAllPageSlugsForBuild = defineQuery(`
   }
 `);
 
-
 export const queryPageBySlug = defineQuery(`
-  coalesce(
-    *[_type == "homePage" && site._ref == $siteId && slug.current == $slug][0]{
-      _id, _type, title, description,
-      ${seoFragment},
-      ${pageBuilderFragment}
-    },
-    *[_type == "page" && site._ref == $siteId && slug.current == $slug][0]{
-      _id, _type, title, description,
-      ${seoFragment},
-      ${pageBuilderFragment}
-    },
-    *[_type == "articleIndex" && site._ref == $siteId && slug.current == $slug][0]{
-      _id, _type, title, description,
-      seoTitle, seoDescription,
-      "displayFeaturedArticles": displayFeaturedArticles == "yes",
-      featuredArticlesCount,
-      ${pageBuilderFragment}
-    },
-    *[_type == "article" && site._ref == $siteId && slug.current == $slug][0]{
-      _id, _type, title, description,
-      ${seoFragment},
-      "slug": slug.current,
-      ${articleAuthorFragment},
-      ${imageFragment},
-      ${richTextFragment},
-      ${pageBuilderFragment}
-    }
-  )
+  *[_type in ["homePage", "page", "articleIndex", "article"] && site._ref == $siteId && slug.current == $slug][0]{
+    _id,
+    _type,
+    title,
+    description,
+    seoTitle,
+    seoDescription,
+    seoNoIndex,
+    "displayFeaturedArticles": select(_type == "articleIndex" => displayFeaturedArticles == "yes"),
+    "featuredArticlesCount": select(_type == "articleIndex" => featuredArticlesCount),
+    "slug": slug.current,
+    ${pageBuilderFragment},
+    ${articleAuthorFragment},
+    ${imageFragment},
+    ${richTextFragment}
+  }
 `);
 
 // ─── Articles (formerly blog) ─────────────────────────────────────────────────
@@ -402,8 +396,6 @@ export const queryArticlePageOGData = defineQuery(`
     ${ogFieldsFragment}
   }
 `);
-
-
 
 // ─── Navigation & Layout ──────────────────────────────────────────────────────
 

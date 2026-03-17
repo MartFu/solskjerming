@@ -1,34 +1,40 @@
-import { Flex } from "@sanity/ui";
-import { useDocumentForm, type ActiveToolLayoutProps } from "sanity";
+import { Box, Flex } from "@sanity/ui";
+import {  type ActiveToolLayoutProps } from "sanity";
 import { TopBar } from "./TopBar";
-import { useRouter, useRouterState } from "sanity/router";
 import { useToolLayout } from "@/context/ToolLayoutProvider";
 
+import { PreviewPane } from "./PreviewPane";
+
 export function Layout(props: ActiveToolLayoutProps) {
-  const routerState = useRouterState();
-  const {state} = useRouter()
-  const { activeSite, previewUrl } = useToolLayout();
- 
-  console.log("LAYOUT: ", activeSite, routerState, state)
+    const { activeSite, preview, previewUrl, previewHidden, previewLoading } =
+        useToolLayout();
 
-  return (
-    <Flex
-      direction="column"
-      height="fill"
-    >
-      {props.activeTool.name !== "vision" && <TopBar />}
+    const showPreview =
+        props.activeTool.name === "structure" &&
+        !!preview &&
+        !!activeSite &&
+        !previewHidden;
 
-      <Flex
-        flex={1}
-        style={{ minHeight: 0 }}
-      >
-        {props.renderDefault(props)}
+    return (
+        <Flex
+            direction="column"
+            height="fill"
+        >
+            {props.activeTool.name !== "vision" && <TopBar />}
 
-        {/*
-           When appropriate (a document with a preview url is open),
-           render a preview pane here
-        */}
-      </Flex>
-    </Flex>
-  );
+            <Flex
+                flex={1}
+                style={{ minHeight: 0 }}
+            >
+                <Box
+                    flex={1}
+                    style={{ minHeight: 0 }}
+                >
+                    {props.renderDefault(props)}
+                </Box>
+
+                {showPreview && previewUrl && <PreviewPane url={previewUrl} loading={previewLoading} />}
+            </Flex>
+        </Flex>
+    );
 }

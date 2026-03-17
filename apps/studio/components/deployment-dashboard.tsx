@@ -41,7 +41,7 @@ export function DeploymentDashboard() {
 
   return (
     <Stack space={4} padding={4}>
-      <Text size={2} weight="semibold">Sites with unpublished changes</Text>
+      <Text size={2} weight="semibold">Nettsider med upubliserte endringer</Text>
       {sites.map(site => (
         <Card key={site.siteId} tone="caution" padding={3}>
           <Flex justify="space-between" align="center">

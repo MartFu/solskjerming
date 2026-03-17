@@ -111,7 +111,7 @@ export const settings = defineType({
       siteId: "siteId",
     },
     prepare: ({ title, siteId }) => ({
-      title: title || "Untitled Settings",
+      title: title || "Standardinnstillinger",
       subtitle: `Site ID: ${siteId}`,
       media: CogIcon,
     }),

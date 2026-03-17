@@ -44,6 +44,9 @@ export default async function RootLayout({
     draftMode(),
   ]);
 
+  console.log("NAV", nav);
+  console.log("LAYOUT: SITE_ID", siteId);
+
   return (
     <html
       lang={lang}

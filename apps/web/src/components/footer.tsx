@@ -39,6 +39,10 @@ export async function FooterServer({siteId}: {siteId: string}) {
     }),
   ]);
 
+  console.log("footer response", response?.data, "siteId", siteId);
+  console.log("footer settings response", settingsResponse?.data, "siteId", siteId);
+
+
   if (!(response?.data && settingsResponse?.data)) {
     return <FooterSkeleton />;
   }
@@ -151,8 +155,8 @@ export function FooterSkeleton() {
 }
 
 function Footer({ data, settingsData }: FooterProps) {
-  const { subtitle, columns } = data;
-  const { siteTitle, logo, socialLinks } = settingsData;
+  const { subtitle, columns } = data ?? {};
+  const { siteTitle, logo, socialLinks } = settingsData ?? {};
   const year = new Date().getFullYear();
 
   return (
