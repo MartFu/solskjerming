@@ -2,35 +2,41 @@ import {
   BlockElementIcon,
   ColorWheelIcon,
   ComposeIcon,
+  DocumentIcon,
   InlineElementIcon,
   InsertAboveIcon,
   SearchIcon,
+  LinkIcon
 } from "@sanity/icons";
 import type { FieldGroupDefinition } from "sanity";
 
 
 
 export const GROUP = {
-  SEO: "seo",
+  IDENTITY: 'identity',
   MAIN_CONTENT: "main-content",
+  SEO: "seo",
   CARD: "card",
   RELATED: "related",
   OG: "og",
-  BRANDING: 'branding'
+  BRANDING: 'branding',
+  RELATIONSHIPS: 'relationships',
 } as const;
 
-type GroupValue = typeof GROUP[keyof typeof GROUP];
+export type GroupValue = typeof GROUP[keyof typeof GROUP];
 
 export const GROUPS = (
   defaultGroup: GroupValue = GROUP.MAIN_CONTENT,
 ): FieldGroupDefinition[] => {
   const baseGroups: FieldGroupDefinition[] = [
+    { name: GROUP.IDENTITY, icon: DocumentIcon, title: "Identitet" },
     { name: GROUP.MAIN_CONTENT, icon: ComposeIcon, title: "Innhold" },
     { name: GROUP.SEO, icon: SearchIcon, title: "SEO" },
     { name: GROUP.OG, icon: InsertAboveIcon, title: "Open Graph" },
     { name: GROUP.CARD, icon: BlockElementIcon, title: "Card" },
     { name: GROUP.RELATED, icon: InlineElementIcon, title: "Relatert" },
     { name: GROUP.BRANDING, icon: ColorWheelIcon, title: "Branding" },
+    { name: GROUP.RELATIONSHIPS, icon: LinkIcon, title: "Relasjoner" },
   ];
 
   return baseGroups.map((g) => ({

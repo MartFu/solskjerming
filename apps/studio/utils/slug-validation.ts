@@ -33,21 +33,20 @@ const MIN_LEN = 3;
 const MAX_LEN = 60;
 
 export const SLUG_ERROR_MESSAGES = {
-  REQUIRED: "Slug must have a value",
-  INVALID_CHARACTERS:
-    "Only lowercase letters, numbers, and hyphens are allowed.",
-  INVALID_START_END: "Slug can't start or end with a hyphen.",
-  CONSECUTIVE_HYPHENS: "Use only one hyphen between words.",
-  NO_SPACES: "No spaces. Use hyphens instead.",
-  NO_UNDERSCORES: "Underscores aren't allowed. Use hyphens instead.",
-  MULTIPLE_SLASHES: "Multiple consecutive slashes (//) are not allowed.",
-  MISSING_LEADING_SLASH: "URL path must start with a forward slash (/)",
-  TRAILING_SLASH: "URL path must not end with a forward slash (/)",
+    REQUIRED: "URL-sti er påkrevd",
+    INVALID_CHARACTERS: "Kun små bokstaver, tall og bindestrek er tillatt.",
+    INVALID_START_END: "URL-stien kan ikke starte eller slutte med bindestrek.",
+    CONSECUTIVE_HYPHENS: "Bruk kun én bindestrek mellom ord.",
+    NO_SPACES: "Mellomrom er ikke tillatt. Bruk bindestrek i stedet.",
+    NO_UNDERSCORES: "Understrek er ikke tillatt. Bruk bindestrek i stedet.",
+    MULTIPLE_SLASHES: "Flere skråstreker etter hverandre (//) er ikke tillatt.",
+    MISSING_LEADING_SLASH: "URL-stien må starte med en skråstrek (/).",
+    TRAILING_SLASH: "URL-stien kan ikke slutte med en skråstrek (/).",
 } as const;
 
 export const SLUG_WARNING_MESSAGES = {
-  TOO_SHORT: `Slug must be at least ${MIN_LEN} characters long.`,
-  TOO_LONG: `Slug can't be longer than ${MAX_LEN} characters.`,
+    TOO_SHORT: `URL-stien bør være minst ${MIN_LEN} tegn lang.`,
+    TOO_LONG: `URL-stien bør ikke være lengre enn ${MAX_LEN} tegn.`,
 } as const;
 
 // --- Document type configs ---

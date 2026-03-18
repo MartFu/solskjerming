@@ -40,7 +40,7 @@ export function SiteCombobox({ isDirty = false }: SiteComboboxProps) {
         setLoading(true);
         client
             .fetch<Site[]>(
-                `*[_type == "site" && workspace == $workspace && !(_id in path("drafts.**"))] | order(title asc) { _id, title, domain, "slug": slug.current }`,
+                `*[_type == "site" && workspace == $workspace && !(_id in path("drafts.**"))] | order(title asc) { _id, title, domain, "slug": slug.current, _updatedAt }`,
                 { workspace },
             )
             .then((result) => {
@@ -57,13 +57,12 @@ export function SiteCombobox({ isDirty = false }: SiteComboboxProps) {
     );
 
     const handleSelect = (site: Site) => {
-        const next: ActiveSite = { _id: site._id, title: site.title, domain: site.domain, slug: site.slug };
+        const next: ActiveSite = { _id: site._id, title: site.title, domain: site.domain, slug: site.slug, _updatedAt: site._updatedAt };
         setSearch("");
         if (isDirty) {
             setPendingSite(next);
         } else {
             selectSite(next);
-            window.location.reload();
         }
     };
 
@@ -72,7 +71,6 @@ export function SiteCombobox({ isDirty = false }: SiteComboboxProps) {
 
         selectSite(pendingSite);
         setPendingSite(null);
-        window.location.reload();
     };
 
     return (
@@ -97,7 +95,7 @@ export function SiteCombobox({ isDirty = false }: SiteComboboxProps) {
                                 weight={"medium"}
                                 style={{ fontSize: "12px" }}
                             >
-                                Velg nettside
+                                Velg Nettsted
                             </Text>
                         </Box>
 

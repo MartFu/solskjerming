@@ -17,7 +17,7 @@ export const articleIndex = defineType({
       name: "title",
       title: "Tittel",
       type: "string",
-      description: "Dokumenttittelen som vises i nettleserfaner",
+      description: "Sidens H1-overskrift.",
       group: GROUP.MAIN_CONTENT,
     }),
     defineField({

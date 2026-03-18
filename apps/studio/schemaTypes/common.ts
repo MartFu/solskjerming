@@ -5,7 +5,7 @@ import {
   type ValidationBuilder,
 } from "sanity";
 
-import { PathnameFieldComponent } from "@/components/slug-field-component";
+import { PathnameFieldComponent } from "@/components/inputs/slug-field-component";
 import { GROUP } from "@/utils/constant";
 import {
   createSlugErrorValidator,
@@ -13,7 +13,7 @@ import {
   getDocumentTypeConfig,
 } from "@/utils/slug-validation";
 import { isUnique } from "@/utils/slug";
-import { OklchColorInput } from "@/components/oklch-color-input";
+import { OklchColorInput } from "@/components/inputs/oklch-color-input";
 
 export const richTextField = defineField({
   name: "richText",
@@ -30,6 +30,7 @@ export const buttonsField = defineField({
     "Add one or more clickable buttons that visitors can use to navigate your website",
 });
 
+
 export const pageBuilderField = defineField({
   name: "pageBuilder",
   group: GROUP.MAIN_CONTENT,
@@ -45,6 +46,8 @@ export const iconField = defineField({
   description:
     "Choose a small picture symbol to represent this item, like a home icon or shopping cart",
 });
+
+
 
 export const documentSlugField = (
   documentType: string,

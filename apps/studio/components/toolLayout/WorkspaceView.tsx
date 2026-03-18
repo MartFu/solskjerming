@@ -11,15 +11,26 @@ import {
     Label,
     Spinner,
     Stack,
+    Switch,
     Text,
     TextInput,
+    Tooltip,
 } from "@sanity/ui";
-import { AddIcon, SearchIcon } from "@sanity/icons";
+import {
+    AddIcon,
+    HelpCircleIcon,
+    InfoOutlineIcon,
+    SearchIcon,
+} from "@sanity/icons";
 import { Globe, Settings } from "lucide-react";
 import { API_VERSION } from "@/utils/constant";
 import { useToolLayout } from "@/context/ToolLayoutProvider";
 import { useRouter } from "sanity/router";
 import { ActiveSite, Site } from "@/utils/types";
+import {
+    PACKAGE_OPTIONS,
+    PackageKey,
+} from "@/schemaTypes/definitions/enabled-packages";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -61,10 +72,19 @@ function CreateSiteDialog({
     const client = useClient({ apiVersion: API_VERSION });
     const [title, setTitle] = useState("");
     const [domain, setDomain] = useState("");
+    const [enabledPackages, setEnabledPackages] = useState<PackageKey[]>([]);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const canSubmit = title.trim().length > 0 && !saving;
+
+    const togglePackage = (value: PackageKey) => {
+        setEnabledPackages((prev) =>
+            prev.includes(value)
+                ? prev.filter((p) => p !== value)
+                : [...prev, value],
+        );
+    };
 
     const handleCreate = async () => {
         if (!canSubmit) return;
@@ -75,6 +95,7 @@ function CreateSiteDialog({
                 _type: "site",
                 title: title.trim(),
                 ...(domain.trim() ? { domain: domain.trim() } : {}),
+                ...(enabledPackages.length > 0 ? { enabledPackages } : {}),
                 workspace,
             });
             onCreated(created);
@@ -136,6 +157,82 @@ function CreateSiteDialog({
                         >
                             Kan legges til eller endres senere i
                             sideinnstillingene.
+                        </Text>
+                    </Stack>
+
+                    {/* Packages */}
+                    <Stack space={3}>
+                        <Flex
+                            align="center"
+                            gap={1}
+                        >
+                            <Label size={1}>Pakker</Label>
+                            <Tooltip
+                                content={
+                                    <Text
+                                        size={1}
+                                        muted
+                                        style={{maxWidth: "340px"}}
+                                    >
+                                        Pakker påvirker hvilken type sider og
+                                        innhold dette nettstedet kan publisere,
+                                        og hvilket innholdet studioet
+                                        optimaliseres for å administrere. Dersom
+                                        nettsiden skal ha en nettbutikk, er den
+                                        avhengig av <b>Nettbutikk</b>
+                                        -pakken.
+                                    </Text>
+                                }
+                                placement="top-start"
+                                portal
+                            >
+                                <InfoOutlineIcon />
+                            </Tooltip>
+                        </Flex>
+                        <Stack space={2}>
+                            {PACKAGE_OPTIONS.map((pkg) => {
+                                const enabled = enabledPackages.includes(
+                                    pkg.value,
+                                );
+                                return (
+                                    <Card
+                                        key={pkg.value}
+                                        padding={3}
+                                        radius={2}
+                                        border
+                                        tone={enabled ? "primary" : "default"}
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => togglePackage(pkg.value)}
+                                    >
+                                        <Flex
+                                            align="center"
+                                            justify="space-between"
+                                        >
+                                            <Text
+                                                size={1}
+                                                weight="medium"
+                                            >
+                                                {pkg.title}
+                                            </Text>
+                                            <Switch
+                                                checked={enabled}
+                                                onChange={() =>
+                                                    togglePackage(pkg.value)
+                                                }
+                                                onClick={(e) =>
+                                                    e.stopPropagation()
+                                                }
+                                            />
+                                        </Flex>
+                                    </Card>
+                                );
+                            })}
+                        </Stack>
+                        <Text
+                            size={1}
+                            muted
+                        >
+                            Kan endres senere i sideinnstillingene.
                         </Text>
                     </Stack>
 
@@ -297,7 +394,7 @@ export function WorkspaceView() {
             .fetch<Site[]>(
                 `*[_type == "site" && workspace == $workspace && !(_id in path("drafts.**"))]
          | order(title asc) {
-           _id, _updatedAt, title, id, domain, deployment, "slug": slug.current
+           _id, _updatedAt, title, id, domain, deployment, "slug": slug.current, _updatedAt
          }`,
                 { workspace },
             )
@@ -326,6 +423,7 @@ export function WorkspaceView() {
             title: site.title,
             domain: site.domain,
             slug: site.slug,
+            _updatedAt: site._updatedAt,
         });
     };
 

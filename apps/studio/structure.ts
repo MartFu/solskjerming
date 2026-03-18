@@ -1,21 +1,21 @@
 import {
-  Blocks,
+    Blocks,
+    Book,
     BookOpen,
     Brush,
     CogIcon,
     File,
-    FileCodeCorner,
     FileText,
+    Globe,
     Handbag,
-    HomeIcon,
     type LucideIcon,
-    MessageCircle,
     Package,
     PanelBottom,
     PanelTop,
-    PlayCircle,
     Rocket,
     Search,
+    Settings,
+    ShoppingCart,
     Users,
     Wrench,
 } from "lucide-react";
@@ -25,12 +25,75 @@ import type {
     StructureResolverContext,
 } from "sanity/structure";
 
-import type { SchemaType, SingletonType } from "@/schemaTypes/index";
-import { getTitleCase } from "@/utils/helper";
 import { DeploymentDashboard } from "./components/deployment-dashboard";
 import { API_VERSION } from "./utils/constant";
 import { getActiveSite } from "./utils/context";
 import { paneId } from "./utils/pane-ids";
+import {
+    map,
+    merge,
+    fromEvent,
+    mapTo,
+    switchMap,
+    startWith,
+    shareReplay,
+} from "rxjs";
+import { SITE_CHANGED_EVENT } from "./utils/structure-channel";
+import { ActiveSite } from "./utils/types";
+import { capitalize } from "./utils/helper";
+
+// ─────────────────────────────────────────────────────────────
+// Package registry
+// ─────────────────────────────────────────────────────────────
+// Maps each root document type to its child type and display
+// metadata. To extend the system with a new package, define the
+// root + child schema types, then add one entry here.
+// ─────────────────────────────────────────────────────────────
+
+interface PackageDefinition {
+    rootType: string;
+    childType: string;
+    title: string;
+    icon: LucideIcon;
+    childrenTitle: string;
+    childIcon: LucideIcon;
+}
+
+const PACKAGES: PackageDefinition[] = [
+    {
+        rootType: "articleRoot",
+        childType: "articlePage",
+        title: "Artikler",
+        icon: BookOpen,
+        childrenTitle: "Artikler",
+        childIcon: FileText,
+    },
+    {
+        rootType: "catalogRoot",
+        childType: "productPage",
+        title: "Katalog",
+        icon: ShoppingCart,
+        childrenTitle: "Produktsider",
+        childIcon: Package,
+    },
+    // ────────────────────────────────────────────────────
+    // Add new packages here, e.g.:
+    //
+    // {
+    //     rootType: "eventRoot",
+    //     childType: "eventPage",
+    //     title: "Arrangementer",
+    //     icon: Calendar,
+    //     childrenTitle: "Arrangementer",
+    //     childIcon: CalendarDays,
+    // },
+    // ────────────────────────────────────────────────────
+];
+
+const packagesByRootType = new Map(PACKAGES.map((pkg) => [pkg.rootType, pkg]));
+
+// Every type that can appear at the top level of the page tree
+const ALL_ROOT_TYPES = ["page", ...PACKAGES.map((p) => p.rootType)];
 
 // ─────────────────────────────────────────────────────────────
 // Default document node
@@ -41,281 +104,442 @@ export const defaultDocumentNode: DefaultDocumentNodeResolver = (S) => {
 };
 
 // ─────────────────────────────────────────────────────────────
-// Structure helpers
+// Page tree
 // ─────────────────────────────────────────────────────────────
 
-type Base<T = SchemaType> = {
-    id?: string;
-    type: T;
-    preview?: boolean;
-    title?: string;
-    icon?: LucideIcon;
-};
-
-type CreateSingleTon = {
-    S: StructureBuilder;
-} & Base<SingletonType>;
-
-const createSingleTon = ({
-    S,
-    type,
-    title,
-    icon,
-    siteId,
-    workspace,
-}: CreateSingleTon & { siteId?: string; workspace: string }) => {
-    const docId = siteId
-        ? paneId.singleton(siteId, type)
-        : paneId.workspace(workspace, type);
-
-    return S.listItem()
-        .title(title ?? getTitleCase(type))
-        .id(docId)
-        .icon(icon ?? File)
-        .child(
-            S.document()
-                .schemaType(type)
-                .documentId(docId)
-                .initialValueTemplate(`${type}-with-site`, { siteId })
-                .views([S.view.form().title("Innhold")]),
-        );
-};
-
-type CreateList = {
-    S: StructureBuilder;
-} & Base;
-
-const createList = ({
-    S,
-    type,
-    icon,
-    title,
-    siteId,
-}: CreateList & { siteId: string }) => {
-    return S.listItem()
-        .title(title ?? getTitleCase(type))
-        .id(paneId.list(siteId, type))
-        .icon(icon ?? File)
-        .child(
-            S.documentList()
-                .title(title ?? getTitleCase(type))
-                .filter("_type == $type && siteId == $siteId")
-                .apiVersion(API_VERSION)
-                .params({ type, siteId })
-                .defaultOrdering([{ field: "title", direction: "asc" }])
-                .initialValueTemplates([
-                    S.initialValueTemplateItem(`${type}-with-site`, { siteId }),
-                ]),
-        );
-};
-
-// ─────────────────────────────────────────────────────────────
-// Returns the flat list of items for a given site.
-// ─────────────────────────────────────────────────────────────
-
-const buildSiteItems = (
+/**
+ * Builds the children pane for a selected page.
+ *
+ * - Package root (articleRoot, catalogRoot, etc.)
+ *   → shows its specific child type (articlePage, productPage)
+ *
+ * - Generic page
+ *   → shows any page or root that has it as parent
+ */
+function buildChildrenList(
     S: StructureBuilder,
-    site: { _id: string; title: string },
-    workspace: string,
-    context: StructureResolverContext,
-) => [
-    createSingleTon({
-        S,
-        type: "homePage",
-        title: "Forside",
-        icon: HomeIcon,
-        siteId: site._id,
-        workspace,
-    }),
-    createSingleTon({
-        S,
-        type: "articleIndex",
-        title: "Arkiv",
-        icon: BookOpen,
-        siteId: site._id,
-        workspace,
-    }),
-    createList({
-        S,
-        type: "page",
-        title: "Andre sider",
-        icon: FileCodeCorner,
-        siteId: site._id,
-    }),
-    S.divider(),
-    createList({
-        S,
-        type: "article",
-        title: "Artikler",
-        icon: FileText,
-        siteId: site._id,
-    }),
-    createList({
-        S,
-        type: "video",
-        title: "Videor",
-        icon: PlayCircle,
-        siteId: site._id,
-    }),
-    createList({
-        S,
-        type: "faq",
-        title: "FAQs",
-        icon: MessageCircle,
-        siteId: site._id,
-    }),
+    parentId: string,
+    parentType: string,
+    siteId: string,
+    enabledPackages: string[],
+) {
+    const pkg = packagesByRootType.get(parentType);
 
-    S.divider(),
-    createSingleTon({
-        S,
-        type: "navbar",
-        title: "Header",
-        icon: PanelTop,
-        siteId: site._id,
-        workspace,
-    }),
-    createSingleTon({
-        S,
-        type: "footer",
-        title: "Footer",
-        icon: PanelBottom,
-        siteId: site._id,
-        workspace,
-    }),
-    S.listItem()
-        .title("Sideinnstillinger")
-        .id(`${site._id}-settings`)
-        .icon(Wrench)
-        .child(S.document().schemaType("site").documentId(site._id)),
-];
-
-// ─────────────────────────────────────────────────────────────
-// Main Structure Export
-// ─────────────────────────────────────────────────────────────
-
-export const structure = async (
-    S: StructureBuilder,
-    context: StructureResolverContext,
-    workspace: string,
-) => {
-    const client = context.getClient({ apiVersion: API_VERSION });
-
-    const studioContext = getActiveSite(workspace);
-
-    let activeSite: {
-        _id: string;
-        title: string;
-        id: string;
-    } | null = null;
-
-    if (studioContext?._id) {
-        activeSite = await client.fetch<{
-            _id: string;
-            title: string;
-            id: string;
-        }>(`*[_type == "site" && _id == $siteId][0] { _id, title, id }`, {
-            siteId: studioContext._id,
-        });
-    } else {
-        const sites = await client.fetch<
-            { _id: string; title: string; id: string }[]
-        >(
-            `*[_type == "site" && workspace == $workspace] | order(title asc) { _id, title, id }`,
-            { workspace },
-        );
-
-        activeSite = sites[0];
+    if (pkg) {
+        return S.documentList()
+            .id(`${parentId}-children-list`)
+            .title(pkg.childrenTitle)
+            .filter(
+                `_type == $childType
+                 && parent._ref == $parentId
+                 && site._ref == $siteId`,
+            )
+            .apiVersion(API_VERSION)
+            .params({ childType: pkg.childType, parentId, siteId })
+            .defaultOrdering([
+                { field: "sortOrder", direction: "asc" },
+                { field: "title", direction: "asc" },
+            ])
+            .initialValueTemplates([
+                S.initialValueTemplateItem(`${pkg.childType}-with-parent`, {
+                    siteId,
+                    parentId,
+                }),
+            ]);
     }
 
-    const siteItems = buildSiteItems(S, activeSite, workspace, context);
+    // Generic page → nested pages and enabled package roots only
+    const activeRootTypes = ALL_ROOT_TYPES.filter(
+        (t) => t === "page" || enabledPackages.includes(t),
+    );
+    const childTypeFilter = activeRootTypes
+        .map((t) => `_type == "${t}"`)
+        .join(" || ");
 
-    return S.list()
-        .title("Innhold")
-        .items([
-            ...siteItems,
+    return S.documentList()
+        .id(`${parentId}-children-list`)
+        .title("Undersider")
+        .filter(
+            `(${childTypeFilter})
+             && parent._ref == $parentId
+             && site._ref == $siteId`,
+        )
+        .apiVersion(API_VERSION)
+        .params({ parentId, siteId })
+        .defaultOrdering([
+            { field: "sortOrder", direction: "asc" },
+            { field: "title", direction: "asc" },
+        ])
+        .initialValueTemplates([
+            S.initialValueTemplateItem("page-with-parent", {
+                siteId,
+                parentId,
+            }),
+        ]);
+}
 
-            S.divider(),
+/**
+ * The unified page tree.
+ *
+ * Pane 1 → "Sider" (this list item)
+ * Pane 2 → Top-level pages (async fetch so we know each doc's _type)
+ * Pane 3 → "Rediger side" + children of the selected page
+ */
+function buildPageTree(
+    S: StructureBuilder,
+    siteId: string,
+    enabledPackages: string[],
+    context: StructureResolverContext,
+) {
+    // Only include root types that are either "page" or an enabled package
+    const activeRootTypes = ALL_ROOT_TYPES.filter(
+        (t) => t === "page" || enabledPackages.includes(t),
+    );
 
-            S.listItem()
+    const topLevelFilter = activeRootTypes
+        .map((t) => `_type == "${t}"`)
+        .join(" || ");
+
+    return S.listItem()
+        .title("Sider")
+        .id(`${siteId}-pages`)
+        .icon(Globe)
+        .child(async () => {
+            const client = context.getClient({ apiVersion: API_VERSION });
+
+            const topLevelPages = await client.fetch<
+                {
+                    _id: string;
+                    _type: string;
+                    title: string;
+                    sortOrder?: number;
+                }[]
+            >(
+                `*[(${topLevelFilter})
+                    && site._ref == $siteId
+                    && !defined(parent)
+                  ] | order(sortOrder asc, title asc) {
+                    _id, _type, title, sortOrder
+                }`,
+                { siteId },
+            );
+
+            return S.list()
+                .id(`${siteId}-pages-list`)
+                .title("Sider")
+                .items(
+                    topLevelPages.map((page) => {
+                        const pkg = packagesByRootType.get(page._type);
+                        const icon = pkg?.icon ?? File;
+
+                        return S.listItem()
+                            .title(page.title || "Uten tittel")
+                            .id(page._id)
+                            .icon(icon)
+                            .child(
+                                S.list()
+                                    .id(`${page._id}-pane`)
+                                    .title(page.title || "Uten tittel")
+                                    .items([
+                                        // Edit this page
+                                        S.listItem()
+                                            .title("Rediger side")
+                                            .id(`${page._id}-edit`)
+                                            .icon(Wrench)
+                                            .child(
+                                                S.document()
+                                                    .id(`${page._id}-editor`)
+                                                    .schemaType(page._type)
+                                                    .documentId(page._id)
+                                                    .views([
+                                                        S.view
+                                                            .form()
+                                                            .title("Innhold"),
+                                                    ]),
+                                            ),
+
+                                        S.divider(),
+
+                                        // Children
+                                        S.listItem()
+                                            .title(
+                                                pkg
+                                                    ? pkg.childrenTitle
+                                                    : "Undersider",
+                                            )
+                                            .id(`${page._id}-children`)
+                                            .icon(pkg?.childIcon ?? File)
+                                            .child(
+                                                buildChildrenList(
+                                                    S,
+                                                    page._id,
+                                                    page._type,
+                                                    siteId,
+                                                    enabledPackages,
+                                                ),
+                                            ),
+                                    ]),
+                            );
+                    }),
+                );
+        });
+}
+
+// ─────────────────────────────────────────────────────────────
+// Singleton helper
+// ─────────────────────────────────────────────────────────────
+
+function createSingleton(
+    S: StructureBuilder,
+    opts: {
+        type: string;
+        title: string;
+        icon: LucideIcon;
+        siteId: string;
+        workspace: string;
+    },
+) {
+    const docId = paneId.singleton(opts.siteId, opts.type);
+
+    return S.listItem()
+        .title(opts.title)
+        .id(docId)
+        .icon(opts.icon)
+        .child(
+            S.document()
+                .id(`${docId}-editor`)
+                .schemaType(opts.type)
+                .documentId(docId)
+                .views([S.view.form().title("Innhold")]),
+        );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Site content
+// ─────────────────────────────────────────────────────────────
+
+function buildSiteItems(
+    S: StructureBuilder,
+    site: { _id: string; title: string; enabledPackages?: string[] },
+    workspace: string,
+    context: StructureResolverContext,
+) {
+    return [
+        S.divider().title("Nettstedets Ressurser"),
+
+        buildPageTree(S, site._id, site.enabledPackages ?? [], context),
+
+        createSingleton(S, {
+            type: "navbar",
+            title: "Header",
+            icon: PanelTop,
+            siteId: site._id,
+            workspace,
+        }),
+        createSingleton(S, {
+            type: "footer",
+            title: "Footer",
+            icon: PanelBottom,
+            siteId: site._id,
+            workspace,
+        }),
+
+        S.divider(),
+
+        S.listItem()
+            .title("Sideinnstillinger")
+            .id(`${site._id}-settings`)
+            .icon(Settings)
+            .child(
+                S.document()
+                    .id(`${site._id}-settings-editor`)
+                    .schemaType("site")
+                    .documentId(site._id),
+            ),
+    ];
+}
+
+// ─────────────────────────────────────────────────────────────
+// Global items (workspace-level, shared across sites)
+// ─────────────────────────────────────────────────────────────
+
+function buildGlobalItems(S: StructureBuilder, enabledPackages: string[]) {
+    const pkgScopedGlobals = [
+        {
+            pkg: "commerce",
+            item: S.listItem()
                 .title("Produkter")
-                .id("products")
+                .id("global-products")
                 .icon(Handbag)
                 .child(
                     S.documentList()
+                        .id("global-products-list")
                         .title("Produkter")
-                        .filter("_type == $type")
+                        .filter('_type == "product"')
                         .apiVersion(API_VERSION)
-                        .params({ type: "product" })
                         .defaultOrdering([
                             { field: "title", direction: "asc" },
                         ]),
                 ),
-
-            S.divider(),
-            S.listItem()
-                .title("Distribusjonssenter")
-                .id("deployment-center")
-                .icon(Rocket)
+        },
+        {
+            pkg: "articles",
+            item: S.listItem()
+                .title("Artikler")
+                .id("global-articles")
+                .icon(Book)
                 .child(
-                    S.component()
-                        .component(DeploymentDashboard)
-                        .title("Distribusjonssenter"),
-                ),
-
-            S.listItem()
-                .title("Globale Innstillinger")
-                .id("global-settings")
-                .icon(CogIcon)
-                .child(
-                    S.list()
-                        .id("categories")
-                        .title("Globale Innstillinger")
-                        .items([
-                            S.listItem()
-                                .title("Visuell Profil")
-                                .icon(Brush)
-                                .child(
-                                    S.document()
-                                        .schemaType("globalBranding")
-                                        .documentId("globalBranding")
-                                        .title("Visuell Profil"),
-                                ),
-                            S.listItem()
-                                .title("SEO & Metadata")
-                                .icon(Search)
-                                .child(
-                                    S.document()
-                                        .schemaType("globalSeo")
-                                        .documentId("globalSeo")
-                                        .title("SEO & Metadata"),
-                                ),
-                            S.listItem()
-                                .title("Sosiale Medier")
-                                .icon(Users)
-                                .child(
-                                    S.document()
-                                        .schemaType("globalSocialMedia")
-                                        .documentId("globalSocialMedia")
-                                        .title("Sosiale Medier"),
-                                ),
-                            S.listItem()
-                                .title("Integrasjoner")
-                                .icon(Blocks)
-                                .child(
-                                    S.document()
-                                        .schemaType("globalIntegrations")
-                                        .documentId("globalIntegrations")
-                                        .title("Integrasjoner"),
-                                ),
+                    S.documentList()
+                        .id("global-articles-list")
+                        .title("Artikler")
+                        .filter('_type == "article"')
+                        .apiVersion(API_VERSION)
+                        .defaultOrdering([
+                            { field: "title", direction: "asc" },
                         ]),
                 ),
+        },
 
-            createSingleTon({
-                S,
-                type: "workspaceDefault",
-                icon: CogIcon,
-                title: "Globale innstillinger",
-                workspace,
-            }),
-        ]);
+        {
+            pkg: "articles",
+            item: S.listItem()
+                .title("Forfattere")
+                .id("global-authors")
+                .icon(Users)
+                .child(
+                    S.documentList()
+                        .id("global-authors-list")
+                        .title("Forfattere")
+                        .filter('_type == "author"')
+                        .apiVersion(API_VERSION)
+                        .defaultOrdering([{ field: "name", direction: "asc" }]),
+                ),
+        },
+    ];
+
+    const filteredPkgScopedGlobals = pkgScopedGlobals
+        .filter((item) => enabledPackages.includes(item.pkg))
+        .map((item) => item.item);
+
+    return [
+        ...(filteredPkgScopedGlobals.length > 0
+            ? [S.divider().title("Globale Ressurser")]
+            : []),
+
+        ...filteredPkgScopedGlobals,
+
+        S.divider(),
+
+        S.listItem()
+            .title("Distribusjonssenter")
+            .id("deployment-center")
+            .icon(Rocket)
+            .child(
+                S.component()
+                    .id("deployment-dashboard")
+                    .component(DeploymentDashboard)
+                    .title("Distribusjonssenter"),
+            ),
+
+        S.listItem()
+            .title("Globale innstillinger")
+            .id("global-settings")
+            .icon(CogIcon)
+            .child(
+                S.list()
+                    .id("global-settings-list")
+                    .title("Globale innstillinger")
+                    .items([
+                        S.listItem()
+                            .title("Visuell profil")
+                            .id("global-branding")
+                            .icon(Brush)
+                            .child(
+                                S.document()
+                                    .id("global-branding-editor")
+                                    .schemaType("globalBranding")
+                                    .documentId("globalBranding")
+                                    .title("Visuell profil"),
+                            ),
+                        S.listItem()
+                            .title("SEO & Metadata")
+                            .id("global-seo")
+                            .icon(Search)
+                            .child(
+                                S.document()
+                                    .id("global-seo-editor")
+                                    .schemaType("globalSeo")
+                                    .documentId("globalSeo")
+                                    .title("SEO & Metadata"),
+                            ),
+                        S.listItem()
+                            .title("Sosiale medier")
+                            .id("global-social")
+                            .icon(Users)
+                            .child(
+                                S.document()
+                                    .id("global-social-editor")
+                                    .schemaType("globalSocialMedia")
+                                    .documentId("globalSocialMedia")
+                                    .title("Sosiale medier"),
+                            ),
+                        S.listItem()
+                            .title("Integrasjoner")
+                            .id("global-integrations")
+                            .icon(Blocks)
+                            .child(
+                                S.document()
+                                    .id("global-integrations-editor")
+                                    .schemaType("globalIntegrations")
+                                    .documentId("globalIntegrations")
+                                    .title("Integrasjoner"),
+                            ),
+                    ]),
+            ),
+    ];
+}
+
+// ─────────────────────────────────────────────────────────────
+// Main structure export
+// ─────────────────────────────────────────────────────────────
+
+export const createStructure = (
+    S: StructureBuilder,
+    context: StructureResolverContext,
+    workspace: string,
+) => {
+    const { documentStore } = context;
+
+    const sites$ = documentStore
+        .listenQuery(
+            `*[_type == "site" && workspace == $workspace]{ _id, title, enabledPackages, _updatedAt }`,
+            { workspace },
+            {
+                tag: "structure-active-site",
+                perspective: "published",
+                transitions: ["update", "appear"],
+            },
+        )
+        .pipe(shareReplay(1)); // ← one live listener, replays latest to new subscribers
+
+    const siteChanged$ = fromEvent(window, SITE_CHANGED_EVENT);
+
+    return merge(sites$, siteChanged$.pipe(switchMap(() => sites$))).pipe(
+        map((sites: ActiveSite[]) => {
+            const studioContext = getActiveSite(workspace);
+            const activeSite = studioContext?._id
+                ? (sites.find((s) => s._id === studioContext._id) ?? sites[0])
+                : sites[0];
+
+            return S.list()
+                .id(
+                    `root-${activeSite?._id ?? "default"}-${activeSite?._updatedAt?.split(":").join("-") ?? "default"}`,
+                )
+                .title(`${capitalize(activeSite?.title)}`)
+                .items([
+                    ...buildSiteItems(S, activeSite!, workspace, context),
+                    ...buildGlobalItems(S, activeSite?.enabledPackages ?? []),
+                ]);
+        }),
+    );
 };

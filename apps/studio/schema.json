@@ -2133,6 +2133,357 @@
     }
   },
   {
+    "name": "catalogRootPageBuilder",
+    "type": "type",
+    "value": {
+      "type": "array",
+      "of": {
+        "type": "union",
+        "of": [
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "hero"
+            }
+          },
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "cta"
+            }
+          },
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "featureCardsIcon"
+            }
+          },
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "faqAccordion"
+            }
+          },
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "imageLinkCards"
+            }
+          },
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "richTextBlock"
+            }
+          },
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "subscribeNewsletter"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "articleRootPageBuilder",
+    "type": "type",
+    "value": {
+      "type": "array",
+      "of": {
+        "type": "union",
+        "of": [
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "hero"
+            }
+          },
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "cta"
+            }
+          },
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "featureCardsIcon"
+            }
+          },
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "faqAccordion"
+            }
+          },
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "imageLinkCards"
+            }
+          },
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "richTextBlock"
+            }
+          },
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "subscribeNewsletter"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "pageBuilder",
+    "type": "type",
+    "value": {
+      "type": "array",
+      "of": {
+        "type": "union",
+        "of": [
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "hero"
+            }
+          },
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "cta"
+            }
+          },
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "featureCardsIcon"
+            }
+          },
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "faqAccordion"
+            }
+          },
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "imageLinkCards"
+            }
+          },
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "richTextBlock"
+            }
+          },
+          {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "subscribeNewsletter"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
     "name": "address",
     "type": "type",
     "value": {
@@ -2340,123 +2691,6 @@
           },
           "optional": true
         }
-      }
-    }
-  },
-  {
-    "name": "pageBuilder",
-    "type": "type",
-    "value": {
-      "type": "array",
-      "of": {
-        "type": "union",
-        "of": [
-          {
-            "type": "object",
-            "attributes": {
-              "_key": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string"
-                }
-              }
-            },
-            "rest": {
-              "type": "inline",
-              "name": "hero"
-            }
-          },
-          {
-            "type": "object",
-            "attributes": {
-              "_key": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string"
-                }
-              }
-            },
-            "rest": {
-              "type": "inline",
-              "name": "cta"
-            }
-          },
-          {
-            "type": "object",
-            "attributes": {
-              "_key": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string"
-                }
-              }
-            },
-            "rest": {
-              "type": "inline",
-              "name": "featureCardsIcon"
-            }
-          },
-          {
-            "type": "object",
-            "attributes": {
-              "_key": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string"
-                }
-              }
-            },
-            "rest": {
-              "type": "inline",
-              "name": "faqAccordion"
-            }
-          },
-          {
-            "type": "object",
-            "attributes": {
-              "_key": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string"
-                }
-              }
-            },
-            "rest": {
-              "type": "inline",
-              "name": "imageLinkCards"
-            }
-          },
-          {
-            "type": "object",
-            "attributes": {
-              "_key": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string"
-                }
-              }
-            },
-            "rest": {
-              "type": "inline",
-              "name": "richTextBlock"
-            }
-          },
-          {
-            "type": "object",
-            "attributes": {
-              "_key": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string"
-                }
-              }
-            },
-            "rest": {
-              "type": "inline",
-              "name": "subscribeNewsletter"
-            }
-          }
-        ]
       }
     }
   },
@@ -2760,7 +2994,7 @@
   },
   {
     "type": "type",
-    "name": "article.reference",
+    "name": "articlePage.reference",
     "value": {
       "type": "object",
       "attributes": {
@@ -2785,12 +3019,12 @@
           "optional": true
         }
       },
-      "dereferencesTo": "article"
+      "dereferencesTo": "articlePage"
     }
   },
   {
     "type": "type",
-    "name": "articleIndex.reference",
+    "name": "articleRoot.reference",
     "value": {
       "type": "object",
       "attributes": {
@@ -2815,7 +3049,7 @@
           "optional": true
         }
       },
-      "dereferencesTo": "articleIndex"
+      "dereferencesTo": "articleRoot"
     }
   },
   {
@@ -2966,11 +3200,11 @@
             "of": [
               {
                 "type": "inline",
-                "name": "article.reference"
+                "name": "articlePage.reference"
               },
               {
                 "type": "inline",
-                "name": "articleIndex.reference"
+                "name": "articleRoot.reference"
               },
               {
                 "type": "inline",
@@ -2985,161 +3219,6 @@
                 "name": "video.reference"
               }
             ]
-          },
-          "optional": true
-        }
-      }
-    }
-  },
-  {
-    "type": "type",
-    "name": "site.reference",
-    "value": {
-      "type": "object",
-      "attributes": {
-        "_ref": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
-          }
-        },
-        "_type": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string",
-            "value": "reference"
-          }
-        },
-        "_weak": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "boolean"
-          },
-          "optional": true
-        }
-      },
-      "dereferencesTo": "site"
-    }
-  },
-  {
-    "name": "redirect",
-    "type": "document",
-    "attributes": {
-      "_id": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "_type": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string",
-          "value": "redirect"
-        }
-      },
-      "_createdAt": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "_updatedAt": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "_rev": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "status": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "union",
-          "of": [
-            {
-              "type": "string",
-              "value": "active"
-            },
-            {
-              "type": "string",
-              "value": "inactive"
-            }
-          ]
-        },
-        "optional": true
-      },
-      "source": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "slug"
-        },
-        "optional": false
-      },
-      "destination": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "slug"
-        },
-        "optional": false
-      },
-      "permanent": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "union",
-          "of": [
-            {
-              "type": "string",
-              "value": "true"
-            },
-            {
-              "type": "string",
-              "value": "false"
-            }
-          ]
-        },
-        "optional": true
-      },
-      "site": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "site.reference"
-        },
-        "optional": true
-      }
-    }
-  },
-  {
-    "name": "slug",
-    "type": "type",
-    "value": {
-      "type": "object",
-      "attributes": {
-        "_type": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string",
-            "value": "slug"
-          }
-        },
-        "current": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
-          },
-          "optional": false
-        },
-        "source": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
           },
           "optional": true
         }
@@ -4043,6 +4122,36 @@
     }
   },
   {
+    "type": "type",
+    "name": "site.reference",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_ref": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          }
+        },
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "reference"
+          }
+        },
+        "_weak": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        }
+      },
+      "dereferencesTo": "site"
+    }
+  },
+  {
     "name": "siteTheme",
     "type": "document",
     "attributes": {
@@ -4456,6 +4565,14 @@
         },
         "optional": false
       },
+      "site": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "site.reference"
+        },
+        "optional": true
+      },
       "columns": {
         "type": "objectAttribute",
         "value": {
@@ -4571,29 +4688,6 @@
                     },
                     "optional": true
                   },
-                  "siteId": {
-                    "type": "objectAttribute",
-                    "value": {
-                      "type": "string"
-                    },
-                    "optional": true
-                  },
-                  "site": {
-                    "type": "objectAttribute",
-                    "value": {
-                      "type": "inline",
-                      "name": "site.reference"
-                    },
-                    "optional": true
-                  },
-                  "deployment": {
-                    "type": "objectAttribute",
-                    "value": {
-                      "type": "inline",
-                      "name": "deploymentMeta"
-                    },
-                    "optional": true
-                  },
                   "_type": {
                     "type": "objectAttribute",
                     "value": {
@@ -4692,6 +4786,14 @@
         },
         "optional": true
       },
+      "site": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "site.reference"
+        },
+        "optional": true
+      },
       "columns": {
         "type": "objectAttribute",
         "value": {
@@ -4725,29 +4827,6 @@
                         "value": {
                           "type": "inline",
                           "name": "customUrl"
-                        },
-                        "optional": true
-                      },
-                      "siteId": {
-                        "type": "objectAttribute",
-                        "value": {
-                          "type": "string"
-                        },
-                        "optional": true
-                      },
-                      "site": {
-                        "type": "objectAttribute",
-                        "value": {
-                          "type": "inline",
-                          "name": "site.reference"
-                        },
-                        "optional": true
-                      },
-                      "deployment": {
-                        "type": "objectAttribute",
-                        "value": {
-                          "type": "inline",
-                          "name": "deploymentMeta"
                         },
                         "optional": true
                       },
@@ -4979,7 +5058,37 @@
     }
   },
   {
-    "name": "articleIndex",
+    "type": "type",
+    "name": "author.reference",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_ref": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          }
+        },
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "reference"
+          }
+        },
+        "_weak": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        }
+      },
+      "dereferencesTo": "author"
+    }
+  },
+  {
+    "name": "article",
     "type": "document",
     "attributes": {
       "_id": {
@@ -4992,7 +5101,266 @@
         "type": "objectAttribute",
         "value": {
           "type": "string",
-          "value": "articleIndex"
+          "value": "article"
+        }
+      },
+      "_createdAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_updatedAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_rev": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "orderRank": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "title": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": false
+      },
+      "description": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "slug": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "authors": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "author.reference"
+            }
+          }
+        },
+        "optional": false
+      },
+      "publishedAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "image": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "object",
+          "attributes": {
+            "asset": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "sanity.imageAsset.reference"
+              },
+              "optional": true
+            },
+            "media": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "unknown"
+              },
+              "optional": true
+            },
+            "hotspot": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "sanity.imageHotspot"
+              },
+              "optional": true
+            },
+            "crop": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "sanity.imageCrop"
+              },
+              "optional": true
+            },
+            "alt": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "_type": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string",
+                "value": "image"
+              }
+            }
+          }
+        },
+        "optional": false
+      },
+      "richText": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "richText"
+        },
+        "optional": true
+      },
+      "siteId": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "site": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "site.reference"
+        },
+        "optional": true
+      },
+      "deployment": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "deploymentMeta"
+        },
+        "optional": true
+      },
+      "seoTitle": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "seoDescription": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "seoImage": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "seoImage"
+        },
+        "optional": true
+      },
+      "seoNoIndex": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "boolean"
+        },
+        "optional": true
+      },
+      "seoHideFromLists": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "boolean"
+        },
+        "optional": true
+      },
+      "ogTitle": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "ogDescription": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      }
+    }
+  },
+  {
+    "type": "type",
+    "name": "catalogRoot.reference",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_ref": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          }
+        },
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "reference"
+          }
+        },
+        "_weak": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        }
+      },
+      "dereferencesTo": "catalogRoot"
+    }
+  },
+  {
+    "name": "productPage",
+    "type": "document",
+    "attributes": {
+      "_id": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_type": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string",
+          "value": "productPage"
         }
       },
       "_createdAt": {
@@ -5018,7 +5386,7 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "description": {
         "type": "objectAttribute",
@@ -5027,10 +5395,639 @@
         },
         "optional": true
       },
+      "site": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "site.reference"
+        },
+        "optional": false
+      },
       "slug": {
         "type": "objectAttribute",
         "value": {
+          "type": "inline",
+          "name": "slug"
+        },
+        "optional": false
+      },
+      "sortOrder": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": true
+      },
+      "parent": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "catalogRoot.reference"
+        },
+        "optional": true
+      },
+      "seoTitle": {
+        "type": "objectAttribute",
+        "value": {
           "type": "string"
+        },
+        "optional": true
+      },
+      "seoDescription": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "seoImage": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "seoImage"
+        },
+        "optional": true
+      },
+      "seoNoIndex": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "boolean"
+        },
+        "optional": true
+      },
+      "ogTitle": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "ogDescription": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "product": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "product.reference"
+        },
+        "optional": false
+      },
+      "marketingCopy": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "richText"
+        },
+        "optional": true
+      },
+      "coverImage": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "object",
+          "attributes": {
+            "asset": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "sanity.imageAsset.reference"
+              },
+              "optional": true
+            },
+            "media": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "unknown"
+              },
+              "optional": true
+            },
+            "hotspot": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "sanity.imageHotspot"
+              },
+              "optional": true
+            },
+            "crop": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "sanity.imageCrop"
+              },
+              "optional": true
+            },
+            "_type": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string",
+                "value": "image"
+              }
+            }
+          }
+        },
+        "optional": true
+      }
+    }
+  },
+  {
+    "name": "catalogRoot",
+    "type": "document",
+    "attributes": {
+      "_id": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_type": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string",
+          "value": "catalogRoot"
+        }
+      },
+      "_createdAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_updatedAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_rev": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "title": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": false
+      },
+      "description": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "site": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "site.reference"
+        },
+        "optional": false
+      },
+      "slug": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "slug"
+        },
+        "optional": false
+      },
+      "sortOrder": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": true
+      },
+      "parent": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "page.reference"
+        },
+        "optional": true
+      },
+      "seoTitle": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "seoDescription": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "seoImage": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "seoImage"
+        },
+        "optional": true
+      },
+      "seoNoIndex": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "boolean"
+        },
+        "optional": true
+      },
+      "ogTitle": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "ogDescription": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "pagebuilder": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "catalogRootPageBuilder"
+        },
+        "optional": true
+      },
+      "filterCategories": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "string"
+          }
+        },
+        "optional": true
+      }
+    }
+  },
+  {
+    "name": "articlePage",
+    "type": "document",
+    "attributes": {
+      "_id": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_type": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string",
+          "value": "articlePage"
+        }
+      },
+      "_createdAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_updatedAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_rev": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "title": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": false
+      },
+      "description": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "site": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "site.reference"
+        },
+        "optional": false
+      },
+      "slug": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "slug"
+        },
+        "optional": false
+      },
+      "sortOrder": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": true
+      },
+      "parent": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "articleRoot.reference"
+        },
+        "optional": true
+      },
+      "seoTitle": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "seoDescription": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "seoImage": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "seoImage"
+        },
+        "optional": true
+      },
+      "seoNoIndex": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "boolean"
+        },
+        "optional": true
+      },
+      "ogTitle": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "ogDescription": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "excerpt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "coverImage": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "object",
+          "attributes": {
+            "asset": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "sanity.imageAsset.reference"
+              },
+              "optional": true
+            },
+            "media": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "unknown"
+              },
+              "optional": true
+            },
+            "hotspot": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "sanity.imageHotspot"
+              },
+              "optional": true
+            },
+            "crop": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "inline",
+                "name": "sanity.imageCrop"
+              },
+              "optional": true
+            },
+            "_type": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string",
+                "value": "image"
+              }
+            }
+          }
+        },
+        "optional": true
+      },
+      "authors": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "author.reference"
+            }
+          }
+        },
+        "optional": false
+      },
+      "category": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "body": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "richText"
+        },
+        "optional": true
+      }
+    }
+  },
+  {
+    "name": "articleRoot",
+    "type": "document",
+    "attributes": {
+      "_id": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_type": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string",
+          "value": "articleRoot"
+        }
+      },
+      "_createdAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_updatedAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_rev": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "title": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": false
+      },
+      "description": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "site": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "site.reference"
+        },
+        "optional": false
+      },
+      "slug": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "slug"
+        },
+        "optional": false
+      },
+      "sortOrder": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": true
+      },
+      "parent": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "page.reference"
+        },
+        "optional": true
+      },
+      "seoTitle": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "seoDescription": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "seoImage": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "seoImage"
+        },
+        "optional": true
+      },
+      "seoNoIndex": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "boolean"
+        },
+        "optional": true
+      },
+      "ogTitle": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "ogDescription": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "pagebuilder": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "articleRootPageBuilder"
+        },
+        "optional": true
+      },
+      "postsPerPage": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
         },
         "optional": true
       },
@@ -5072,69 +6069,20 @@
         },
         "optional": true
       },
-      "site": {
+      "categories": {
         "type": "objectAttribute",
         "value": {
-          "type": "inline",
-          "name": "site.reference"
-        },
-        "optional": true
-      },
-      "siteId": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "pageBuilder": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "pageBuilder"
-        },
-        "optional": true
-      },
-      "seoTitle": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "seoDescription": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "seoImage": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "seoImage"
-        },
-        "optional": true
-      },
-      "ogTitle": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "ogDescription": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
+          "type": "array",
+          "of": {
+            "type": "string"
+          }
         },
         "optional": true
       }
     }
   },
   {
-    "name": "homePage",
+    "name": "page",
     "type": "document",
     "attributes": {
       "_id": {
@@ -5147,7 +6095,7 @@
         "type": "objectAttribute",
         "value": {
           "type": "string",
-          "value": "homePage"
+          "value": "page"
         }
       },
       "_createdAt": {
@@ -5173,7 +6121,7 @@
         "value": {
           "type": "string"
         },
-        "optional": true
+        "optional": false
       },
       "description": {
         "type": "objectAttribute",
@@ -5182,18 +6130,34 @@
         },
         "optional": true
       },
-      "slug": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "pageBuilder": {
+      "site": {
         "type": "objectAttribute",
         "value": {
           "type": "inline",
-          "name": "pageBuilder"
+          "name": "site.reference"
+        },
+        "optional": false
+      },
+      "slug": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "slug"
+        },
+        "optional": false
+      },
+      "sortOrder": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": true
+      },
+      "parent": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "page.reference"
         },
         "optional": true
       },
@@ -5219,6 +6183,13 @@
         },
         "optional": true
       },
+      "seoNoIndex": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "boolean"
+        },
+        "optional": true
+      },
       "ogTitle": {
         "type": "objectAttribute",
         "value": {
@@ -5233,10 +6204,135 @@
         },
         "optional": true
       },
-      "siteId": {
+      "pagebuilder": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "pageBuilder"
+        },
+        "optional": true
+      }
+    }
+  },
+  {
+    "name": "lucide-icon",
+    "type": "type",
+    "value": {
+      "type": "string"
+    }
+  },
+  {
+    "name": "slug",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "slug"
+          }
+        },
+        "current": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": false
+        },
+        "source": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "redirect",
+    "type": "document",
+    "attributes": {
+      "_id": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
+        }
+      },
+      "_type": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string",
+          "value": "redirect"
+        }
+      },
+      "_createdAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_updatedAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_rev": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "status": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "active"
+            },
+            {
+              "type": "string",
+              "value": "inactive"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "source": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "slug"
+        },
+        "optional": false
+      },
+      "destination": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "slug"
+        },
+        "optional": false
+      },
+      "permanent": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "true"
+            },
+            {
+              "type": "string",
+              "value": "false"
+            }
+          ]
         },
         "optional": true
       },
@@ -5245,14 +6341,6 @@
         "value": {
           "type": "inline",
           "name": "site.reference"
-        },
-        "optional": true
-      },
-      "deployment": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "deploymentMeta"
         },
         "optional": true
       }
@@ -5642,199 +6730,6 @@
         },
         "optional": true
       }
-    }
-  },
-  {
-    "name": "page",
-    "type": "document",
-    "attributes": {
-      "_id": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "_type": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string",
-          "value": "page"
-        }
-      },
-      "_createdAt": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "_updatedAt": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "_rev": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "title": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": false
-      },
-      "description": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "slug": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "image": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "object",
-          "attributes": {
-            "asset": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "inline",
-                "name": "sanity.imageAsset.reference"
-              },
-              "optional": true
-            },
-            "media": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "unknown"
-              },
-              "optional": true
-            },
-            "hotspot": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "inline",
-                "name": "sanity.imageHotspot"
-              },
-              "optional": true
-            },
-            "crop": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "inline",
-                "name": "sanity.imageCrop"
-              },
-              "optional": true
-            },
-            "alt": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "string"
-              },
-              "optional": true
-            },
-            "_type": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "string",
-                "value": "image"
-              }
-            }
-          }
-        },
-        "optional": true
-      },
-      "siteId": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "site": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "site.reference"
-        },
-        "optional": true
-      },
-      "deployment": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "deploymentMeta"
-        },
-        "optional": true
-      },
-      "pageBuilder": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "pageBuilder"
-        },
-        "optional": true
-      },
-      "seoTitle": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "seoDescription": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "seoImage": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "seoImage"
-        },
-        "optional": true
-      },
-      "seoNoIndex": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "boolean"
-        },
-        "optional": true
-      },
-      "ogTitle": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "ogDescription": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      }
-    }
-  },
-  {
-    "name": "lucide-icon",
-    "type": "type",
-    "value": {
-      "type": "string"
     }
   },
   {
@@ -6478,265 +7373,6 @@
     }
   },
   {
-    "type": "type",
-    "name": "author.reference",
-    "value": {
-      "type": "object",
-      "attributes": {
-        "_ref": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
-          }
-        },
-        "_type": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string",
-            "value": "reference"
-          }
-        },
-        "_weak": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "boolean"
-          },
-          "optional": true
-        }
-      },
-      "dereferencesTo": "author"
-    }
-  },
-  {
-    "name": "article",
-    "type": "document",
-    "attributes": {
-      "_id": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "_type": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string",
-          "value": "article"
-        }
-      },
-      "_createdAt": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "_updatedAt": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "_rev": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        }
-      },
-      "orderRank": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "title": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": false
-      },
-      "description": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "slug": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "authors": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "array",
-          "of": {
-            "type": "object",
-            "attributes": {
-              "_key": {
-                "type": "objectAttribute",
-                "value": {
-                  "type": "string"
-                }
-              }
-            },
-            "rest": {
-              "type": "inline",
-              "name": "author.reference"
-            }
-          }
-        },
-        "optional": false
-      },
-      "publishedAt": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "image": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "object",
-          "attributes": {
-            "asset": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "inline",
-                "name": "sanity.imageAsset.reference"
-              },
-              "optional": true
-            },
-            "media": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "unknown"
-              },
-              "optional": true
-            },
-            "hotspot": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "inline",
-                "name": "sanity.imageHotspot"
-              },
-              "optional": true
-            },
-            "crop": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "inline",
-                "name": "sanity.imageCrop"
-              },
-              "optional": true
-            },
-            "alt": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "string"
-              },
-              "optional": true
-            },
-            "_type": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "string",
-                "value": "image"
-              }
-            }
-          }
-        },
-        "optional": false
-      },
-      "richText": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "richText"
-        },
-        "optional": true
-      },
-      "siteId": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "site": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "site.reference"
-        },
-        "optional": true
-      },
-      "deployment": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "deploymentMeta"
-        },
-        "optional": true
-      },
-      "seoTitle": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "seoDescription": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "seoImage": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "seoImage"
-        },
-        "optional": true
-      },
-      "seoNoIndex": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "boolean"
-        },
-        "optional": true
-      },
-      "seoHideFromLists": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "boolean"
-        },
-        "optional": true
-      },
-      "ogTitle": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "ogDescription": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      }
-    }
-  },
-  {
     "name": "site",
     "type": "document",
     "attributes": {
@@ -6778,6 +7414,16 @@
         },
         "optional": false
       },
+      "enabledPackages": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "string"
+          }
+        },
+        "optional": true
+      },
       "workspace": {
         "type": "objectAttribute",
         "value": {
@@ -6795,31 +7441,18 @@
         },
         "optional": false
       },
+      "slug": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "slug"
+        },
+        "optional": false
+      },
       "domain": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
-        },
-        "optional": true
-      },
-      "status": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "union",
-          "of": [
-            {
-              "type": "string",
-              "value": "setting-up"
-            },
-            {
-              "type": "string",
-              "value": "active"
-            },
-            {
-              "type": "string",
-              "value": "suspended"
-            }
-          ]
         },
         "optional": true
       },

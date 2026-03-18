@@ -3,101 +3,104 @@ import { defineField, defineType } from "sanity";
 import { createRadioListLayout, isValidUrl } from "@/utils/helper";
 
 const allLinkableTypes = [
-  { type: "article" },
-  { type: "articleIndex" },
+  { type: "articlePage" },
+  { type: "articleRoot" },
   { type: "page" },
   {type: "product"},
   {type: "video"},
 ];
 
 export const customUrl = defineType({
-  name: "customUrl",
-  type: "object",
-  description:
-    "Configure a link that can point to either an internal page or external website",
-  fields: [
-    defineField({
-      name: "type",
-      type: "string",
-      description:
-        "Choose whether this link points to another page on your site (internal) or to a different website (external)",
-      options: createRadioListLayout(["internal", "external"]),
-      initialValue: () => "external",
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: "openInNewTab",
-      title: "Open in new tab",
-      type: "boolean",
-      description:
-        "When enabled, clicking this link will open the destination in a new browser tab instead of navigating away from the current page",
-      initialValue: () => false,
-    }),
-    defineField({
-      name: "external",
-      type: "string",
-      title: "URL",
-      description:
-        "Enter either a full web address (URL) starting with https:// for external sites, or a relative path like /about for internal pages",
-      hidden: ({ parent }) => parent?.type !== "external",
-      validation: (Rule) => [
-        Rule.custom((value, { parent }) => {
-          const type = (parent as { type?: string })?.type;
-          if (type === "external") {
-            if (!value) {
-              return "URL can't be empty";
-            }
-            const isValid = isValidUrl(value);
-            if (!isValid) {
-              return "Invalid URL";
-            }
-          }
-          return true;
+    name: "customUrl",
+    type: "object",
+    title: "Lenke",
+    description:
+        "Konfigurer en lenke som kan peke til en intern site eller et eksternt nettsted.",
+    fields: [
+        defineField({
+            name: "type",
+            type: "string",
+            title: "Lenketype",
+            description:
+                "Velg om denne lenken peker til en annen side på ditt nettsted (intern) eller til en helt annen nettside (ekstern).",
+            options: createRadioListLayout(["internal", "external"]),
+            initialValue: () => "external",
+            validation: (Rule) => Rule.required(),
         }),
-      ],
-    }),
-    defineField({
-      name: "href",
-      type: "string",
-      description:
-        "Technical field used internally to store the complete URL - you don't need to modify this",
-      initialValue: () => "#",
-      hidden: true,
-      readOnly: true,
-    }),
-    defineField({
-      name: "internal",
-      type: "reference",
-      description:
-        "Select which page on your website this link should point to",
-      options: { disableNew: true },
-      hidden: ({ parent }) => parent?.type !== "internal",
-      to: allLinkableTypes,
-      validation: (rule) => [
-        rule.custom((value, { parent }) => {
-          const type = (parent as { type?: string })?.type;
-          if (type === "internal" && !value?._ref) {
-            return "internal can't be empty";
-          }
-          return true;
+        defineField({
+            name: "openInNewTab",
+            title: "Åpne i ny fane",
+            type: "boolean",
+            description:
+                "Når denne er aktivert, vil lenken åpnes i en ny nettleserfane i stedet for å navigere bort fra nåværende side.",
+            initialValue: () => false,
         }),
-      ],
-    }),
-  ],
-  preview: {
-    select: {
-      externalUrl: "external",
-      urlType: "type",
-      internalUrl: "internal.slug.current",
-      openInNewTab: "openInNewTab",
+        defineField({
+            name: "external",
+            type: "string",
+            title: "URL",
+            description:
+                "Skriv inn fullstendig nettadresse som starter med https:// for eksterne sider, eller en relativ sti som /om-oss for interne sider.",
+            hidden: ({ parent }) => parent?.type !== "external",
+            validation: (Rule) => [
+                Rule.custom((value, { parent }) => {
+                    const type = (parent as { type?: string })?.type;
+                    if (type === "external") {
+                        if (!value) {
+                            return "URL-feltet kan ikke være tomt";
+                        }
+                        const isValid = isValidUrl(value);
+                        if (!isValid) {
+                            return "Ugyldig URL";
+                        }
+                    }
+                    return true;
+                }),
+            ],
+        }),
+        defineField({
+            name: "href",
+            type: "string",
+            description:
+                "Teknisk felt som benyttes internt for å large komplett URL. Du behøver ikke endre denne.",
+            initialValue: () => "#",
+            hidden: true,
+            readOnly: true,
+        }),
+        defineField({
+            name: "internal",
+            title: "Intern",
+            type: "reference",
+            description:
+                "Velg en side på nettstedet som denne lenken skal peke til.",
+            options: { disableNew: true },
+            hidden: ({ parent }) => parent?.type !== "internal",
+            to: allLinkableTypes,
+            validation: (rule) => [
+                rule.custom((value, { parent }) => {
+                    const type = (parent as { type?: string })?.type;
+                    if (type === "internal" && !value?._ref) {
+                        return "Intern-feltet kan ikke være tomt";
+                    }
+                    return true;
+                }),
+            ],
+        }),
+    ],
+    preview: {
+        select: {
+            externalUrl: "external",
+            urlType: "type",
+            internalUrl: "internal.slug.current",
+            openInNewTab: "openInNewTab",
+        },
+        prepare({ externalUrl, urlType, internalUrl, openInNewTab }) {
+            const url = urlType === "external" ? externalUrl : `${internalUrl}`;
+            const newTabIndicator = openInNewTab ? " ↗" : "";
+            return {
+                title: `${urlType === "external" ? "Ekstern" : "Intern"} Lenke`,
+                subtitle: `${url}${newTabIndicator}`,
+            };
+        },
     },
-    prepare({ externalUrl, urlType, internalUrl, openInNewTab }) {
-      const url = urlType === "external" ? externalUrl : `${internalUrl}`;
-      const newTabIndicator = openInNewTab ? " ↗" : "";
-      return {
-        title: `${urlType === "external" ? "External" : "Internal"} Link`,
-        subtitle: `${url}${newTabIndicator}`,
-      };
-    },
-  },
 });
