@@ -1,3 +1,4 @@
+import { PACKAGES } from "@/utils/package";
 import type { Template } from "sanity";
 
 // ─────────────────────────────────────────────────────────────
@@ -5,16 +6,16 @@ import type { Template } from "sanity";
 // ─────────────────────────────────────────────────────────────
 
 interface SiteParams {
-    siteId: string;
+  siteId: string;
 }
 
 interface ChildParams {
-    siteId: string;
-    parentId: string;
+  siteId: string;
+  parentId: string;
 }
 
 interface WorkspaceParams {
-    workspace: string;
+  workspace: string;
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -22,26 +23,27 @@ interface WorkspaceParams {
 // ─────────────────────────────────────────────────────────────
 
 const SITE_SCOPED_TYPES = [
-    "page",
-    "articleRoot",
-    "catalogRoot",
-    "navbar",
-    "footer",
+  "page",
+  "articleRoot",
+  "catalogRoot",
+  "navbar",
+  "footer",
 ] as const;
 
 function createSiteTemplates(): Template[] {
-    return SITE_SCOPED_TYPES.map((type) => ({
-        id: `${type}-with-site`,
-        title: type.charAt(0).toUpperCase() + type.slice(1),
-        schemaType: type,
-        parameters: [{ name: "siteId", type: "string" as const }],
-        value: (params: SiteParams) => ({
-            site: {
-                _type: "reference",
-                _ref: params.siteId,
-            },
-        }),
-    }));
+  console.log("-- createSiteTemplates --");
+  return SITE_SCOPED_TYPES.map((type) => ({
+    id: `${type}-with-site`,
+    title: type.charAt(0).toUpperCase() + type.slice(1),
+    schemaType: type,
+    parameters: [{ name: "siteId", type: "string" as const }],
+    value: (params: SiteParams) => ({
+      site: {
+        _type: "reference",
+        _ref: params.siteId,
+      },
+    }),
+  }));
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -53,31 +55,35 @@ function createSiteTemplates(): Template[] {
 // ─────────────────────────────────────────────────────────────
 
 const CHILD_TYPE_MAP: { childType: string; parentType: string }[] = [
-    { childType: "articlePage", parentType: "articleRoot" },
-    { childType: "productPage", parentType: "catalogRoot" },
-    // Add new child types here as packages are added.
+  { childType: "articlePage", parentType: "articleRoot" },
+  { childType: "productPage", parentType: "catalogRoot" },
+  // Add new child types here as packages are added.
 ];
 
 function createChildTemplates(): Template[] {
-    return CHILD_TYPE_MAP.map(({ childType }) => ({
-        id: `${childType}-with-parent`,
-        title: childType.charAt(0).toUpperCase() + childType.slice(1),
-        schemaType: childType,
-        parameters: [
-            { name: "siteId", type: "string" as const },
-            { name: "parentId", type: "string" as const },
-        ],
-        value: (params: ChildParams) => ({
-            site: {
-                _type: "reference",
-                _ref: params.siteId,
-            },
-            parent: {
-                _type: "reference",
-                _ref: params.parentId,
-            },
-        }),
-    }));
+  console.log("-- createChildTemplates --");
+  return CHILD_TYPE_MAP.map(({ childType }) => ({
+    id: `${childType}-with-parent`,
+    title: childType.charAt(0).toUpperCase() + childType.slice(1),
+    schemaType: childType,
+    parameters: [
+      { name: "siteId", type: "string" as const },
+      { name: "parentId", type: "string" as const },
+    ],
+    value: (params: ChildParams) => {
+      console.log("Template received params:", params);
+      return {
+        site: {
+          _type: "reference",
+          _ref: params.siteId,
+        },
+        parent: {
+          _type: "reference",
+          _ref: params.parentId,
+        },
+      };
+    },
+  }));
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -85,25 +91,29 @@ function createChildTemplates(): Template[] {
 // ─────────────────────────────────────────────────────────────
 
 function createPageNestingTemplate(): Template {
-    return {
-        id: "page-with-parent",
-        title: "Underside",
-        schemaType: "page",
-        parameters: [
-            { name: "siteId", type: "string" as const },
-            { name: "parentId", type: "string" as const },
-        ],
-        value: (params: ChildParams) => ({
-            site: {
-                _type: "reference",
-                _ref: params.siteId,
-            },
-            parent: {
-                _type: "reference",
-                _ref: params.parentId,
-            },
-        }),
-    };
+  console.log("-- createPageNestingTemplate --");
+  return {
+    id: "page-with-parent",
+    title: "Underside",
+    schemaType: "page",
+    parameters: [
+      { name: "siteId", type: "string" as const },
+      { name: "parentId", type: "string" as const },
+    ],
+    value: (params: ChildParams) => {
+      console.log("Template received params:", params);
+      return {
+        site: {
+          _type: "reference",
+          _ref: params.siteId,
+        },
+        parent: {
+          _type: "reference",
+          _ref: params.parentId === "" ? undefined : params.parentId,
+        },
+      };
+    },
+  };
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -111,27 +121,67 @@ function createPageNestingTemplate(): Template {
 // ─────────────────────────────────────────────────────────────
 
 function createWorkspaceTemplates(): Template[] {
-    return [
-        {
-            id: "workspaceDefault-template",
-            title: "Standardinnstillinger",
-            schemaType: "workspaceDefault",
-            parameters: [{ name: "workspace", type: "string" as const }],
-            value: (params: WorkspaceParams) => ({
-                workspace: params.workspace,
-                title: `${params.workspace.charAt(0).toUpperCase() + params.workspace.slice(1)} - Standardinnstillinger`,
-            }),
-        },
-        {
-            id: "site-template",
-            title: "Nettsted",
-            schemaType: "site",
-            parameters: [{ name: "workspace", type: "string" as const }],
-            value: (params: WorkspaceParams) => ({
-                workspace: params.workspace,
-            }),
-        },
-    ];
+  console.log("-- createWorkspaceDefaultTemplates --");
+  return [
+    {
+      id: "workspaceDefault-template",
+      title: "Standardinnstillinger",
+      schemaType: "workspaceDefault",
+      parameters: [{ name: "workspace", type: "string" as const }],
+      value: (params: WorkspaceParams) => ({
+        workspace: params.workspace,
+        title: `${params.workspace.charAt(0).toUpperCase() + params.workspace.slice(1)} - Standardinnstillinger`,
+      }),
+    },
+    {
+      id: "site-template",
+      title: "Nettsted",
+      schemaType: "site",
+      parameters: [{ name: "workspace", type: "string" as const }],
+      value: (params: WorkspaceParams) => ({
+        workspace: params.workspace,
+      }),
+    },
+  ];
+}
+
+/**
+ * Generates Root Templates (Site-scoped)
+ * Used for articleRoot, catalogRoot, etc.
+ */
+function createPackageRootTemplates(): Template[] {
+  console.log("-- createPackageRootTemplates --");
+  createWorkspaceTemplates;
+  return PACKAGES.map((pkg) => ({
+    id: pkg.rootTemplateId, // Use the ID from your definition
+    title: pkg.rootTitle,
+    schemaType: pkg.rootType,
+    parameters: [{ name: "siteId", type: "string" as const }],
+    value: (params: SiteParams) => ({
+      site: { _type: "reference", _ref: params.siteId },
+    }),
+  }));
+}
+
+/**
+ * Generates Child Templates (Parent-scoped)
+ * Used for articlePage, productPage, etc.
+ */
+function createPackageChildTemplates(): Template[] {
+  console.log("-- createPackageChildTemplates --");
+  return PACKAGES.map((pkg) => ({
+    id: pkg.childTemplateId, // Use the ID from your definition
+    title: pkg.childTitle,
+    schemaType: pkg.childType,
+    parameters: [
+      { name: "siteId", type: "string" as const },
+      { name: "parentId", type: "string" as const },
+    ],
+    value: (params: ChildParams) => ({
+      site: { _type: "reference", _ref: params.siteId },
+      parent: { _ref: params.parentId },
+    }),
+  }));
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -144,8 +194,10 @@ function createWorkspaceTemplates(): Template[] {
 //
 
 export const initialValueTemplates: Template[] = [
-    ...createSiteTemplates(),
-    ...createChildTemplates(),
-    createPageNestingTemplate(),
-    ...createWorkspaceTemplates(),
+  ...createSiteTemplates(),
+  ...createChildTemplates(),
+  ...createPackageChildTemplates(),
+  ...createPackageRootTemplates(),
+  createPageNestingTemplate(),
+  ...createWorkspaceTemplates(),
 ];

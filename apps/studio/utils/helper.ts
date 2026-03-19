@@ -181,3 +181,9 @@ export const getPresentationUrl = () => {
 
   return presentationUrl;
 };
+
+
+/** Clamp a value between min and max. */
+export function clamp(v: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, v));
+}

@@ -1114,10 +1114,6 @@ export type Site = {
   _updatedAt: string;
   _rev: string;
   title: string;
-  enabledPackages?: Array<string>;
-  workspace: "solskjerming" | "vannsport";
-  slug: Slug;
-  domain?: string;
   logo?: {
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -1131,6 +1127,12 @@ export type Site = {
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
+  };
+  workspace: "solskjerming" | "vannsport";
+  enabledPackages?: Array<string>;
+  siteIdentity?: {
+    slug: Slug;
+    domain?: string;
   };
   social?: SocialLinks;
   contact?: Address;
@@ -1547,17 +1549,6 @@ export type QueryGenericPageOGDataResult =
     }
   | {
       _id: string;
-      _type: "site";
-      title: string;
-      description: null;
-      image: null;
-      dominantColor: null;
-      seoImage: null;
-      logo: string | null;
-      date: string;
-    }
-  | {
-      _id: string;
       _type: "video";
       title: string;
       description: string | null;
@@ -1598,8 +1589,8 @@ export type QuerySitesListResult = Array<{
 // Query: *[_type == "site" && !(_id in path("drafts.**"))] {    _id,    "slug": slug.current,    domain  }
 export type QuerySiteDomainsResult = Array<{
   _id: string;
-  slug: string;
-  domain: string | null;
+  slug: null;
+  domain: null;
 }>;
 
 // Source: ../../packages/sanity/src/query.ts

@@ -202,3 +202,12 @@ export function isSiteDocument(
         typeof (doc as SiteDocument).site?._ref === "string"
     );
 }
+
+
+export interface OklchColor {
+  l: number;
+  c: number;
+  h: number;
+  a: number;
+  hexInput: string;
+}

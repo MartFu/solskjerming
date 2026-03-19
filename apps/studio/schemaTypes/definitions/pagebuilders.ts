@@ -1,17 +1,15 @@
 
-import { pageBuilderBlocks } from "@/schemaTypes/blocks/index";
+import { articleRootBlocks, catalogRootBlocks, pageBlocks } from "@/schemaTypes/blocks/index";
 import { createPageBuilder } from "@/utils/factories";
 
-export const pageBuilder = createPageBuilder("pageBuilder", pageBuilderBlocks);
+export const pageBuilder = createPageBuilder("pageBuilder", pageBlocks);
 
-// Specialized article builder (e.g., adds "Latest News" or "Author Bio" blocks)
 export const articleRootPageBuilder = createPageBuilder(
-    "articleRootPageBuilder",
-    pageBuilderBlocks, // This array would contain different block types to those of the standard page builder
+  "articleRootPageBuilder",
+  articleRootBlocks,
 );
 
 export const catalogRootPageBuilder = createPageBuilder(
-    "catalogRootPageBuilder",
-    pageBuilderBlocks, 
+  "catalogRootPageBuilder",
+  catalogRootBlocks,
 );
-

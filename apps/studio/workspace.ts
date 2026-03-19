@@ -16,8 +16,6 @@ import { useRouter } from "sanity/router";
 
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID ?? "";
 
-
-
 const SitePublishAction = (originalAction: DocumentActionComponent) => {
     return (props: any) => {
         const originalResult = originalAction(props);
@@ -40,44 +38,42 @@ const SitePublishAction = (originalAction: DocumentActionComponent) => {
 };
 
 const sharedConfig = definePlugin<{ workspace: string }>(() => ({
-    name: "shared-config",
-    document: {
-        newDocumentOptions: (prev, { creationContext }) => {
-            if (creationContext.type === "global") {
-                return prev.filter((template) => {
-                    const siteSingletons = [
-                        "homePage",
-                        "navbar",
-                        "footer",
-                        "settings",
-                        "blogIndex",
-                    ];
-                    return !siteSingletons.includes(template.templateId);
-                });
-            }
-            return prev;
-        },
-        actions: (prev, { schemaType }) => { 
-            return prev.map((originalAction) => {
-                // We only want to wrap the Publish action,
-                // and only for the "site" document type
-                if (
-                    originalAction.action === "publish" &&
-                    schemaType === "site"
-                ) {
-                
+  name: "shared-config",
+  document: {
+    newDocumentOptions: (prev, { creationContext }) => {
+      if (creationContext.type === "global") {
+        return prev.filter((template) => {
+          const siteSingletons = [
+            "homePage",
+            "navbar",
+            "footer",
+            "settings",
+            "blogIndex",
+          ];
+          return !siteSingletons.includes(template.templateId);
+        });
+      }
+      return prev;
+    },
+    actions: (prev, context) => {
+      const { schemaType } = context;
 
-                    return SitePublishAction(originalAction);
-                }
-
-                return originalAction;
-            });
+      // 1. Map over existing actions to wrap "Publish" for the "site" type
+      const updatedActions = prev.map((originalAction) => {
+        if (originalAction.action === "publish" && schemaType === "site") {
+          return SitePublishAction(originalAction);
         }
+        return originalAction;
+      });
+
+
+      return updatedActions;
     },
-    schema: {
-        types: schemaTypes,
-       templates: (prev) => [...prev, ...initialValueTemplates]
-    },
+  },
+  schema: {
+    types: schemaTypes,
+    templates: (prev) => [...prev, ...initialValueTemplates],
+  },
 }));
 
 export const defineWorkspace = (

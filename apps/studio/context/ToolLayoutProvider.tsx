@@ -1,7 +1,7 @@
 import { API_VERSION } from "@/utils/constant";
 import { STUDIO_CONTEXT_LS_KEY } from "@/utils/context";
 import { buildPreviewUrl, getPreviewContext } from "@/utils/preview";
-import { emitSiteChanged } from "@/utils/structure-channel";
+import { emitSiteChanged } from "@/utils/structure/structure-channel";
 import { ActiveSite } from "@/utils/types";
 import {
     createContext,

@@ -52,6 +52,7 @@
   },
   "devDependencies": {
     "@sanity/blueprints": "0.12.2",
+    "@workspace/sanity": "workspace:*",
     "@types/culori": "^4.0.1",
     "@types/react": "catalog:",
     "@types/styled-components": "^5.1.36",

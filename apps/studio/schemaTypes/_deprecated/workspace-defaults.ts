@@ -1,12 +1,6 @@
-import {
-  ColorWheelIcon,
-  ComposeIcon,
-  InsertAboveIcon,
-  SearchIcon,
-} from "@sanity/icons";
+// @deprecated — superseded by globalTheme + globalSeo + globalBranding in documents/global/
 import { CogIcon } from "lucide-react";
-import { defineField, defineType, FieldGroupDefinition } from "sanity";
-import { themeDefaults } from "./css-tokens";
+import { defineField, defineType } from "sanity";
 import { GROUP, GROUPS } from "@/utils/constant";
 
 export const workspaceDefaults = defineType({
@@ -53,10 +47,7 @@ export const workspaceDefaults = defineType({
       group: GROUP.SEO,
       description: "Vises i nettleserfaner.",
     }),
-    ...themeDefaults.fields.map((field) => ({
-      ...field,
-      group: GROUP.BRANDING,
-    })),
+    // Theme token fields moved to globalTheme in documents/global/theme.ts
   ],
   preview: {
     prepare() {
