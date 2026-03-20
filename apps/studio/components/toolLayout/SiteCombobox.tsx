@@ -18,8 +18,6 @@ import { ChevronDownIcon, SearchIcon } from "@sanity/icons";
 import { API_VERSION } from "@/utils/constant";
 import { useToolLayout } from "@/context/ToolLayoutProvider";
 import { ConfirmDialog } from "./ConfirmDialog";
-import { ChevronsUpDown } from "lucide-react";
-import { useRouter } from "sanity/router";
 import { ActiveSite, Site } from "@/utils/types";
 
 interface SiteComboboxProps {

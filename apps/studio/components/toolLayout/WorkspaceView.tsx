@@ -26,11 +26,11 @@ import { Globe, Settings } from "lucide-react";
 import { API_VERSION } from "@/utils/constant";
 import { useToolLayout } from "@/context/ToolLayoutProvider";
 import { useRouter } from "sanity/router";
-import { ActiveSite, Site } from "@/utils/types";
+import { Site } from "@/utils/types";
 import {
     PACKAGE_OPTIONS,
     PackageKey,
-} from "@/schemaTypes/definitions/enabled-packages";
+} from "@/utils/package";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 

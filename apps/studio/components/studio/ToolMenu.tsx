@@ -1,5 +1,4 @@
-import { PlugIcon } from "@sanity/icons";
-import { Button, Flex, Text, Tooltip,  } from "@sanity/ui";
+import { Button, Flex, } from "@sanity/ui";
 import React from "react";
 import { ToolLink, ToolMenuProps } from "sanity";
 

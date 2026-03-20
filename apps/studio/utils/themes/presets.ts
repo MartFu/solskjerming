@@ -1,9 +1,11 @@
-import { createTheme } from "./create-theme";
+
 
 // ─── Shared semantic colours ──────────────────────────────────────────────────
 // Warning and success are semantic tokens that stay consistent across themes.
 // They are intentionally not theme-specific so that UI states (toasts, badges,
 // alerts) look the same regardless of the active brand palette.
+
+import { createTheme } from "../factories/create-theme";
 
 const SEMANTIC = {
   light: {

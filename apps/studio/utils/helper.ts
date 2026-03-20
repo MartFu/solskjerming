@@ -1,3 +1,5 @@
+import { LucideIcon } from "lucide-react";
+import { createElement } from "react";
 import { isPortableTextTextBlock, type StringOptions } from "sanity";
 
 export const isRelativeUrl = (url: string) =>
@@ -22,7 +24,7 @@ export const getTitleCase = (name: string) => {
 
 export const createRadioListLayout = (
   items: Array<string | { title: string; value: string }>,
-  options?: StringOptions
+  options?: StringOptions,
 ): StringOptions => {
   const list = items.map((item) => {
     if (typeof item === "string") {
@@ -42,7 +44,7 @@ export const createRadioListLayout = (
 
 export const parseRichTextToString = (
   value: unknown,
-  maxWords: number | undefined
+  maxWords: number | undefined,
 ) => {
   if (!Array.isArray(value)) {
     return "No Content";
@@ -81,7 +83,7 @@ export type RetryOptions = {
 
 export async function retryPromise<T>(
   promiseFn: Promise<T>,
-  options: RetryOptions = {}
+  options: RetryOptions = {},
 ): Promise<T> {
   const {
     maxRetries = 3,
@@ -175,15 +177,28 @@ export const getPresentationUrl = () => {
   const presentationUrl = process.env.SANITY_STUDIO_PRESENTATION_URL;
   if (!presentationUrl) {
     throw new Error(
-      "SANITY_STUDIO_PRESENTATION_URL must be set in production environment"
+      "SANITY_STUDIO_PRESENTATION_URL must be set in production environment",
     );
   }
 
   return presentationUrl;
 };
 
-
 /** Clamp a value between min and max. */
 export function clamp(v: number, min: number, max: number) {
   return Math.min(max, Math.max(min, v));
+}
+
+
+/**
+ * Adapts a Lucide icon to match the visual style of native Sanity Studio icons.
+ * * Sanity icons typically use a 1.2px-1.5px stroke and are optimized for a 
+ * 16px-18px display. Standard Lucide icons default to a 2px stroke and 
+ * 24px size, which look oversized in the Studio sidebar and tabs.
+ *
+ * @param icon - The Lucide icon component to adapt.
+ * @returns A functional component compatible with Sanity's `icon` field.
+ */
+export function asStudioIcon(icon: LucideIcon) {
+  return () => createElement(icon, { size: 16, strokeWidth: 1.5 });
 }

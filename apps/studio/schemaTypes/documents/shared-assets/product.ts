@@ -1,6 +1,6 @@
 import { GROUP, GROUPS } from "@/utils/constant";
-import { ogFields } from "@/utils/og-fields";
-import { seoFields } from "@/utils/seo-fields";
+// import { ogFields } from "@/utils/og-fields";
+// import { seoFields } from "@/utils/seo-fields";
 import { defineField, defineType } from "sanity";
 
 export const product = defineType({
@@ -89,8 +89,8 @@ export const product = defineType({
         //   title: "Pris",
         //   type: "pricing",
         // }),
-        ...seoFields,
-        ...ogFields,
+        // ...seoFields,
+        // ...ogFields,
     ],
     preview: {
         select: {

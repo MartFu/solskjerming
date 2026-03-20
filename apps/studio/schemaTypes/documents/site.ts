@@ -1,52 +1,55 @@
 import { GROUP, GROUPS, WORKSPACES } from "@/utils/constant";
-import { WrenchIcon } from "@sanity/icons";
+import { createIntegrationFields } from "@/utils/factories/create-integration-fields";
+import { createOrganizationFields } from "@/utils/factories/create-organization-fields";
+import { createOGFields, createSocialFields } from "@/utils/factories";
+import { createSEOFields } from "@/utils/factories";
+import { EarthGlobeIcon } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
-import { enabledPackagesField } from "../definitions/enabled-packages";
+
+import { ThemePresetFieldInput } from "@/components/inputs/theme-preset-field-input";
+import {
+  optionalColorModeField,
+  optionalRadiusField,
+} from "@/schemaTypes/definitions/theme-tokens";
 import { SlugDomainInput } from "@/components/inputs/slug-domain-input";
+import { enabledPackagesField } from "../definitions/enabled-packages";
 
 export const site = defineType({
   name: "site",
   title: "Nettside",
   type: "document",
   groups: GROUPS(GROUP.IDENTITY),
-  icon: WrenchIcon,
+  icon: EarthGlobeIcon,
   fields: [
+    // ── IDENTITY ──────────────────────────────────────────────
     defineField({
       name: "title",
       title: "Tittel",
       type: "string",
       group: GROUP.IDENTITY,
+      description: "Navnet på nettsiden slik det vises internt og i titler.",
       validation: (Rule) => Rule.required(),
     }),
+    // #TODO -> When a site is created, automatically create a homePage
     defineField({
-      name: "logo",
-      title: "Logo",
-      type: "image",
-      group: GROUP.BRANDING,
-      options: { hotspot: true },
-    }),
-    defineField({
-      name: "favicon",
-      title: "Favicon",
-      type: "image",
-      group: GROUP.BRANDING,
-    }),
-    defineField({
-      name: "workspace",
-      title: "Arbeidsrom",
-      type: "string",
-      group: GROUP.RELATIONSHIPS,
-      readOnly: true,
+      name: "homePage",
+      title: "Forside",
+      type: "reference",
+      to: [{ type: "page" }],
+      group: GROUP.IDENTITY,
+      description:
+        "Siden som vises på rotnivå (/). Må settes for at nettstedet skal fungere korrekt.",
       options: {
-        list: WORKSPACES.map((workspace) => {
-         const w = workspace as unknown as string;
-         
-          return { title: w, value: w };
+        filter: ({ document }) => ({
+          filter: "site._ref == $siteId",
+          params: { siteId: document._id },
         }),
       },
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) =>
+        Rule.required().error(
+          "Forside er påkrevd for riktig routing. Dersom du ignorerer denne feilen risikerer du at nettsiden ikke fungerer.",
+        ),
     }),
-    enabledPackagesField,
     defineField({
       name: "siteIdentity",
       title: "Nettadresse",
@@ -55,14 +58,13 @@ export const site = defineType({
       components: {
         input: SlugDomainInput,
       },
-
       fields: [
         defineField({
           name: "slug",
           title: "Nettadresse-ID",
           type: "slug",
           description:
-            "Brukes som subdomene for forhåndsvisning (f.eks. terrassemarkise)",
+            "ID som brukes for teknisk identifikasjon og forhåndsvisning.",
           options: {
             source: "title",
             slugify: (input: string) =>
@@ -72,41 +74,126 @@ export const site = defineType({
                 .replace(/\s+/g, "-")
                 .replace(/[^a-z0-9-]/g, ""),
           },
-
           validation: (Rule) => Rule.required(),
         }),
         defineField({
           name: "domain",
           title: "Domene",
           type: "string",
-          description:
-            "Eget domene (.no, .se eller .dk). F.eks.: terrassemarkise.no",
+          description: "Produksjonsdomene (f.eks. domene.no).",
           validation: (Rule) =>
             Rule.custom((value) => {
-              if (!value) return true; // Optional field
+              if (!value) return true;
               const pattern = /^[a-zA-Z0-9æøåäöüé-]+\.(no|se|dk)$/;
               if (!pattern.test(value)) {
-                return "Domenet må være et gyldig .no, .se eller .dk-domene";
+                return "Vennligst oppgi et gyldig .no, .se eller .dk-domene";
               }
               return true;
             }),
         }),
       ],
     }),
+    { ...enabledPackagesField, group: GROUP.IDENTITY },
 
+    // ── BRANDING ──────────────────────────────────────────────
     defineField({
-      name: "social",
+      name: "logo",
+      title: "Logo",
+      type: "image",
       group: GROUP.BRANDING,
-      title: "SOME-lenker",
-      type: "socialLinks",
+      description: "Hovedlogo for denne nettsiden.",
+      options: { hotspot: true },
+    }),
+    defineField({
+      name: "favicon",
+      title: "Favicon",
+      type: "image",
+      group: GROUP.BRANDING,
+      description: "Ikonet som vises i nettleserfanen.",
     }),
 
+    // ── SOME ──────────────────────────────────────────────────
+    ...createSocialFields(),
+
+    // ── ORGANIZATION ──────────────────────────────────────────
     defineField({
       name: "contact",
-      group: GROUP.BRANDING,
-      title: "Kontaktinformasjon",
-      description: "Arver fra organisasjon hvis tom",
+      group: GROUP.ORGANIZATION,
+      title: "Besøksadresse",
+      description: "Fysisk adresse som skal vises på denne nettsiden.",
       type: "address",
+    }),
+    ...createOrganizationFields({
+      nameDescription: "Navnet på organisasjonen.",
+      organizationNumberDescription:
+        "Organisasjonsnummer for juridisk fotnote.",
+      emailDescription: "Primær e-postadresse for kontakt.",
+      phoneDescription: "Telefonnummer for kundesupport/kontakt.",
+      addressDescription: "Postadresse eller besøksadresse.",
+      includeLogo: false,
+      includeFavicon: false,
+    }).map((field) => ({ ...field, group: GROUP.ORGANIZATION })),
+
+    // ── SEO ───────────────────────────────────────────────────
+    ...createSEOFields({
+      seoTitleFieldTitle: "Sidetittel (SEO)",
+      seoTitleFieldDescription: "Tittelen som vises i søkeresultater.",
+      seoDescriptionFieldTitle: "Beskrivelse (SEO)",
+      seoDescriptionFieldDescription:
+        "Kort tekst som oppsummerer siden for søkemotorer.",
+    }),
+    ...createOGFields({
+      ogTitleFieldDescription:
+        "Tittel optimalisert for deling på sosiale medier.",
+      ogDescriptionFieldDescription:
+        "Beskrivelse optimalisert for deling på sosiale medier.",
+      ogImageFieldDescription: "Bilde som inkluderes når lenken deles.",
+    }),
+
+    // ── THEME ─────────────────────────────────────────────────
+    defineField({
+      name: "themePreset",
+      title: "Tema-preset",
+      description: "Velg en visuell stil for denne nettsiden.",
+      type: "string",
+      group: GROUP.THEME,
+      components: { input: ThemePresetFieldInput },
+    }),
+    { ...optionalColorModeField("light"), group: GROUP.THEME },
+    { ...optionalColorModeField("dark"), group: GROUP.THEME },
+    { ...optionalRadiusField, group: GROUP.THEME },
+
+    // ── INTEGRATIONS ──────────────────────────────────────────
+    ...createIntegrationFields({
+      googleAnalyticsIdDescription:
+        "Måle-ID for Google Analytics 4 (f.eks. G-XXXXXXXXXX).",
+      gtmContainerIdDescription:
+        "Container-ID for Google Tag Manager (f.eks. GTM-XXXXXXX).",
+      facebookPixelIdDescription: "ID for Facebook/Meta Pixel-sporing.",
+    }),
+
+    // ── LEGAL ─────────────────────────────────────────────────
+    defineField({
+      name: "legalDocuments",
+      title: "Juridiske dokumenter",
+      type: "array",
+      of: [{ type: "reference", to: [{ type: "documentation" }] }],
+      group: GROUP.LEGAL,
+      description:
+        "Referanser til vilkår, personvern og andre juridiske tekster.",
+    }),
+
+    // ── RELATIONSHIPS ─────────────────────────────────────────
+    defineField({
+      name: "workspace",
+      title: "Arbeidsrom",
+      type: "string",
+      group: GROUP.RELATIONSHIPS,
+      readOnly: true,
+      options: {
+        list: WORKSPACES.map(({ title, value }) => ({ title, value })),
+      },
+      validation: (Rule) => Rule.required(),
     }),
   ],
   preview: {

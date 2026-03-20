@@ -1,6 +1,6 @@
 import { GROUPS } from "@/utils/constant";
-import { ogFields } from "@/utils/og-fields";
-import { seoFields } from "@/utils/seo-fields";
+// import { ogFields } from "@/utils/og-fields";
+// import { seoFields } from "@/utils/seo-fields";
 import { defineField, defineType } from "sanity";
 
 export const video = defineType({
@@ -70,13 +70,9 @@ export const video = defineType({
         ],
       },
     }),
-    defineField({
-      name: "deployment",
-      title: "Publishing Status",
-      type: "deploymentMeta",
-    }),
-    ...seoFields,
-    ...ogFields,
+
+    // ...seoFields,
+    // ...ogFields,
   ],
   preview: {
     select: {

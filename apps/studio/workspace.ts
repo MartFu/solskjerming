@@ -10,7 +10,7 @@ import { schemaTypes } from "@/schemaTypes/index";
 import { JsonIcon } from "@sanity/icons";
 import { ToolLayout } from "./components/toolLayout";
 
-import { createStructure } from "@/structure";
+import { createStructure } from "@/utils/structure/structure";
 import { initialValueTemplates } from "./schemaTypes/templates";
 import { useRouter } from "sanity/router";
 

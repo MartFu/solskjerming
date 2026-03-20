@@ -15,7 +15,7 @@ export function getTypeDisplay(docType: string): {
   title: string;
 } {
   const asRoot = packagesByRootType.get(docType);
-  if (asRoot) return { icon: asRoot.icon, title: asRoot.rootTitle };
+  if (asRoot) return { icon: asRoot.rootIcon, title: asRoot.rootTitle };
 
   const asChild = packagesByChildType.get(docType);
   if (asChild) return { icon: asChild.childIcon, title: asChild.childTitle };
@@ -30,11 +30,12 @@ export function getTypeDisplay(docType: string): {
 export interface ChildTypeInfo {
   type: string;
   title: string;
+  description?: string;
   icon: LucideIcon;
   templateId: string;
   // Add these to preserve package context
-  rootTitle?: string; // For root-level creation
   childTitle?: string; // For child-level creation
+  childDescription?: string;
   packageKey?: string; // To identify which package this belongs to
 }
 
@@ -61,7 +62,7 @@ export function getChildTypes(
           title: pkg.childTitle, // This is the display name for the child
           icon: pkg.childIcon,
           templateId: pkg.childTemplateId,
-          rootTitle: pkg.rootTitle, // Preserve for context
+          description: pkg.rootDescription,
           childTitle: pkg.childTitle, // Preserve for context
           packageKey: pkg.packageKey,
         },
@@ -77,8 +78,9 @@ export function getChildTypes(
         title: "Side",
         icon: File,
         templateId: "page-with-parent",
-        rootTitle: "Side", // For root level
+        description: "En fleksibel toppnivåside som benytter hovedsidebyggeren.",
         childTitle: "Underside", // For child level
+        childDescription: "En fleksibel underside som benytter hovedsidebyggeren."
       },
     ];
 
@@ -87,10 +89,11 @@ export function getChildTypes(
         children.push({
           type: pkg.rootType,
           title: pkg.rootTitle, // Default display name
-          icon: pkg.icon,
+          icon: pkg.rootIcon,
           templateId: pkg.rootTemplateId,
-          rootTitle: pkg.rootTitle,
+          description: pkg.rootDescription,
           childTitle: pkg.childTitle,
+          childDescription: pkg.childDescription,
           packageKey: pkg.packageKey,
         });
       }

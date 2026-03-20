@@ -1,20 +1,6 @@
 import { defineField } from "sanity";
 import { GROUP } from "@/utils/constant";
-
-// ─────────────────────────────────────────────────────────────
-// Package options
-// ─────────────────────────────────────────────────────────────
-// This list must stay in sync with the PACKAGES registry in
-// structure.ts. When you add a new package, add an entry here.
-// ─────────────────────────────────────────────────────────────
-
-export const PACKAGE_OPTIONS = [
-    { title: "Artikler", value: "articles" },
-    { title: "Netthandel", value: "commerce" },
-    // { title: "Arrangementer", value: "eventRoot" },
-] as const;
-
-export type PackageKey = (typeof PACKAGE_OPTIONS)[number]["value"];
+import { PACKAGE_OPTIONS } from "@/utils/package";
 
 /**
  * Field for the site document that controls which packages

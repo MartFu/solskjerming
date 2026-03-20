@@ -9,10 +9,16 @@ import {
   LinkIcon,
   DatabaseIcon,
   JsonIcon,
-  FaceHappyIcon
+  FaceHappyIcon,
+  UsersIcon,
+  LockIcon,
+  PlugIcon,
+  CaseIcon
 } from "@sanity/icons";
 import type { FieldGroupDefinition } from "sanity";
 import { OklchColor } from "./types";
+import { Brush, Building, Building2, Fingerprint, Scale } from "lucide-react";
+import { asStudioIcon } from "./helper";
 
 
 
@@ -27,6 +33,10 @@ export const GROUP = {
   RELATIONSHIPS: 'relationships',
   STRUCTURED_DATA: 'structured-data',
   SOME: "some",
+  ORGANIZATION: "organization",
+  THEME: "theme",
+  INTEGRATIONS: "integrations",
+  LEGAL: "legal",
 } as const;
 
 export type GroupValue = typeof GROUP[keyof typeof GROUP];
@@ -35,7 +45,7 @@ export const GROUPS = (
   defaultGroup: GroupValue = GROUP.MAIN_CONTENT,
 ): FieldGroupDefinition[] => {
   const baseGroups: FieldGroupDefinition[] = [
-    { name: GROUP.IDENTITY, icon: DocumentIcon, title: "Identitet" },
+    { name: GROUP.IDENTITY, icon: asStudioIcon(Fingerprint), title: "Identitet" },
     { name: GROUP.MAIN_CONTENT, icon: ComposeIcon, title: "Innhold" },
     { name: GROUP.SEO, icon: SearchIcon, title: "SEO" },
     { name: GROUP.OG, icon: InsertAboveIcon, title: "Open Graph" },
@@ -45,6 +55,14 @@ export const GROUPS = (
     { name: GROUP.RELATIONSHIPS, icon: LinkIcon, title: "Relasjoner" },
     { name: GROUP.STRUCTURED_DATA, icon: JsonIcon, title: "JSON-LD" },
     { name: GROUP.SOME, icon: FaceHappyIcon, title: "Sosiale Medier" },
+    { name: GROUP.ORGANIZATION, icon: asStudioIcon(Building2), title: "Organisasjon" },
+    { name: GROUP.THEME, icon: asStudioIcon(Brush), title: "CSS Variabler" },
+    { name: GROUP.INTEGRATIONS, icon: PlugIcon, title: "Integrasjoner" },
+    {
+      name: GROUP.LEGAL,
+      icon: asStudioIcon(Scale),
+      title: "Juridisk",
+    },
   ];
 
   return baseGroups.map((g) => ({
@@ -53,6 +71,7 @@ export const GROUPS = (
     default: g.name === defaultGroup,
   }));
 };
+
 
 export const API_VERSION =
   process.env.SANITY_STUDIO_API_VERSION ?? "2025-05-08";

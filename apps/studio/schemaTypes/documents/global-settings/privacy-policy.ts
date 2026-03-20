@@ -1,7 +1,5 @@
 import { LockIcon } from "@sanity/icons";
-import { defineType } from "sanity";
-
-import { customRichText } from "@/schemaTypes/definitions/rich-text";
+import { defineField, defineType } from "sanity";
 
 export const globalPrivacyPolicy = defineType({
   name: "globalPrivacyPolicy",
@@ -9,11 +7,13 @@ export const globalPrivacyPolicy = defineType({
   type: "document",
   icon: LockIcon,
   fields: [
-    customRichText(["block"], {
-      name: "content",
-      title: "Innhold",
+    defineField({
+      name: "document",
+      title: "Dokument",
+      type: "reference",
+      to: [{ type: "documentation" }],
       description:
-        "Teksten til personvernerklæringen. Kan arves av nettsteder som ikke har sin egen.",
+        "Peker mot en dokumentasjonsartikkel som inneholder personvernerklæringen. Arves av nettsteder uten egen.",
     }),
   ],
   preview: {

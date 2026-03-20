@@ -1,6 +1,4 @@
 import { GROUP, GROUPS, GroupValue } from "@/utils/constant";
-import { ogFields } from "@/utils/og-fields";
-import { seoFields } from "@/utils/seo-fields";
 import {
   defineField,
   defineType,
@@ -10,6 +8,8 @@ import {
 } from "sanity";
 import { createSiteScopedSlugField } from "./create-slug-field";
 import { ArticleRoot, CatalogRoot, Page } from "@workspace/sanity/types";
+import { createSEOFields } from "./create-seo-fields";
+import { createOGFields } from "./create-og-fields";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -93,25 +93,13 @@ const routableDocumentFields: FieldDefinition[] = [
     group: GROUP.RELATIONSHIPS,
     to: [{ type: "site" }],
     description:
-      "Settes automatisk ved opprettelse. Skrivebeskyttet for å sikre dataintegritet.",
+      "Nye sider kobles automatisk til aktivt nettstedet. Du trenger ikke å foreta deg noe her, feltet er skrivebeskyttet for å sikre dataintegritet.",
     readOnly: true,
     validation: (Rule) => Rule.required(),
   }),
   createSiteScopedSlugField(),
-  defineField({
-    name: "sortOrder",
-    title: "Sorteringsrekkefølge",
-    type: "number",
-    group: GROUP.RELATIONSHIPS,
-    description: "Bestemmer plasseringen blant søskensider.",
-    initialValue: 0,
-  }),
 ];
 
-const seoOgFields: FieldDefinition[] = [
-  ...seoFields.filter((field) => field.name !== "seoHideFromLists"),
-  ...ogFields,
-];
 
 function createParentField(parentTypes: string[]): FieldDefinition {
   return defineField({
@@ -120,7 +108,7 @@ function createParentField(parentTypes: string[]): FieldDefinition {
     type: "reference",
     group: GROUP.RELATIONSHIPS,
     description:
-      "Definerer sidens plassering i sidekartet (både i generering av Sitemap, og i trafikkruting). La feltet stå tomt for sider på toppnivå.",
+      "Definerer sidens plassering i sidehierarkiet. Nye sider referer automatisk til rett forelder avhengig av hvor i hierarkiet de opprettes. Du trenger ikke å foreta deg noe her, feltet er skrivebeskyttet for å sikre dataintegritet.",
     to: parentTypes.map((type) => ({ type })),
     initialValue: undefined,
     options: {
@@ -200,8 +188,19 @@ export function createRoutableDocument(
     // 2. Parent reference (if this type can have a parent)
     ...(parentTypes.length > 0 ? [createParentField(parentTypes)] : []),
 
+    defineField({
+      name: "sortOrder",
+      title: "Sorteringsrekkefølge",
+      type: "number",
+      group: GROUP.RELATIONSHIPS,
+      description: "Bestemmer plasseringen blant søskensider i lister.",
+      initialValue: 0,
+    }),
+
     // 3. SEO & OG
-    ...seoOgFields,
+
+    ...createSEOFields(),
+    ...createOGFields(),
 
     // 4. Pagebuilder (roots / standalone only)
     ...(pagebuilderType ? [createPagebuilderField(pagebuilderType)] : []),

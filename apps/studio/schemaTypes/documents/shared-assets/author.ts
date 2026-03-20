@@ -5,35 +5,35 @@ import { imageWithAltField } from "@/schemaTypes/common";
 
 export const author = defineType({
   name: "author",
-  title: "Author",
+  title: "Forfatter",
   type: "document",
   icon: UserIcon,
   fields: [
     defineField({
       name: "name",
       type: "string",
-      title: "Name",
-      description: "The full name of the person who wrote the content",
+      title: "Navn",
+      description: "Personens fulle navn",
       validation: (Rule) => Rule.required().error("Author name is required"),
     }),
     defineField({
       name: "position",
       type: "string",
-      title: "Position",
+      title: "Rolle",
       description:
-        "The job title or role of this person, like 'Editor' or 'Writer'",
+        "Personens jobbtittel eller rolle, f.eks. 'Redaktør' eller 'Administrator",
     }),
     imageWithAltField({
-      title: "Image",
+      title: "Bilde",
       description:
-        "A photo of the author that will appear next to their articles",
+        "Forfatterens profilbilde. Vises sammen med deres artikler.",
     }),
     defineField({
       name: "bio",
       type: "text",
-      title: "Bio",
+      title: "Biografi",
       description:
-        "A short paragraph about the author's background and expertise",
+        "En kort paragraf om forfatterens bakgrunn og ekspertise.",
       rows: 3,
     }),
   ],
@@ -45,9 +45,9 @@ export const author = defineType({
       bio: "bio",
     },
     prepare: ({ title, position, media, bio }) => {
-      const positionInfo = position ? `💼 ${position}` : "🎭 Mystery Writer";
+      const positionInfo = position ? `${position}` : "Ukjent rolle";
       return {
-        title: `${title || "Unnamed Author"}`,
+        title: `${title || "Forfatter uten navn"}`,
         subtitle: `${positionInfo} | ${bio}`,
         media,
       };

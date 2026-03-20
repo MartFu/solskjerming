@@ -1,4 +1,4 @@
-import { Globe } from "lucide-react";
+import { Globe, SquareMenu } from "lucide-react";
 import type {
   StructureBuilder,
   StructureResolverContext,
@@ -33,7 +33,7 @@ export function buildPageTree(
   return S.listItem()
     .title("Sider")
     .id(`${siteId}-pages`)
-    .icon(Globe)
+    .icon(SquareMenu)
     .child(
       Object.assign(
         S.documentList()

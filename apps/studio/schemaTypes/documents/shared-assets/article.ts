@@ -7,8 +7,8 @@ import { defineArrayMember, defineField, defineType } from "sanity";
 
 import { documentSlugField, imageWithAltField } from "@/schemaTypes/common";
 import { GROUP, GROUPS } from "@/utils/constant";
-import { ogFields } from "@/utils/og-fields";
-import { seoFields } from "@/utils/seo-fields";
+// import { ogFields } from "@/utils/og-fields";
+// import { seoFields } from "@/utils/seo-fields";
 
 export const article = defineType({
   name: "article",
@@ -123,8 +123,8 @@ export const article = defineType({
       title: "Publishing Status",
       type: "deploymentMeta",
     }),
-    ...seoFields,
-    ...ogFields,
+    // ...seoFields,
+    // ...ogFields,
   ],
   preview: {
     select: {

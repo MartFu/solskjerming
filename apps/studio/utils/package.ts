@@ -18,8 +18,12 @@ export interface PackageDefinition {
   rootType: string;
   childType: string;
   rootTitle: string;
-  icon: LucideIcon;
+  rootDescription?: string;
+
+  rootIcon: LucideIcon;
   childTitle: string;
+
+  childDescription?: string;
   childIcon: LucideIcon;
   packageKey: string;
   rootTemplateId: string;
@@ -30,8 +34,9 @@ export interface PackageDefinition {
 export const PACKAGES: PackageDefinition[] = [
   {
     rootTitle: "Arkiv",
+    rootDescription: "En side som støtter søkbare lister over alle artikler.",
     rootType: "articleRoot",
-    icon: BookOpen,
+    rootIcon: BookOpen,
     childTitle: "Artikkelside",
     childType: "articlePage",
     childIcon: FileText,
@@ -42,7 +47,7 @@ export const PACKAGES: PackageDefinition[] = [
   },
   {
     rootTitle: "Katalog",
-    icon: ShoppingCart,
+    rootIcon: ShoppingCart,
     rootType: "catalogRoot",
     childType: "productPage",
     childTitle: "Produktside",
@@ -66,6 +71,21 @@ export const PACKAGES: PackageDefinition[] = [
   // ────────────────────────────────────────────────────
 ];
 
+// ─────────────────────────────────────────────────────────────
+// Package options
+// ─────────────────────────────────────────────────────────────
+// This list must stay in sync with the PACKAGES registry in
+// structure.ts. When you add a new package, add an entry here.
+// ─────────────────────────────────────────────────────────────
+
+export const PACKAGE_OPTIONS = [
+    { title: "Artikler", value: "articles" },
+    { title: "Netthandel", value: "commerce" },
+    // { title: "Arrangementer", value: "eventRoot" },
+] as const;
+
+export type PackageKey = (typeof PACKAGE_OPTIONS)[number]["value"];
+
 export const packagesByRootType = new Map(
   PACKAGES.map((pkg) => [pkg.rootType, pkg]),
 );
@@ -76,3 +96,4 @@ export const packagesByChildType = new Map(
 
 // Every type that can appear at the top level of the page tree
 export const ALL_ROOT_TYPES = ["page", ...PACKAGES.map((p) => p.rootType)];
+

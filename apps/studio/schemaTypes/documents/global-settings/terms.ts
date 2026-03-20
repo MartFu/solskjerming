@@ -1,7 +1,5 @@
 import { DocumentsIcon } from "@sanity/icons";
-import { defineType } from "sanity";
-
-import { customRichText } from "@/schemaTypes/definitions/rich-text";
+import { defineField, defineType } from "sanity";
 
 export const globalTerms = defineType({
   name: "globalTerms",
@@ -9,11 +7,13 @@ export const globalTerms = defineType({
   type: "document",
   icon: DocumentsIcon,
   fields: [
-    customRichText(["block"], {
-      name: "content",
-      title: "Innhold",
+    defineField({
+      name: "document",
+      title: "Dokument",
+      type: "reference",
+      to: [{ type: "documentation" }],
       description:
-        "Teksten til vilkår og betingelser. Kan arves av nettsteder som ikke har sine egne.",
+        "Peker mot en dokumentasjonsartikkel som inneholder vilkår og betingelser. Arves av nettsteder uten egne.",
     }),
   ],
   preview: {

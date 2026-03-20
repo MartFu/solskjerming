@@ -1,6 +1,6 @@
 import { GROUP, GROUPS } from "@/utils/constant";
-import { createOGFields } from "@/utils/og-fields";
-import { createSEOFields } from "@/utils/seo-fields";
+import { createOGFields, createSEOFields } from "@/utils/factories";
+
 import { SearchIcon } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
 

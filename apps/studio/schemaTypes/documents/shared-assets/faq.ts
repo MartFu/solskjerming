@@ -1,4 +1,3 @@
-import { MessageCircle } from "lucide-react";
 import { defineField, defineType } from "sanity";
 
 import { customRichText } from "@/schemaTypes/definitions/rich-text";

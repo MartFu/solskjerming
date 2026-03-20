@@ -32,18 +32,18 @@ async function validateRedirectLoop(
 
 export const redirect = defineType({
   name: "redirect",
-  title: "Redirect",
+  title: "Rediringering",
   type: "document",
-  description: "Redirect for next.config.js",
+  description: "Redirigering for next.config.js",
   fields: [
     defineField({
       name: "status",
       type: "string",
-      description: "Enable or disable this redirect",
+      description: "Aktiver eller deaktiver denne redirigeringen.",
       options: {
         list: [
-          { title: "Active", value: "active" },
-          { title: "Inactive", value: "inactive" },
+          { title: "Aktive", value: "active" },
+          { title: "Inaktiv", value: "inactive" },
         ],
         layout: "radio",
       },
@@ -52,7 +52,7 @@ export const redirect = defineType({
     defineField({
       name: "source",
       type: "slug",
-      description: "The path to redirect from",
+      description: "Stien det skal redirigeres fra",
       options: {
         isUnique: () => true,
       },
@@ -61,15 +61,15 @@ export const redirect = defineType({
         rule.custom<SlugValue>(async (value, { document, getClient }) => {
           const source = value?.current;
           if (!(value && source)) {
-            return "Can't be blank";
+            return "Kan ikke være tom";
           }
           if (!source.startsWith("/")) {
-            return "The path must start with a /";
+            return "Stien må starte med /";
           }
 
           const destination = (document?.destination as SlugValue)?.current;
           if (source === destination) {
-            return "Source and destination cannot be the same URL";
+            return "Kilden og destinasjonen kan ikke ha samme URL";
           }
           const client = getClient({ apiVersion: API_VERSION });
           const existingRedirect = await validateRedirectLoop(client, {
@@ -77,7 +77,7 @@ export const redirect = defineType({
             slug: source,
           });
           if (existingRedirect) {
-            return "This would create a redirect loop - a redirect already exists from the source";
+            return "Denne konfigurasjonen ville ha skapt en redirigeringsløkke - en redirigering eksisterer allerede fra denne kilden";
           }
           return true;
         }),
@@ -86,7 +86,7 @@ export const redirect = defineType({
     defineField({
       name: "destination",
       type: "slug",
-      description: "The path to redirect to",
+      description: "Stien det skal redirigeres til",
       options: {
         isUnique: () => true,
       },
@@ -95,14 +95,14 @@ export const redirect = defineType({
         rule.custom<SlugValue>(async (value, { getClient, document }) => {
           const destination = value?.current;
           if (!(value && destination)) {
-            return "Can't be blank";
+            return "Kan ikke være tom";
           }
           if (!destination.startsWith("/")) {
-            return "The path must start with a /";
+            return "Stien må starte med /";
           }
           const source = (document as unknown as Redirect)?.source?.current;
           if (destination === source) {
-            return "Source and destination cannot be the same URL";
+            return "Kilden og destinasjonen kan ikke ha samme URL";
           }
           const client = getClient({ apiVersion: API_VERSION });
           const existingRedirect = await validateRedirectLoop(client, {
@@ -110,7 +110,7 @@ export const redirect = defineType({
             slug: destination,
           });
           if (existingRedirect) {
-            return "This would create a redirect loop - a redirect already exists from the destination";
+            return "Denne konfigurasjonen ville ha skapt en redirigeringsløkke - en redirigering eksisterer allerede fra denne destinasjonen";
           }
           return true;
         }),
@@ -120,11 +120,11 @@ export const redirect = defineType({
       name: "permanent",
       type: "string",
       description:
-        "Whether this is a permanent (301) or temporary (302) redirect",
+        "Hvorvidt dette er en permanent (301) eller midlertidig (302) redirigering",
       options: {
         list: [
           { title: "Permanent (301)", value: "true" },
-          { title: "Temporary (302)", value: "false" },
+          { title: "Midlertidig (302)", value: "false" },
         ],
         layout: "radio",
       },
@@ -133,6 +133,7 @@ export const redirect = defineType({
     defineField({
       name: "site",
       type: "reference",
+      title: "Nettsted",
       to: [{ type: "site" }],
     }),
   ],
