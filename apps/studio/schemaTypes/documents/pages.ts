@@ -178,6 +178,14 @@ export const articlePage = createRoutableDocument({
                 "Bør samsvare med en av kategoriene definert på bloggens hovedside.",
         }),
         defineField({
+            name: "publishedAt",
+            title: "Publisert dato",
+            type: "date",
+            initialValue: () => new Date().toISOString().split("T")[0],
+            group: GROUP.MAIN_CONTENT,
+            description: "Datoen artikkelen ble publisert.",
+        }),
+        defineField({
             name: "body",
             title: "Brødtekst",
             type: "richText",

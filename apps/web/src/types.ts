@@ -1,16 +1,15 @@
 import type { FilterByType, Get } from "@sanity/codegen";
 import type {
-  QueryArticleIndexPageArticlesResult, 
-  QueryArticleSlugPageDataResult,
-  QueryGlobalSeoSettingsResult,
   QueryHomePageDataResult,
   QueryImageTypeResult,
   QueryNavbarDataResult,
+  QueryPageBySlugResult,
+  QuerySiteConfigResult,
 } from "@workspace/sanity/types";
 
 export type PageBuilderBlock = Get<
   QueryHomePageDataResult,
-  "pageBuilder",
+  "pagebuilder",
   number
 >;
 
@@ -25,21 +24,21 @@ export type SanityButtonProps = Get<PagebuilderType<"hero">, "buttons", number>;
 
 export type SanityImageProps = NonNullable<QueryImageTypeResult>;
 
-export type SanityRichTextProps = Get<QueryArticleSlugPageDataResult, "richText">;
+export type SanityRichTextProps = Get<QueryPageBySlugResult, "richText">;
 
 export type SanityRichTextBlock = FilterByType<
   NonNullable<NonNullable<SanityRichTextProps>[number]>,
   "block"
 >;
 
-export type Article = Get<QueryArticleIndexPageArticlesResult, number>;
+export type Article = NonNullable<QueryPageBySlugResult>;
 
 export type Maybe<T> = T | null | undefined;
 
 // Navigation types
 export type NavigationData = {
   navbarData: QueryNavbarDataResult;
-  settingsData: QueryGlobalSeoSettingsResult;
+  settingsData: QuerySiteConfigResult;
 };
 
 export type NavColumn = Get<QueryNavbarDataResult, "columns", number>;

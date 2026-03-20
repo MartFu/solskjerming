@@ -1,11 +1,14 @@
 import { sanityFetchBuild } from "@workspace/sanity/build-client";
-import { queryHomePageData, querySlugPageData } from "@workspace/sanity/query";
+import { queryHomePageData, queryPageBySlug } from "@workspace/sanity/query";
 import {
   QueryHomePageDataResult,
-  QuerySlugPageDataResult,
+  QueryPageBySlugResult,
 } from "@workspace/sanity/types";
 
-export async function getPageData(slug: string, siteId: string): Promise<QueryHomePageDataResult | QuerySlugPageDataResult>{
+export async function getPageData(
+  slug: string,
+  siteId: string,
+): Promise<QueryHomePageDataResult | QueryPageBySlugResult> {
   const isHome = slug === "/" || slug === "";
 
   if (isHome) {
@@ -16,7 +19,7 @@ export async function getPageData(slug: string, siteId: string): Promise<QueryHo
   }
 
   return sanityFetchBuild({
-    query: querySlugPageData,
+    query: queryPageBySlug,
     params: { slug, siteId },
   });
 }

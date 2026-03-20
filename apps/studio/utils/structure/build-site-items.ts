@@ -34,7 +34,7 @@ export function buildSiteItems(
     }),
 
     S.listItem()
-      .title(`${capitalize(site.title)} Innstillinger`)
+      .title("Innstillinger")
       .id(`${site._id}-settings`)
       .icon(Settings)
       .child(

@@ -1,6 +1,6 @@
 "use client";
 
-import { QuerySitesListResult } from "@workspace/sanity/types";
+import { QuerySiteDomainsResult } from "@workspace/sanity/types";
 // components/site-picker.tsx
 //
 // Rendered when no siteId is present in the URL. Shows a list of available
@@ -10,10 +10,8 @@ import { QuerySitesListResult } from "@workspace/sanity/types";
 
 import { useRouter } from "next/navigation";
 
-
-
 type SitePickerProps = {
-  sites: QuerySitesListResult;
+  sites: QuerySiteDomainsResult;
 };
 
 export function SitePicker({ sites }: SitePickerProps) {
@@ -53,10 +51,10 @@ export function SitePicker({ sites }: SitePickerProps) {
             <li key={site._id}>
               <button
                 className="w-full rounded-lg border border-border bg-background px-4 py-3 text-left text-sm transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                onClick={() => handleSelect(site.slug)}
+                onClick={() => handleSelect(site.slug ?? "")}
                 type="button"
               >
-                <span className="font-medium">{site.title}</span>
+                <span className="font-medium">{site._id}</span>
                 <span className="ml-2 font-mono text-xs text-muted-foreground">
                   {site.slug}
                 </span>

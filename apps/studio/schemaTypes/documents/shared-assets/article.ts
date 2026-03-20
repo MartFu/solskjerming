@@ -2,7 +2,6 @@ import {
   orderRankField,
   orderRankOrdering,
 } from "@sanity/orderable-document-list";
-import { FileTextIcon } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 import { documentSlugField, imageWithAltField } from "@/schemaTypes/common";

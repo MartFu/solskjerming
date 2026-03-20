@@ -53,9 +53,9 @@ export default async function Page({
 
   if (!pageData) return notFound();
 
-  const { pageBuilder, _id, _type, title } = pageData;
+  const { pagebuilder, _id, _type, title } = pageData;
 
-  if (!Array.isArray(pageBuilder) || pageBuilder.length === 0) {
+  if (!Array.isArray(pagebuilder) || pagebuilder.length === 0) {
     return (
       <div className="flex min-h-[50vh] flex-col items-center justify-center p-4 text-center">
         <h1 className="mb-4 font-semibold text-2xl capitalize">{title}</h1>
@@ -69,7 +69,7 @@ export default async function Page({
 
   return (
     <PageBuilder
-      pageBuilder={pageBuilder}
+      pageBuilder={pagebuilder}
       id={_id}
       type={_type}
       siteId={siteId}

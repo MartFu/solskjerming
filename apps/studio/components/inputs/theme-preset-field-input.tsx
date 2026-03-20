@@ -8,7 +8,10 @@ import { ThemePresetPicker } from "./theme-preset-picker";
 
 // ─── globalTheme variant ──────────────────────────────────────────────────────
 
-export function ThemePresetFieldInput(_props: StringInputProps) {
+export function ThemePresetFieldInput(
+  _props: StringInputProps,
+  { focusTheme }: { focusTheme?: "light" | "dark" },
+) {
   const rawId = useFormValue(["_id"]) as string;
   const documentId = rawId?.replace(/^drafts\./, "");
   const documentType = useFormValue(["_type"]) as string;
@@ -23,7 +26,12 @@ export function ThemePresetFieldInput(_props: StringInputProps) {
     [patch],
   );
 
-  return <ThemePresetPicker onApply={handleApply} />;
+  return (
+    <ThemePresetPicker
+      onApply={handleApply}
+      focusTheme={focusTheme}
+    />
+  );
 }
 
 // ─── siteTheme variant ────────────────────────────────────────────────────────

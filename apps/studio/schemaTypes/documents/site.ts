@@ -50,6 +50,7 @@ export const site = defineType({
           "Forside er påkrevd for riktig routing. Dersom du ignorerer denne feilen risikerer du at nettsiden ikke fungerer.",
         ),
     }),
+    { ...enabledPackagesField, group: GROUP.IDENTITY },
     defineField({
       name: "siteIdentity",
       title: "Nettadresse",
@@ -93,46 +94,12 @@ export const site = defineType({
         }),
       ],
     }),
-    { ...enabledPackagesField, group: GROUP.IDENTITY },
-
-    // ── BRANDING ──────────────────────────────────────────────
-    defineField({
-      name: "logo",
-      title: "Logo",
-      type: "image",
-      group: GROUP.BRANDING,
-      description: "Hovedlogo for denne nettsiden.",
-      options: { hotspot: true },
-    }),
-    defineField({
-      name: "favicon",
-      title: "Favicon",
-      type: "image",
-      group: GROUP.BRANDING,
-      description: "Ikonet som vises i nettleserfanen.",
-    }),
 
     // ── SOME ──────────────────────────────────────────────────
     ...createSocialFields(),
 
     // ── ORGANIZATION ──────────────────────────────────────────
-    defineField({
-      name: "contact",
-      group: GROUP.ORGANIZATION,
-      title: "Besøksadresse",
-      description: "Fysisk adresse som skal vises på denne nettsiden.",
-      type: "address",
-    }),
-    ...createOrganizationFields({
-      nameDescription: "Navnet på organisasjonen.",
-      organizationNumberDescription:
-        "Organisasjonsnummer for juridisk fotnote.",
-      emailDescription: "Primær e-postadresse for kontakt.",
-      phoneDescription: "Telefonnummer for kundesupport/kontakt.",
-      addressDescription: "Postadresse eller besøksadresse.",
-      includeLogo: false,
-      includeFavicon: false,
-    }).map((field) => ({ ...field, group: GROUP.ORGANIZATION })),
+    ...createOrganizationFields(),
 
     // ── SEO ───────────────────────────────────────────────────
     ...createSEOFields({
@@ -153,7 +120,7 @@ export const site = defineType({
     // ── THEME ─────────────────────────────────────────────────
     defineField({
       name: "themePreset",
-      title: "Tema-preset",
+      title: "CSS Variabler",
       description: "Velg en visuell stil for denne nettsiden.",
       type: "string",
       group: GROUP.THEME,

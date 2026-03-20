@@ -6,7 +6,7 @@ import {
   PreviewConfig,
   SchemaTypeDefinition,
 } from "sanity";
-import { createSiteScopedSlugField } from "./create-slug-field";
+import { createSiteScopedSlugField } from "./create-site-scoped-slug-field";
 import { ArticleRoot, CatalogRoot, Page } from "@workspace/sanity/types";
 import { createSEOFields } from "./create-seo-fields";
 import { createOGFields } from "./create-og-fields";

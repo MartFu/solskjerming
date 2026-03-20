@@ -31,7 +31,7 @@ const HoverCard = styled(Card)`
   &:hover {
     background: var(--card-bg-color);
     /* Manually setting a 'neutral' feel if the tone isn't enough */
-    filter: brightness(0.95);
+    filter: brightness(0.92);
 
     .show-on-card-hover {
       opacity: 1;
@@ -79,15 +79,12 @@ function TreeNodeRow({
     <Box>
       <HoverCard
         radius={0}
-        // tone={isHovered ? "neutral" : "inherit"}
         paddingY={2}
         paddingRight={3}
         style={{
           paddingLeft: depth * 16 + 4,
           position: "relative",
         }}
-        // onMouseEnter={() => setIsHovered(true)}
-        // onMouseLeave={() => setIsHovered(false)}
       >
         {/* Indent guide line */}
         {depth > 0 && (
@@ -115,6 +112,7 @@ function TreeNodeRow({
             style={{
               flexShrink: 0,
               height: 24,
+              width: 24,
               opacity: hasChildren ? 1 : 0.15,
               pointerEvents: hasChildren ? "auto" : "none",
             }}

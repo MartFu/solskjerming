@@ -1,7 +1,8 @@
-import { Box, Button, Card, Flex, Grid, Stack, Text } from "@sanity/ui";
+import { Badge, Box, Button, Card, Flex, Grid, Stack, Text } from "@sanity/ui";
 
 import type { ColorTokens, Theme } from "@/utils/themes";
 import { themes } from "@/utils/themes";
+import { useState } from "react";
 
 // ─── Color strip ──────────────────────────────────────────────────────────────
 // Shows the 4 most palette-differentiating tokens as equal-width bands.
@@ -36,7 +37,19 @@ function ColorStrip({
 // ─── Single theme card ────────────────────────────────────────────────────────
 // #NOTE: When ready to add richer previews, the ThemeCard component is the right place to extend
 
-function ThemeCard({ theme, onApply }: { theme: Theme; onApply: () => void }) {
+function ThemeCard({
+  theme,
+  focus,
+  onApply,
+}: {
+  theme: Theme;
+  focus: "light" | "dark" | undefined;
+  onApply: () => void;
+}) {
+  const [isHovered, setIsHovered] = useState(false);
+  const lightHeight = focus === "light" || !focus ? 32 : 20;
+  const darkHeight = focus === "dark" ? 32 : 20;
+
   return (
     <Button
       as="button"
@@ -50,14 +63,19 @@ function ThemeCard({ theme, onApply }: { theme: Theme; onApply: () => void }) {
         textAlign: "left",
       }}
       onClick={onApply}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <Flex
         direction={"column"}
         justify={"space-between"}
         gap={0}
       >
-        <Box padding={2}>
-          <Stack space={1}>
+        <Flex
+          padding={2}
+          justify="space-between"
+        >
+          <Stack space={2}>
             <Text
               size={1}
               weight="semibold"
@@ -68,22 +86,33 @@ function ThemeCard({ theme, onApply }: { theme: Theme; onApply: () => void }) {
               size={0}
               muted
             >
-              Lyst · Mørkt
+              Modus: Lys, mørk
             </Text>
           </Stack>
-        </Box>
+
+          <Box style={{ opacity: isHovered ? 1 : 0, transition: "ease"}}>
+            <Badge tone="suggest" padding={2}>
+              <Text
+                size={0}
+                style={{ lineHeight: 1.8 }}
+              >
+                Bruk tema
+              </Text>
+            </Badge>
+          </Box>
+        </Flex>
 
         <Card border>
           <Stack space={0}>
             {/* Light mode palette — taller, primary view */}
             <ColorStrip
               tokens={theme.light}
-              height={32}
+              height={lightHeight}
             />
             {/* Dark mode palette — narrower hint strip */}
             <ColorStrip
               tokens={theme.dark}
-              height={20}
+              height={darkHeight}
             />
           </Stack>
         </Card>
@@ -95,8 +124,10 @@ function ThemeCard({ theme, onApply }: { theme: Theme; onApply: () => void }) {
 // ─── Preset strip ─────────────────────────────────────────────────────────────
 
 export function ThemePresetPicker({
+  focusTheme,
   onApply,
 }: {
+  focusTheme?: "light" | "dark";
   onApply: (theme: Theme) => void;
 }) {
   return (
@@ -107,11 +138,12 @@ export function ThemePresetPicker({
         paddingTop={2}
         paddingLeft={2}
       >
-        {themes.map((theme) => (
+        {themes.map((t) => (
           <ThemeCard
-            key={theme.name}
-            theme={theme}
-            onApply={() => onApply(theme)}
+            key={t.name}
+            theme={t}
+            onApply={() => onApply(t)}
+            focus={focusTheme}
           />
         ))}
       </Grid>

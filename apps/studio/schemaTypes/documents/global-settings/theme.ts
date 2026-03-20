@@ -23,6 +23,7 @@ export const globalTheme = defineType({
     { name: "dark", title: "Mørk modus", icon: MoonIcon },
     { name: "general", title: "Generelt" },
   ],
+
   fields: [
     // No group → renders above the tab bar, always visible
     defineField({
@@ -31,7 +32,10 @@ export const globalTheme = defineType({
       description:
         "Kom raskt i gang med et harmonisk, forhåndsdefinert tema eller definer et helt eget.",
       type: "string",
-      components: { input: ThemePresetFieldInput },
+      group: ["light", "dark"],
+      components: {
+        input: (props) => ThemePresetFieldInput(props, { focusTheme: "light" }),
+      },
     }),
     { ...requiredColorModeField("light"), group: "light" },
     { ...requiredColorModeField("dark"), group: "dark" },

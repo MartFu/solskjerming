@@ -96,13 +96,13 @@ export function buildGlobalItems(
       ),
 
     S.listItem()
-      .title("Innstillinger")
+      .title("Globale Innstillinger")
       .id("global-settings")
       .icon(Settings)
       .child(
         S.list()
           .id("global-settings-list")
-          .title("Innstillinger")
+          .title("Globale Innstillinger")
           .items([
             S.listItem()
               .title("Organisasjon")
@@ -162,6 +162,17 @@ export function buildGlobalItems(
           .id("deployment-dashboard")
           .component(DeploymentDashboard)
           .title("Distribusjonssenter"),
+      ),
+
+    S.listItem()
+      .title("SEO Analyse")
+      .id("seo-center")
+      .icon(Search)
+      .child(
+        S.component()
+          .id("seo-dashboard")
+          .component(DeploymentDashboard)
+          .title("SEO Analyse"),
       ),
   ];
 }

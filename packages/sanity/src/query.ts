@@ -15,11 +15,8 @@ const ogFieldsFragment = /* groq */ `
     defined(seoDescription) => seoDescription,
     description
   ),
-  "image": image.asset->url + "?w=566&h=566&dpr=2&fit=max",
-  "dominantColor": image.asset->metadata.palette.dominant.background,
-  "seoImage": seoImage.asset->url + "?w=1200&h=630&dpr=2&fit=max",
-  "logo": *[_type == "settings"][0].logo.asset->url + "?w=80&h=40&dpr=3&fit=max&q=100",
-  "date": coalesce(date, _createdAt)
+  "ogImage": ogImage.asset->url + "?w=1200&h=630&dpr=2&fit=max",
+  "seoImage": seoImage.asset->url + "?w=1200&h=630&dpr=2&fit=max"
 `;
 
 const seoFragment = /* groq */ `
@@ -82,6 +79,21 @@ const markDefsFragment = /* groq */ `
 
 const richTextFragment = /* groq */ `
   richText[]{
+    ...,
+    _type == "block" => {
+      ...,
+      ${markDefsFragment}
+    },
+    _type == "image" => {
+      ${imageFields},
+      "caption": caption
+    }
+  }
+`;
+
+// For articlePage documents where the body field is named "body" (not "richText")
+const articleBodyFragment = /* groq */ `
+  "richText": body[]{
     ...,
     _type == "block" => {
       ...,
@@ -222,11 +234,35 @@ const richTextBlockFragment = /* groq */ `
   }
 `;
 
+
+const articleFeedBlock = /* groq */ `
+  _type == "articleFeed" => {
+    ...,
+    _type,
+    _key,
+    title,
+    eyebrow,
+    articleView,
+    columns,
+    showExcerpt,
+    limit,
+    // Expand the referenced articles if they are manually selected
+    "articles": articles[]->{
+      ${articleCardFragment}
+    },
+    // If you are fetching articles dynamically based on the 'articleView'
+    "filteredArticles": *[_type == "articlePage" && !(_id in path("drafts.**"))] | order(publishedAt desc) [0...$limit] {
+      ${articleCardFragment}
+    }
+  }
+`;
+
 const pageBuilderFragment = /* groq */ `
-  pageBuilder[]{
+  pagebuilder[]{
     ...,
     _type,
     ${ctaBlock},
+    ${articleFeedBlock},
     ${heroBlock},
     ${faqAccordionBlock},
     ${featureCardsIconBlock},
@@ -237,7 +273,7 @@ const pageBuilderFragment = /* groq */ `
 `;
 
 export const queryImageType = defineQuery(`
-  *[_type == "page" && defined(image)][0]{
+  *[_type == "author" && defined(image)][0]{
     ${imageFragment}
   }.image
 `);
@@ -245,155 +281,80 @@ export const queryImageType = defineQuery(`
 // ─── Home Page ────────────────────────────────────────────────────────────────
 
 export const queryHomePageData = defineQuery(`
-  *[_type == "homePage" && site._ref == $siteId][0]{
-    ...,
-    _id,
-    _type,
-    "slug": slug.current,
-    title,
-    description,
-    ${pageBuilderFragment}
-  }
-`);
-
-export const queryHomePageOGData = defineQuery(`
-  *[_type == "homePage" && _id == $id][0]{
-    ${ogFieldsFragment}
-  }
+  *[_type == "site" && _id == $siteId][0]
+    .homePage->{
+      _id,
+      _type,
+      "slug": slug.current,
+      title,
+      description,
+      seoTitle,
+      seoDescription,
+      seoNoIndex,
+      ${pageBuilderFragment}
+    }
 `);
 
 // ─── Sites ────────────────────────────────────────────────────────────────────
 
-export const querySitesList =
-    defineQuery(`*[_type == "site"] | order(title asc) {
-  _id,
-  title,
-  "slug": id
-}`);
-
 export const querySiteDomains = defineQuery(`
   *[_type == "site" && !(_id in path("drafts.**"))] {
     _id,
-    "slug": slug.current,
-    domain
+    "slug": siteIdentity.slug.current,
+    "domain": siteIdentity.domain
   }
 `);
 
 // ─── Pages ────────────────────────────────────────────────────────────────────
-
-export const querySlugPageData = defineQuery(`
-  *[_type == "page" && site._ref == $siteId && defined(slug.current) && slug.current == $slug][0]{
-    _id,
-    _type,
-    "slug": slug.current,
-    title,
-    description,
-    seoTitle,
-    seoDescription,
-    ${pageBuilderFragment}
-  }
-`);
-
-export const querySlugPagePaths = defineQuery(`
-  *[_type == "page" && defined(slug.current) && defined(siteId)]{
-    "slug": slug.current,
-    "siteId": siteId
-  }
-`);
-
-export const querySlugPageOGData = defineQuery(`
-  *[_type == "page" && _id == $id][0]{
-    ${ogFieldsFragment}
-  }
-`);
-
-export const queryAllPageSlugs = defineQuery(`
-  *[_type in ["page", "homePage", "articleIndex", "article"] && site._ref == $siteId && defined(slug.current)] {
-    _type,
-    "slug": slug.current,
-    "isHomePage": _type == "homePage"
-  }
-`);
-
-export const queryAllPageSlugsForBuild = defineQuery(`
-  *[_type in ["page", "homePage", "articleIndex", "article"] && defined(slug.current)] {
-    "slug": slug.current
-  }
-`);
-
+ 
 export const queryPageBySlug = defineQuery(`
-  *[_type in ["homePage", "page", "articleIndex", "article"] && site._ref == $siteId && slug.current == $slug][0]{
+  *[
+    _type in ["page","articleRoot","articlePage","catalogRoot","productPage"]
+    && site._ref == $siteId
+    && slug.current == $slug
+  ][0]{
     _id,
     _type,
+    "slug": slug.current,
     title,
     description,
     seoTitle,
     seoDescription,
     seoNoIndex,
-    "displayFeaturedArticles": select(_type == "articleIndex" => displayFeaturedArticles == "yes"),
-    "featuredArticlesCount": select(_type == "articleIndex" => featuredArticlesCount),
-    "slug": slug.current,
     ${pageBuilderFragment},
+    "displayFeaturedArticles": displayFeaturedArticles == "yes",
+    "featuredArticlesCount": featuredArticlesCount,
+    excerpt,
+    publishedAt,
     ${articleAuthorFragment},
-    ${imageFragment},
-    ${richTextFragment}
+    "coverImage": coverImage { ${imageFields} },
+    ${articleBodyFragment},
+    product->{
+      _id,
+      title,
+      "slug": slug.current,
+    },
+    marketingCopy,
   }
 `);
 
-// ─── Articles (formerly blog) ─────────────────────────────────────────────────
-
-export const queryArticleIndexPageData = defineQuery(`
-  *[_type == "articleIndex" && site._ref == $siteId][0]{
-    ...,
-    _id,
-    _type,
-    title,
-    description,
-    "displayFeaturedArticles": displayFeaturedArticles == "yes",
-    "featuredArticlesCount": featuredArticlesCount,
-    ${pageBuilderFragment},
+export const queryAllPageSlugsForBuild = defineQuery(`
+  *[
+    _type in ["page","articleRoot","articlePage","catalogRoot","productPage"]
+    && defined(slug.current)
+  ]{
     "slug": slug.current
   }
 `);
 
-export const queryArticleIndexPageArticles = defineQuery(`
-  *[_type == "article" && site._ref == $siteId && (seoHideFromLists != true)]
-    | order(orderRank asc) [$start...$end]{
-    ${articleCardFragment}
-  }
-`);
-
-export const queryAllArticleDataForSearch = defineQuery(`
-  *[_type == "article" && site._ref == $siteId && defined(slug.current) && (seoHideFromLists != true)]{
-    ${articleCardFragment}
-  }
-`);
-
-export const queryArticleIndexPageArticlesCount = defineQuery(`
-  count(*[_type == "article" && site._ref == $siteId && (seoHideFromLists != true)])
-`);
-
-export const queryArticleSlugPageData = defineQuery(`
-  *[_type == "article" && site._ref == $siteId && slug.current == $slug][0]{
-    ...,
-    "slug": slug.current,
-    ${articleAuthorFragment},
-    ${imageFragment},
-    ${richTextFragment},
-    ${pageBuilderFragment}
-  }
-`);
-
-export const queryArticlePaths = defineQuery(`
-  *[_type == "article" && defined(slug.current) && defined(siteId)]{
-    "slug": slug.current,
-    "siteId": siteId
-  }
-`);
-
-export const queryArticlePageOGData = defineQuery(`
-  *[_type == "article" && _id == $id][0]{
-    ${ogFieldsFragment}
+export const queryAllPageSlugs = defineQuery(`
+  *[
+    _type in ["page","articleRoot","articlePage","catalogRoot","productPage"]
+    && site._ref == $siteId
+    && defined(slug.current)
+  ]{
+    _type,
+    "slug": slug.current
   }
 `);
 
@@ -457,47 +418,29 @@ export const queryNavbarData = defineQuery(`
   }
 `);
 
-// ─── Settings ─────────────────────────────────────────────────────────────────
+// ─── Site Config (replaces Settings) ──────────────────────────────────────────
 
-export const queryGlobalSeoSettings = defineQuery(`
-  *[_type == "settings" && site._ref == $siteId][0]{
-    _id,
-    _type,
-    siteTitle,
-    logo {
-      ${imageFields}
-    },
-    siteDescription,
-    socialLinks{
-      linkedin,
-      facebook,
-      twitter,
-      instagram,
-      youtube
-    }
-  }
-`);
-
-export const querySettingsData = defineQuery(`
-  *[_type == "settings" && site._ref == $siteId][0]{
-    _id,
-    _type,
-    siteTitle,
-    siteDescription,
-    "logo": logo.asset->url + "?w=80&h=40&dpr=3&fit=max",
-    "socialLinks": socialLinks,
-    "contactEmail": contactEmail,
+export const querySiteConfig = defineQuery(`
+  *[_type == "site" && _id == $siteId][0]{
+    title,
+    "logo": logo { ${imageFields} },
+    "favicon": favicon { ${imageFields} },
+    social,
+    metaTitle,
+    metaDescription,
+    email,
+    phone,
   }
 `);
 
 // ─── Sitemap ──────────────────────────────────────────────────────────────────
 
 export const querySitemapData = defineQuery(`{
-  "slugPages": *[_type == "page" && site._ref == $siteId && defined(slug.current)]{
-    "slug": slug.current,
-    "lastModified": _updatedAt
-  },
-  "articlePages": *[_type == "article" && site._ref == $siteId && defined(slug.current)]{
+  "pages": *[
+    _type in ["page","articleRoot","articlePage","catalogRoot","productPage"]
+    && site._ref == $siteId
+    && defined(slug.current)
+  ]{
     "slug": slug.current,
     "lastModified": _updatedAt
   }
