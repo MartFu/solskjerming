@@ -2,13 +2,15 @@ import { UserIcon } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
 
 import { imageWithAltField } from "@/schemaTypes/common";
+import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
 
 export const author = defineType({
-  name: "author",
+  name: DOCUMENT_NAMES.author,
   title: "Forfatter",
   type: "document",
   icon: UserIcon,
   fields: [
+    // Add component linking to the author's creations
     defineField({
       name: "name",
       type: "string",
@@ -25,15 +27,13 @@ export const author = defineType({
     }),
     imageWithAltField({
       title: "Bilde",
-      description:
-        "Forfatterens profilbilde. Vises sammen med deres artikler.",
+      description: "Forfatterens profilbilde. Vises sammen med deres artikler.",
     }),
     defineField({
       name: "bio",
       type: "text",
       title: "Biografi",
-      description:
-        "En kort paragraf om forfatterens bakgrunn og ekspertise.",
+      description: "En kort paragraf om forfatterens bakgrunn og ekspertise.",
       rows: 3,
     }),
   ],

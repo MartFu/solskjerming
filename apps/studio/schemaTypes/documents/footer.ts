@@ -1,5 +1,6 @@
 import { LayoutPanelLeft, Link, PanelBottom } from "lucide-react";
 import { defineField, defineType } from "sanity";
+import { DOCUMENT_NAMES } from "../constant";
 
 const footerColumnLink = defineField({
     name: "footerColumnLink",
@@ -83,46 +84,46 @@ const footerColumn = defineField({
 });
 
 export const footer = defineType({
-    name: "footer",
-    type: "document",
-    title: "Footer",
-    description: "Footer content for your website",
-    fields: [
-        defineField({
-            name: "label",
-            type: "string",
-            initialValue: "Footer",
-            title: "Label",
-            description: "Label used to identify footer in the CMS",
-            validation: (rule) => rule.required(),
-        }),
-        defineField({
-            name: "subtitle",
-            type: "text",
-            rows: 2,
-            title: "Subtitle",
-            description: "Subtitle that sits beneath the logo in the footer",
-        }),
-        defineField({
-            name: "site",
-            type: "reference",
-            to: [{ type: "site" }],
-        }),
-        defineField({
-            name: "columns",
-            type: "array",
-            title: "Columns",
-            description: "Columns for the footer",
-            of: [footerColumn],
-        }),
-    ],
-    preview: {
-        select: {
-            title: "label",
-        },
-        prepare: ({ title }) => ({
-            title: title || "Untitled Footer",
-            media: PanelBottom,
-        }),
+  name: DOCUMENT_NAMES.footer,
+  type: "document",
+  title: "Footer",
+  description: "Footer content for your website",
+  fields: [
+    defineField({
+      name: "label",
+      type: "string",
+      initialValue: "Footer",
+      title: "Label",
+      description: "Label used to identify footer in the CMS",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "subtitle",
+      type: "text",
+      rows: 2,
+      title: "Subtitle",
+      description: "Subtitle that sits beneath the logo in the footer",
+    }),
+    defineField({
+      name: "site",
+      type: "reference",
+      to: [{ type: "site" }],
+    }),
+    defineField({
+      name: "columns",
+      type: "array",
+      title: "Columns",
+      description: "Columns for the footer",
+      of: [footerColumn],
+    }),
+  ],
+  preview: {
+    select: {
+      title: "label",
     },
+    prepare: ({ title }) => ({
+      title: title || "Untitled Footer",
+      media: PanelBottom,
+    }),
+  },
 });

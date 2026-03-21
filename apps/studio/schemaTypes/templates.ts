@@ -1,5 +1,23 @@
+import { API_VERSION, WorkspaceKey } from "@/utils/constant";
 import { PACKAGES } from "@/utils/package";
-import type { Template } from "sanity";
+import {
+  GlobalCompliance,
+  GlobalIntegrations,
+  GlobalOrganization,
+  GlobalRobots,
+  GlobalSeo,
+  GlobalStructuredData,
+  GlobalTheme,
+} from "@workspace/sanity/types";
+import type { SanityClient, SourceClientOptions, Template } from "sanity";
+import slugify from "slugify";
+
+// ─────────────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────────────
+
+export const from = <T>(source: T | null | undefined, pick: (s: T) => object) =>
+  source ? pick(source) : {};
 
 // ─────────────────────────────────────────────────────────────
 // Template types
@@ -15,8 +33,155 @@ interface ChildParams {
 }
 
 interface WorkspaceParams {
-  workspace: string;
+  workspace: WorkspaceKey;
 }
+
+type SiteTemplateParams = {
+  workspace: WorkspaceKey;
+  getClient: (options: SourceClientOptions) => SanityClient;
+};
+
+export const siteTemplate: Template<SiteTemplateParams> = {
+  id: "site-template",
+  title: "Nettsted",
+  schemaType: "site",
+  value: async ({
+    workspace,
+    getClient,
+  }: SiteTemplateParams) => {
+    console.log("--- using site-template ---")
+    console.log("--- with params", workspace, getClient)
+
+    const client = getClient({ apiVersion: API_VERSION });
+
+    const globals = await client.fetch<{
+      org: GlobalOrganization;
+      seo: GlobalSeo;
+      theme: GlobalTheme;
+      integrations: GlobalIntegrations;
+      compliance: GlobalCompliance;
+      structuredData: GlobalStructuredData;
+      robots: GlobalRobots;
+    }>(`{
+      "org":            *[_type == "globalOrganization"][0],
+      "seo":            *[_type == "globalSeo"][0],
+      "compliance":     *[_type == "globalCompliance"][0],
+      "theme":          *[_type == "globalTheme"][0],
+      "integrations":   *[_type == "globalIntegrations"][0],
+      "structuredData": *[_type == "globalstructuredData"][0],
+      "robots":         *[_type == "globalRobots"][0],
+    }`);
+
+    const rekey = (arr: any[] | undefined) =>
+      (arr ?? []).map(({ _key, ...rest }: any) => ({
+        ...rest,
+        _key: crypto.randomUUID().slice(0, 8),
+      }));
+
+    const {
+      org,
+      seo,
+      theme,
+      integrations,
+      compliance,
+      robots: robotsDoc,
+      structuredData: structuredDataDoc,
+    } = globals;
+
+    return {
+      // ── Organization ──
+      ...from(
+        org,
+        ({
+          name,
+          organizationNumber,
+          email,
+          phone,
+          address,
+          linkedin,
+          facebook,
+          instagram,
+          youtube,
+          twitter,
+          favicon,
+          logo,
+        }) => ({
+          name,
+          organizationNumber,
+          email,
+          phone,
+          address,
+          linkedin,
+          facebook,
+          instagram,
+          youtube,
+          twitter,
+          favicon,
+          logo,
+        }),
+      ),
+
+      // ── SEO ──
+      ...from(
+        seo,
+        ({
+          metaTitle,
+          metaDescription,
+          googleSiteVerification,
+          ogTitle,
+          ogDescription,
+          ogImage,
+        }) => ({
+          seoTitle: metaTitle,
+          seoDescription: metaDescription,
+          googleSiteVerification,
+          ogTitle,
+          ogDescription,
+          ogImage,
+        }),
+      ),
+
+      // ── Theme ──
+      ...from(theme, ({ light, dark }) => ({ light, dark })),
+
+      // ── Robots ──
+      ...from(robotsDoc?.robots, ({ maxSnippet, maxImagePreview, maxVideoPreview }) => ({
+        maxSnippet,
+        maxImagePreview,
+        maxVideoPreview,
+      })),
+
+      // ── Structured Data ──
+      ...from(structuredDataDoc?.structuredData, ({ organization, website }) => ({
+        organization,
+        website,
+      })),
+
+      // ── Integrations ──
+      ...from(
+        integrations,
+        ({ googleAnalyticsId, gtmContainerId, facebookPixelId }) => ({
+          googleAnalyticsId,
+          gtmContainerId,
+          facebookPixelId,
+        }),
+      ),
+
+      // ── Compliance (cookies + legal) ──
+      ...from(
+        compliance,
+        ({ bannerTitle, bannerDescription, categories, legalDocuments }) => ({
+          bannerTitle,
+          bannerDescription,
+          categories: rekey(categories),
+          legalDocuments: rekey(legalDocuments),
+        }),
+      ),
+
+      workspace
+    };
+  },
+};
 
 // ─────────────────────────────────────────────────────────────
 // Root / standalone types — created with a site reference
@@ -184,6 +349,36 @@ function createPackageChildTemplates(): Template[] {
   }));
 }
 
+// Following your existing pattern
+const cookieTemplate: Template = {
+  id: "cookie-consent-with-defaults",
+  title: "Cookie Samtykke med standardvalg",
+  schemaType: "cookieConsent",
+  // We don't necessarily need params here if the defaults are hardcoded,
+  // but we could add some if we wanted to pass a Site ID.
+  parameters: [{ name: "siteId", type: "string" as const }],
+  value: (params: { siteId: string }) => ({
+    // Pre-fill the site reference
+    site: { _type: "reference", _ref: params.siteId },
+
+    // PRE-FILLING THE ARRAY (This addresses your earlier "Defaults" goal)
+    categories: [
+      {
+        _type: "category",
+        label: "Nødvendige",
+        isNecessary: true,
+        id: { _type: "slug", current: "necessary" },
+      },
+      {
+        _type: "category",
+        label: "Analyse",
+        isNecessary: false,
+        id: { _type: "slug", current: "analytics" },
+      },
+    ],
+  }),
+};
+
 // ─────────────────────────────────────────────────────────────
 // Export: plug into sanity.config.ts templates callback
 // ─────────────────────────────────────────────────────────────
@@ -200,4 +395,6 @@ export const initialValueTemplates: Template[] = [
   ...createPackageRootTemplates(),
   createPageNestingTemplate(),
   ...createWorkspaceTemplates(),
+  cookieTemplate,
+  siteTemplate
 ];

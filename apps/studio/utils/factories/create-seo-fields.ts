@@ -1,106 +1,155 @@
 import { defineField } from "sanity";
-import { GROUP } from "../constant";
+import { GROUP, GroupValue } from "../constant";
 
 interface CreateSEOFieldsOptions {
-  seoTitleFieldTitle?: string;
-  seoTitlePrefixFieldTitle?: string;
-  seoTitlePrefixFieldDescription?: string;
-  seoTitleSuffixFieldTitle?: string;
-  seoTitleSuffixFieldDescription?: string;
-  seoTitleFieldDescription?: string;
-  seoDescriptionFieldTitle?: string;
-  seoDescriptionFieldDescription?: string;
-  seoKeywordsFieldTitle?: string;
-  includeSeoHideFromList?: boolean;
+  isDefault?: boolean;
+  isSite?: boolean;
+  isPage?: boolean;
+  group?: GroupValue;
 }
 
-export const createSEOFields = ({
-  seoTitleFieldTitle,
-  seoTitlePrefixFieldTitle,
-  seoTitlePrefixFieldDescription,
-  seoTitleSuffixFieldTitle,
-  seoTitleSuffixFieldDescription,
-  seoTitleFieldDescription,
-  seoDescriptionFieldTitle,
-  seoDescriptionFieldDescription,
-  seoKeywordsFieldTitle,
-}: CreateSEOFieldsOptions | undefined = {}) => [
-  defineField({
-    name: "metaTitle",
-    title: seoTitleFieldTitle ?? "Metatittel",
+const DEFAULTS = {
+  focusKeyphrase: {
+    title: "Fokus-nøkkelord",
     description:
-      seoTitleFieldDescription ||
-      "Vises som tittelen i søkeresultater (Google).",
-    type: "string",
-    validation: (rule) => [
-      rule.required().warning("Metatittel er anbefalt for SEO"),
-      rule
-        .max(60)
-        .warning(
-          "Tittelen bør være under 60 tegn for å unngå kutting i Google",
-        ),
-    ],
-    group: GROUP.SEO,
-  }),
-  defineField({
-    name: "titlePrefix",
-    title: seoTitlePrefixFieldTitle ?? "Metatittel-prefiks",
-    type: "string",
-    group: GROUP.SEO,
-    description:
-      seoTitlePrefixFieldDescription ??
-      'Tekst som legges til på starten av alle sidetitler, f.eks. "Bedrift AS |".',
-  }),
-  defineField({
-    name: "titleSuffix",
-    title: seoTitleSuffixFieldTitle ?? "Metatittel-suffiks",
-    type: "string",
-    group: GROUP.SEO,
-    description:
-      seoTitleSuffixFieldDescription ??
-      'Tekst som legges til på slutten av alle sidetitler, f.eks. "| Bedrift AS".',
-  }),
-  defineField({
-    name: "metaDescription",
-    title: seoDescriptionFieldTitle ?? "Metabeskrivelse",
-    description:
-      seoDescriptionFieldDescription ??
-      "Kort oppsummering av siden for søkemotorer.",
-    type: "text",
-    rows: 3,
-    validation: (rule) => [
-      rule.required().warning("Metabeskrivelse er viktig for klikkrate"),
-      rule
-        .max(160)
-        .warning("Beskrivelser over 160 tegn blir ofte kuttet av Google"),
-    ],
-    group: GROUP.SEO,
-  }),
+      "Det primære ordet eller frasen du ønsker at denne siden skal rangere på i søkeresultater.",
+  },
+  metaTitle: {
+    title: "Metatittel",
+    description: "Vises som tittelen i søkeresultater (Google).",
+  },
+  metaDescription: {
+    title: "Metabeskrivelse",
+    description: "Kort oppsummering av siden for søkemotorer.",
+  },
+  prefix: {
+    title: "Metatittel-prefiks",
+    description: 'Tekst på starten av alle titler, f.eks. "Bedrift AS |".',
+  },
+  suffix: {
+    title: "Metatittel-suffiks",
+    description: 'Tekst på slutten av alle titler, f.eks. "| Bedrift AS".',
+  },
+  verification: {
+    googleTitle: "Google Search Console-bekreftelse",
+    googleDesc: "Kun 'content'-verdien fra meta-tagen.",
+    bingTitle: "Bing Webmaster Tools-bekreftelse",
+    bingDesc: "Verifiseringskoden for Bing/Microsoft.",
+  },
+};
 
-  defineField({
-    name: "metaKeywords",
-    title: seoKeywordsFieldTitle ?? "Nøkkelord",
-    type: "array",
-    group: GROUP.SEO,
-    of: [{ type: "string" }],
-    description: "Liste over nøkkelord for søkemotorer.",
-  }),
-  defineField({
-    name: "seoNoIndex",
-    title: "Ikke indekser denne siden",
-    description:
-      "Hvis denne er krysset av, vil ikke siden dukke opp i søkemotorer som Google.",
-    type: "boolean",
-    initialValue: false,
-    group: GROUP.SEO,
-  }),
-//   defineField({
-//     name: "seoHideFromLists",
-//     title: "Skjul fra lister",
-//     description:
-//       "Hvis denne er krysset av, vil ikke innholdet vises i automatisk genererte lister (f.eks. en liste med blogginnlegg).",
-//     type: "boolean",
-//     initialValue: () => false,
-//     group: GROUP.SEO,
-//   }),
-];
+export const createSEOFields = (options: CreateSEOFieldsOptions = {}) => {
+  const { isDefault, isSite, isPage, group = GROUP.SEO } = options;
+
+  return [
+    // 1. Focus Keyphrase (Mainly for Pages)
+    ...(isPage
+      ? [
+          defineField({
+            name: "focusKeyphrase",
+            title: DEFAULTS.focusKeyphrase.title,
+            description:
+              DEFAULTS.focusKeyphrase.description +
+              (isDefault
+                ? " Bør være ganske generelt i globale innstillinger. Arves av nye sider."
+                : ""),
+            type: "string",
+            group,
+          }),
+        ]
+      : []),
+
+    // 2. Core Meta
+    defineField({
+      name: "metaTitle",
+      title: DEFAULTS.metaTitle.title,
+      description:
+        DEFAULTS.metaTitle.description +
+        (isDefault ? " Arves av nye sider." : ""),
+      type: "string",
+      group,
+      validation: (Rule) => [
+        Rule.required().warning(
+          "Uten tittel velger Google noe tilfeldig fra siden.",
+        ),
+        Rule.max(60).warning(
+          "Tittelen er for lang og vil bli kuttet i søkeresultater.",
+        ),
+      ],
+    }),
+
+    // 3. Global Site Decoration (Only for Site Config)
+    ...(isSite
+      ? [
+          defineField({
+            name: "titlePrefix",
+            title: DEFAULTS.prefix.title,
+            description:
+              DEFAULTS.prefix.description +
+              (isDefault ? " Arves ikke automatisk av nye sider." : ""),
+            type: "string",
+            group,
+          }),
+          defineField({
+            name: "titleSuffix",
+            title: DEFAULTS.suffix.title,
+            description:
+              DEFAULTS.suffix.description +
+              (isDefault ? " Arves ikke automatisk av nye sider." : ""),
+            type: "string",
+            group,
+          }),
+        ]
+      : []),
+
+    defineField({
+      name: "metaDescription",
+      title: DEFAULTS.metaDescription.title,
+      description:
+        DEFAULTS.metaDescription.description +
+        (isDefault ? " Arves av nye sider." : ""),
+      type: "text",
+      rows: 3,
+      group,
+      validation: (Rule) => [
+        Rule.required().warning(
+          "Beskrivelse mangler. Dette er din 'elevator pitch' i Google.",
+        ),
+        Rule.max(160).warning("Beskrivelsen er for lang (maks 160 tegn)."),
+      ],
+    }),
+
+    // 4. Technical SEO
+    ...(isPage
+      ? [
+          defineField({
+            name: "canonicalUrl",
+            title: "Canonical URL",
+            description: "Lenke til originalside ved duplisert innhold.",
+            type: "url",
+            group,
+          }),
+        ]
+      : []),
+
+    // 5. Site Verification (Only for Site Config)
+    ...(isSite
+      ? [
+          defineField({
+            name: "googleSiteVerification",
+            title: DEFAULTS.verification.googleTitle,
+            description: DEFAULTS.verification.googleDesc,
+            type: "string",
+            group,
+          }),
+          defineField({
+            name: "bingSiteVerification",
+            title: DEFAULTS.verification.bingTitle,
+            description: DEFAULTS.verification.bingDesc,
+            type: "string",
+            group,
+          }),
+        ]
+      : []),
+  ];
+};

@@ -7,12 +7,14 @@ import {
   Rocket,
   Search,
   Settings,
+  ShieldCheck,
   Users,
 } from "lucide-react";
 import { StructureBuilder } from "sanity/structure";
 import { API_VERSION } from "../constant";
-import { DocumentsIcon } from "@sanity/icons";
+import { DocumentsIcon, JsonIcon, PackageIcon, RobotIcon } from "@sanity/icons";
 import { DeploymentDashboard } from "@/components/deployment-dashboard";
+import { asStudioIcon } from "../helper";
 
 // ─────────────────────────────────────────────────────────────
 // Global items (workspace-level, shared across sites)
@@ -76,24 +78,34 @@ export function buildGlobalItems(
     .map((item) => item.item);
 
   return [
-    ...(filteredPkgScopedGlobals.length > 0
-      ? [S.divider().title("Globale Ressurser")]
-      : []),
-
-    ...filteredPkgScopedGlobals,
+    S.divider().title("Globaler"),
 
     S.listItem()
-      .title("Dokumenter")
-      .id("global-documentation")
-      .icon(DocumentsIcon)
+      .title("Ressurser")
+      .id("resources")
+      .icon(PackageIcon)
       .child(
-        S.documentList()
-          .id("global-documentation-list")
-          .title("Dokumenter")
-          .filter('_type == "documentation"')
-          .apiVersion(API_VERSION)
-          .defaultOrdering([{ field: "title", direction: "asc" }]),
+        S.list()
+          .id("resources-list")
+          .title("Ressurser")
+          .items([
+            ...filteredPkgScopedGlobals,
+            S.listItem()
+              .title("Dokumenter")
+              .id("global-documentation")
+              .icon(DocumentsIcon)
+              .child(
+                S.documentList()
+                  .id("global-documentation-list")
+                  .title("Dokumenter")
+                  .filter('_type == "documentation"')
+                  .apiVersion(API_VERSION)
+                  .defaultOrdering([{ field: "title", direction: "asc" }]),
+              ),
+          ]),
       ),
+
+    // ...filteredPkgScopedGlobals,
 
     S.listItem()
       .title("Globale Innstillinger")
@@ -138,6 +150,28 @@ export function buildGlobalItems(
                   .title("SEO & Metadata"),
               ),
             S.listItem()
+              .title("Roboter")
+              .id("global-robots")
+              .icon(RobotIcon)
+              .child(
+                S.document()
+                  .id("global-robots-editor")
+                  .schemaType("globalRobots")
+                  .documentId("globalRobots")
+                  .title("Roboter"),
+              ),
+            S.listItem()
+              .title("Strukturerte Data (JSON-LD)")
+              .id("global-structured-data")
+              .icon(JsonIcon)
+              .child(
+                S.document()
+                  .id("global-structured-data-editor")
+                  .schemaType("globalStructuredData")
+                  .documentId("globalStructuredData")
+                  .title("Strukturerte Data (JSON-LD)"),
+              ),
+            S.listItem()
               .title("Integrasjoner")
               .id("global-integrations")
               .icon(Blocks)
@@ -147,6 +181,17 @@ export function buildGlobalItems(
                   .schemaType("globalIntegrations")
                   .documentId("globalIntegrations")
                   .title("Integrasjoner"),
+              ),
+            S.listItem()
+              .title("GDPR & Juridisk")
+              .id("global-consent")
+              .icon(asStudioIcon(ShieldCheck))
+              .child(
+                S.document()
+                  .id("global-consent-editor")
+                  .schemaType("globalCompliance")
+                  .documentId("globalCompliance")
+                  .title("GDPR & Juridisk"),
               ),
           ]),
       ),

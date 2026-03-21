@@ -2,7 +2,8 @@ import {
   OklchColorInput,
   OklchColorInputOptional,
 } from "@/components/inputs/oklch-color-input";
-import { OKLCH_PATTERN, TOKEN_DEFS } from "@/utils/constant";
+import { OKLCH_PATTERN } from "@/utils/constant";
+import { RADIUS_OPTIONS, TOKEN_DEFS } from "@/utils/themes/constant";
 import { defineField } from "sanity";
 
 
@@ -73,13 +74,7 @@ export function optionalColorModeField(mode: "light" | "dark") {
 
 // ─── Radius field ─────────────────────────────────────────────────────────────
 
-export const RADIUS_OPTIONS = [
-  { title: "Ingen", value: "0rem" },
-  { title: "Liten", value: "0.25rem" },
-  { title: "Medium", value: "0.5rem" },
-  { title: "Stor", value: "0.75rem" },
-  { title: "Rund", value: "1rem" },
-];
+
 
 export const requiredRadiusField = defineField({
   name: "radius",

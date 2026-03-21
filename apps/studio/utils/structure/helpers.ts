@@ -1,6 +1,7 @@
 import { LucideIcon } from "lucide-react";
 import { StructureBuilder } from "sanity/structure";
 import { paneId } from "../pane-ids";
+import { WorkspaceKey } from "../constant";
 
 // ─────────────────────────────────────────────────────────────
 // Singleton helper
@@ -13,7 +14,7 @@ export function createSingleton(
     title: string;
     icon: LucideIcon;
     siteId: string;
-    workspace: string;
+    workspace: WorkspaceKey;
   },
 ) {
   const docId = paneId.singleton(opts.siteId, opts.type);

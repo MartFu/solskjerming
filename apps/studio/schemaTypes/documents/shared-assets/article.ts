@@ -6,11 +6,12 @@ import { defineArrayMember, defineField, defineType } from "sanity";
 
 import { documentSlugField, imageWithAltField } from "@/schemaTypes/common";
 import { GROUP, GROUPS } from "@/utils/constant";
+import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
 // import { ogFields } from "@/utils/og-fields";
 // import { seoFields } from "@/utils/seo-fields";
 
 export const article = defineType({
-  name: "article",
+  name: DOCUMENT_NAMES.article,
   title: "Article",
   type: "document",
   // icon: FileTextIcon,

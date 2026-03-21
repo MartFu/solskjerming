@@ -3,6 +3,7 @@ import { capitalize } from "../helper";
 import { createSingleton } from "./helpers";
 import { buildPageTree } from "./build-page-tree";
 import { PanelBottom, PanelTop, Settings } from "lucide-react";
+import { WorkspaceKey } from "../constant";
 
 // ─────────────────────────────────────────────────────────────
 // Site content
@@ -11,7 +12,7 @@ import { PanelBottom, PanelTop, Settings } from "lucide-react";
 export function buildSiteItems(
   S: StructureBuilder,
   site: { _id: string; title: string; enabledPackages?: string[] },
-  workspace: string,
+  workspace: WorkspaceKey,
   context: StructureResolverContext,
 ) {
   return [
@@ -41,6 +42,10 @@ export function buildSiteItems(
         S.document()
           .id(`${site._id}-settings-editor`)
           .schemaType("site")
+          .initialValueTemplate("site-template", {
+            workspace,
+            getClient: context.getClient,
+          })
           .documentId(site._id),
       ),
   ];

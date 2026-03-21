@@ -3,6 +3,7 @@ import type { SanityClient, SlugValue } from "sanity";
 import { defineField, defineType, getDraftId, getPublishedId } from "sanity";
 
 import { API_VERSION } from "@/utils/constant";
+import { DOCUMENT_NAMES } from "../constant";
 
 type Redirect = {
   source: SlugValue;
@@ -31,7 +32,7 @@ async function validateRedirectLoop(
 }
 
 export const redirect = defineType({
-  name: "redirect",
+  name: DOCUMENT_NAMES.redirect,
   title: "Rediringering",
   type: "document",
   description: "Redirigering for next.config.js",

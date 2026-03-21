@@ -571,7 +571,7 @@ interface OklchColorInputProps extends StringInputProps {
   optional?: boolean;
 }
 
-export function OklchColorInput(props: OklchColorInputProps) {
+export const OklchColorInput = memo(function OklchColorInput(props: OklchColorInputProps) {
   const { value, onChange, readOnly, optional, path } = props;
 
   const [open, setOpen] = useState(false);
@@ -670,7 +670,7 @@ export function OklchColorInput(props: OklchColorInputProps) {
       )}
     </>
   );
-}
+})
 
 // ─── Optional variant ─────────────────────────────────────────────────────────
 

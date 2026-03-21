@@ -1,15 +1,17 @@
-import { GROUP, GROUPS } from "@/utils/constant";
+import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
+import { GROUPS } from "@/utils/constant";
 import { createOrganizationFields } from "@/utils/factories/create-organization-fields";
 import { createSocialFields } from "@/utils/factories/create-social-fields";
-import { UsersIcon } from "@sanity/icons";
+import { asStudioIcon } from "@/utils/helper";
+import { Building2 } from "lucide-react";
 import { defineType } from "sanity";
 
 export const globalOrganization = defineType({
-  name: "globalOrganization",
+  name: DOCUMENT_NAMES.globalOrganization,
   title: "Organisasjon",
   type: "document",
-  icon: UsersIcon,
-  groups: GROUPS(GROUP.IDENTITY),
+  icon: asStudioIcon(Building2),
+  groups: GROUPS(),
   fields: [
     ...createOrganizationFields({
       nameDescription:
@@ -28,8 +30,7 @@ export const globalOrganization = defineType({
     ...createSocialFields({
       linkedinDescription:
         "Fullstendig URL til LinkedIn-profil eller bedriftsside. Arves av nettsteder uten egne lenker.",
-      facebookDescription:
-        "Fullstendig URL til Facebook-profil eller side.",
+      facebookDescription: "Fullstendig URL til Facebook-profil eller side.",
       instagramDescription: "Fullstendig URL til Instagram-profil.",
       youtubeDescription: "Fullstendig URL til YouTube-kanal.",
       twitterDescription: "Fullstendig URL til Twitter/X-profil.",

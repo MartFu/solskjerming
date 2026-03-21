@@ -1,16 +1,17 @@
+import { WorkspaceKey } from "./constant";
 import { ActiveSite } from "./types";
 
 export const STUDIO_CONTEXT_LS_KEY = (
-  workspace: string | undefined = "solskjerming",
+  workspace: WorkspaceKey | undefined = "solskjerming",
 ) => `studio.navigator:${workspace}:active-site`;
 export type StudioContext = {
   level: "workspace" | "site";
-  workspace: string;
+  workspace: WorkspaceKey;
   siteId: string | null;
   siteTitle: string | null;
 };
 
-export function getActiveSite(workspace: string): ActiveSite | null {
+export function getActiveSite(workspace: WorkspaceKey): ActiveSite | null {
   try {
     const raw = sessionStorage.getItem(STUDIO_CONTEXT_LS_KEY(workspace));
     return raw ? (JSON.parse(raw) as ActiveSite) : null;
@@ -20,7 +21,7 @@ export function getActiveSite(workspace: string): ActiveSite | null {
 }
 
 // Unified helper to write the site
-export function setActiveSite(workspace: string, site: ActiveSite | null) {
+export function setActiveSite(workspace: WorkspaceKey, site: ActiveSite | null) {
   try {
     if (site) {
       sessionStorage.setItem(

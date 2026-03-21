@@ -4,12 +4,13 @@ import {
   defineType,
   FieldDefinition,
   PreviewConfig,
-  SchemaTypeDefinition,
 } from "sanity";
 import { createSiteScopedSlugField } from "./create-site-scoped-slug-field";
 import { ArticleRoot, CatalogRoot, Page } from "@workspace/sanity/types";
 import { createSEOFields } from "./create-seo-fields";
 import { createOGFields } from "./create-og-fields";
+import { createStructuredDataFields } from "./create-structured-data-fields";
+import { createRobotsFields } from "./create-robots-fields";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -26,9 +27,9 @@ export type AnyRoutableDocument = Page | ArticleRoot | CatalogRoot;
  * Root / standalone documents additionally receive a pagebuilder.
  * Child documents receive type-specific content fields instead.
  */
-export interface RoutableDocumentConfig {
+export interface RoutableDocumentConfig<N extends string = string>{
   /** Schema type name, e.g. "blogRoot" or "blogPost" */
-  name: string;
+  name: N;
 
   /** Human-readable title shown in the Studio, e.g. "Blog" or "Blog Post" */
   title: string;
@@ -100,8 +101,7 @@ const routableDocumentFields: FieldDefinition[] = [
   createSiteScopedSlugField(),
 ];
 
-
-function createParentField(parentTypes: string[]): FieldDefinition {
+function _createParentField(parentTypes: string[]): FieldDefinition {
   return defineField({
     name: "parent",
     title: "Sidens forelder",
@@ -133,7 +133,7 @@ function createParentField(parentTypes: string[]): FieldDefinition {
   });
 }
 
-function createPagebuilderField(pagebuilderType: string): FieldDefinition {
+function _createPagebuilderField(pagebuilderType: string): FieldDefinition {
   return defineField({
     name: "pagebuilder",
     title: "Sidebygger",
@@ -167,9 +167,9 @@ const defaultPreview: PreviewConfig = {
 // Factory
 // ---------------------------------------------------------------------------
 
-export function createRoutableDocument(
-  config: RoutableDocumentConfig,
-): SchemaTypeDefinition {
+export function createRoutableDocument<N extends string>(
+  config: RoutableDocumentConfig<N>,
+) { 
   const {
     name,
     title,
@@ -186,7 +186,7 @@ export function createRoutableDocument(
     ...routableDocumentFields,
 
     // 2. Parent reference (if this type can have a parent)
-    ...(parentTypes.length > 0 ? [createParentField(parentTypes)] : []),
+    ...(parentTypes.length > 0 ? [_createParentField(parentTypes)] : []),
 
     defineField({
       name: "sortOrder",
@@ -198,12 +198,25 @@ export function createRoutableDocument(
     }),
 
     // 3. SEO & OG
+    ...createSEOFields({
+      isPage: true,
+    }),
+    ...createOGFields({
+      isPage: true,
+    }),
+    ...createStructuredDataFields({
+      isPage: true,
+      group: GROUP.STRUCTURED_DATA,
+    }),
 
-    ...createSEOFields(),
-    ...createOGFields(),
+    // ── ROBOTS ─────────────────────────────────────────
+    ...createRobotsFields({
+      isPage: true,
+      group: GROUP.ROBOTS,
+    }),
 
     // 4. Pagebuilder (roots / standalone only)
-    ...(pagebuilderType ? [createPagebuilderField(pagebuilderType)] : []),
+    ...(pagebuilderType ? [_createPagebuilderField(pagebuilderType)] : []),
 
     // 5. Type-specific fields
     ...extraFields,

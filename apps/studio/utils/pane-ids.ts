@@ -1,9 +1,11 @@
 // paneIds.ts
 
+import { WorkspaceKey } from "./constant";
+
 export const paneId = {
     singleton: (siteId: string, type: string) => `${siteId}-${type}`,
     list: (siteId: string, type: string) => `${siteId}-${type}-list`,
-    workspace: (workspace: string, type: string) => `${workspace}-${type}`,
+    workspace: (workspace: WorkspaceKey, type: string) => `${workspace}-${type}`,
     settings: (siteId: string) => `${siteId}-settings`,
 } as const;
 

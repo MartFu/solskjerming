@@ -1,13 +1,27 @@
-import { Badge, Box, Button, Card, Flex, Grid, Stack, Text } from "@sanity/ui";
+import {
+  Badge,
+  Box,
+  Button,
+  Card,
+  Flex,
+  Grid,
+  Stack,
+  Text,
+  Tooltip,
+} from "@sanity/ui";
 
-import type { ColorTokens, Theme } from "@/utils/themes";
+import type { ThemeTokens, Theme } from "@/utils/themes";
 import { themes } from "@/utils/themes";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { InfoOutlineIcon } from "@sanity/icons";
+import { formatThemeAsCSS, getThemeVariables } from "@/utils/themes/themeToCss";
+import { CopyButton } from "../copy-button";
+import { Divider } from "../divider";
 
 // ─── Color strip ──────────────────────────────────────────────────────────────
 // Shows the 4 most palette-differentiating tokens as equal-width bands.
 
-const PREVIEW_KEYS: (keyof ColorTokens)[] = [
+const PREVIEW_KEYS: (keyof ThemeTokens)[] = [
   "background",
   "primary",
   "secondary",
@@ -18,7 +32,7 @@ function ColorStrip({
   tokens,
   height,
 }: {
-  tokens: Partial<ColorTokens>;
+  tokens: Partial<ThemeTokens>;
   height: number;
 }) {
   return (
@@ -40,29 +54,40 @@ function ColorStrip({
 function ThemeCard({
   theme,
   focus,
+  isActive,
   onApply,
 }: {
   theme: Theme;
   focus: "light" | "dark" | undefined;
+  isActive: boolean;
   onApply: () => void;
 }) {
   const [isHovered, setIsHovered] = useState(false);
-  const lightHeight = focus === "light" || !focus ? 32 : 20;
-  const darkHeight = focus === "dark" ? 32 : 20;
+
+
+  const heights = useMemo(
+    () => ({
+      light: focus === "light" || !focus ? 32 : 20,
+      dark: focus === "dark" ? 32 : 20,
+    }),
+    [focus],
+  );
 
   return (
     <Button
-      as="button"
+      as="div"
       radius={2}
       padding={0}
       tone="default"
-      mode="bleed"
+      mode={isActive ? "ghost" : "bleed"}
       style={{
         cursor: "pointer",
         overflow: "hidden",
         textAlign: "left",
       }}
-      onClick={onApply}
+      onClick={() => {
+        if (!isActive) onApply();
+      }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -76,27 +101,117 @@ function ThemeCard({
           justify="space-between"
         >
           <Stack space={2}>
-            <Text
-              size={1}
-              weight="semibold"
+            <Flex
+              align="center"
+              gap={2}
             >
-              {theme.label}
-            </Text>
-            <Text
-              size={0}
-              muted
+              <Text
+                size={1}
+                weight="semibold"
+              >
+                {theme.label}
+              </Text>
+
+              {isHovered && (
+                <CopyButton
+                  tooltip="Kopier tema"
+                  value={getThemeVariables(theme)}
+                />
+              )}
+            </Flex>
+
+            <Flex
+              gap={3}
+              align="center"
             >
-              Modus: Lys, mørk
-            </Text>
+              <Flex
+                align="center"
+                gap={1}
+              >
+                <Text
+                  size={0}
+                  muted
+                >
+                  Lys Modus
+                </Text>
+                <Tooltip
+                  content={
+                    <Stack space={2}>
+                      {Object.keys(theme.light).map((key) => (
+                        <Text
+                          key={key}
+                          size={0}
+                          muted
+                        >
+                          <strong>{key}</strong>
+                          {` -> ${theme.light[key as keyof ThemeTokens]}`}
+                        </Text>
+                      ))}
+                    </Stack>
+                  }
+                  placement="bottom"
+                  portal
+                >
+                  <InfoOutlineIcon style={{ flexShrink: 0 }} />
+                </Tooltip>
+
+                <CopyButton
+                  tooltip="Kopier lys"
+                  value={formatThemeAsCSS(theme.light)}
+                />
+              </Flex>
+
+              <Divider />
+
+              <Flex
+                align="center"
+                gap={1}
+              >
+                <Text
+                  size={0}
+                  muted
+                >
+                  Mørk Modus
+                </Text>
+                <Tooltip
+                  content={
+                    <Stack space={2}>
+                      {Object.keys(theme.dark).map((key) => (
+                        <Text
+                          key={key}
+                          size={0}
+                          muted
+                        >
+                          <strong>{key}</strong>
+                          {`-> ${theme.dark[key as keyof ThemeTokens]}`}
+                        </Text>
+                      ))}
+                    </Stack>
+                  }
+                  portal
+                  placement="bottom-end"
+                >
+                  <InfoOutlineIcon style={{ flexShrink: 0 }} />
+                </Tooltip>
+
+                <CopyButton
+                  tooltip="Kopier mørk"
+                  value={formatThemeAsCSS(theme.dark, ".dark")}
+                />
+              </Flex>
+            </Flex>
           </Stack>
 
-          <Box style={{ opacity: isHovered ? 1 : 0, transition: "ease"}}>
-            <Badge tone="suggest" padding={2}>
+          <Box style={{ opacity: isHovered || isActive ? 1 : 0, transition: "ease" }}>
+            <Badge
+              tone="suggest"
+              padding={2}
+            >
               <Text
                 size={0}
                 style={{ lineHeight: 1.8 }}
               >
-                Bruk tema
+                {isActive ? "Aktiv" : "Bruk tema"}
               </Text>
             </Badge>
           </Box>
@@ -107,12 +222,12 @@ function ThemeCard({
             {/* Light mode palette — taller, primary view */}
             <ColorStrip
               tokens={theme.light}
-              height={lightHeight}
+              height={heights.light}
             />
             {/* Dark mode palette — narrower hint strip */}
             <ColorStrip
               tokens={theme.dark}
-              height={darkHeight}
+              height={heights.dark}
             />
           </Stack>
         </Card>
@@ -126,20 +241,22 @@ function ThemeCard({
 export function ThemePresetPicker({
   focusTheme,
   onApply,
+  currentPreset
 }: {
   focusTheme?: "light" | "dark";
   onApply: (theme: Theme) => void;
+  currentPreset: Theme["name"] | undefined;
 }) {
   return (
-    <Card borderLeft>
+    <Card>
       <Grid
-        columns={[2, 2, 2, 2]}
+        columns={[1, 1, 1, 2]}
         gap={4}
         paddingTop={2}
-        paddingLeft={2}
       >
         {themes.map((t) => (
           <ThemeCard
+            isActive={t.name === currentPreset}
             key={t.name}
             theme={t}
             onApply={() => onApply(t)}

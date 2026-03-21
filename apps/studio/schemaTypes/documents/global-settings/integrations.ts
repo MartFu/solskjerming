@@ -1,9 +1,10 @@
+import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
 import { createIntegrationFields } from "@/utils/factories/create-integration-fields";
 import { Blocks } from "lucide-react";
 import { defineType } from "sanity";
 
 export const globalIntegrations = defineType({
-  name: "globalIntegrations",
+  name: DOCUMENT_NAMES.globalIntegrations,
   title: "Globale Integrasjoner",
   type: "document",
   icon: Blocks,

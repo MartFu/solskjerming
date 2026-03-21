@@ -5,17 +5,16 @@ import { createOGFields, createSocialFields } from "@/utils/factories";
 import { createSEOFields } from "@/utils/factories";
 import { EarthGlobeIcon } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
-
-import { ThemePresetFieldInput } from "@/components/inputs/theme-preset-field-input";
-import {
-  optionalColorModeField,
-  optionalRadiusField,
-} from "@/schemaTypes/definitions/theme-tokens";
 import { SlugDomainInput } from "@/components/inputs/slug-domain-input";
 import { enabledPackagesField } from "../definitions/enabled-packages";
+import { createThemeFields } from "@/utils/factories/create-theme";
+import { createCookieConsentFields } from "@/utils/factories/create-cookie-consent-fields";
+import { createStructuredDataFields } from "@/utils/factories/create-structured-data-fields";
+import { createRobotsFields } from "@/utils/factories/create-robots-fields";
+import { DOCUMENT_NAMES } from "../constant";
 
 export const site = defineType({
-  name: "site",
+  name: DOCUMENT_NAMES.site,
   title: "Nettside",
   type: "document",
   groups: GROUPS(GROUP.IDENTITY),
@@ -95,6 +94,9 @@ export const site = defineType({
       ],
     }),
 
+    // ── COOKIE CONSENT ──────────────────────────────────────────────────
+    ...createCookieConsentFields(),
+
     // ── SOME ──────────────────────────────────────────────────
     ...createSocialFields(),
 
@@ -103,32 +105,17 @@ export const site = defineType({
 
     // ── SEO ───────────────────────────────────────────────────
     ...createSEOFields({
-      seoTitleFieldTitle: "Sidetittel (SEO)",
-      seoTitleFieldDescription: "Tittelen som vises i søkeresultater.",
-      seoDescriptionFieldTitle: "Beskrivelse (SEO)",
-      seoDescriptionFieldDescription:
-        "Kort tekst som oppsummerer siden for søkemotorer.",
+      isSite: true,
     }),
     ...createOGFields({
-      ogTitleFieldDescription:
-        "Tittel optimalisert for deling på sosiale medier.",
-      ogDescriptionFieldDescription:
-        "Beskrivelse optimalisert for deling på sosiale medier.",
-      ogImageFieldDescription: "Bilde som inkluderes når lenken deles.",
+      isSite: true,
     }),
 
     // ── THEME ─────────────────────────────────────────────────
-    defineField({
-      name: "themePreset",
+    ...createThemeFields({
       title: "CSS Variabler",
       description: "Velg en visuell stil for denne nettsiden.",
-      type: "string",
-      group: GROUP.THEME,
-      components: { input: ThemePresetFieldInput },
     }),
-    { ...optionalColorModeField("light"), group: GROUP.THEME },
-    { ...optionalColorModeField("dark"), group: GROUP.THEME },
-    { ...optionalRadiusField, group: GROUP.THEME },
 
     // ── INTEGRATIONS ──────────────────────────────────────────
     ...createIntegrationFields({
@@ -148,6 +135,18 @@ export const site = defineType({
       group: GROUP.LEGAL,
       description:
         "Referanser til vilkår, personvern og andre juridiske tekster.",
+    }),
+
+    // ── STRUCTURED DATA ─────────────────────────────────────────
+    ...createStructuredDataFields({
+      isSite: true,
+      group: GROUP.STRUCTURED_DATA,
+    }),
+
+    // ── ROBOTS ─────────────────────────────────────────
+    ...createRobotsFields({
+      isSite: true,
+      group: GROUP.ROBOTS,
     }),
 
     // ── RELATIONSHIPS ─────────────────────────────────────────

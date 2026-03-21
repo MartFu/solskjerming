@@ -1,43 +1,28 @@
 import { assist } from "@sanity/assist";
 import { visionTool } from "@sanity/vision";
-import { definePlugin, DocumentActionComponent, WorkspaceOptions } from "sanity";
+import {
+  definePlugin,
+  WorkspaceOptions,
+} from "sanity";
 import { structureTool } from "sanity/structure";
 import { unsplashImageAsset } from "sanity-plugin-asset-source-unsplash";
 import { lucideIconPicker } from "sanity-plugin-lucide-icon-picker";
 import { nbNOLocale } from "@sanity/locale-nb-no";
 import { Logo } from "@/components/logo";
-import { schemaTypes } from "@/schemaTypes/index";
+import { schemaTypes, singletonType } from "@/schemaTypes/index";
 import { JsonIcon } from "@sanity/icons";
 import { ToolLayout } from "./components/toolLayout";
 
 import { createStructure } from "@/utils/structure/structure";
 import { initialValueTemplates } from "./schemaTypes/templates";
-import { useRouter } from "sanity/router";
+import { actionRegistry } from "./utils/actions";
+import { Logger } from "@workspace/logger";
+import { WorkspaceKey } from "./utils/constant";
 
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID ?? "";
+const logger = new Logger("studio-config")
 
-const SitePublishAction = (originalAction: DocumentActionComponent) => {
-    return (props: any) => {
-        const originalResult = originalAction(props);
-        const router = useRouter();
-
-        return {
-            ...originalResult,
-            onHandle: () => {
-                // 1. Run the actual publish
-                originalResult?.onHandle?.();
-
-                // 2. Update the URL with a "cache buster"
-                // This adds ?rev=[timestamp] to the URL
-                router.navigate({
-                    stickyParams: { rev: Date.now().toString() },
-                });
-            },
-        };
-    };
-};
-
-const sharedConfig = definePlugin<{ workspace: string }>(() => ({
+const sharedConfig = definePlugin<{ workspace: WorkspaceKey }>(() => ({
   name: "shared-config",
   document: {
     newDocumentOptions: (prev, { creationContext }) => {
@@ -58,17 +43,43 @@ const sharedConfig = definePlugin<{ workspace: string }>(() => ({
     actions: (prev, context) => {
       const { schemaType } = context;
 
-      // 1. Map over existing actions to wrap "Publish" for the "site" type
-      const updatedActions = prev.map((originalAction) => {
-        if (originalAction.action === "publish" && schemaType === "site") {
-          return SitePublishAction(originalAction);
-        }
-        return originalAction;
-      });
+      logger.info("[actions] -> initializing actions for schemaType:", schemaType)
 
+      // Look up the enhancer for this specific type
+      const enhancer = actionRegistry[schemaType];
 
-      return updatedActions;
+      // If we have a custom strategy for this type, run it.
+      // Otherwise, return the default actions.
+      let actions = enhancer ? enhancer(prev, context) : prev;
+
+      const isSingleton = (singletonType as string[]).includes(schemaType);
+
+      logger.info(
+        "[actions] -> Actions available:",
+        actions,
+      );
+
+      logger.info(
+        "[actions] -> Is schemaType a singleton?:",
+        isSingleton,
+      );
+
+      // Enforce singleton rules for singleton schema types
+      if (isSingleton) {
+        actions.forEach((a) => {
+          logger.info("---- Initialized with Action:", a.action, a);
+        });
+
+        const allowedActions = ["publish", "discardChanges", "restore"];
+
+        actions = actions.filter(
+          (a) => a.action && allowedActions.includes(a.action),
+        );
+      }
+
+      return actions;
     },
+  
   },
   schema: {
     types: schemaTypes,
@@ -77,92 +88,42 @@ const sharedConfig = definePlugin<{ workspace: string }>(() => ({
 }));
 
 export const defineWorkspace = (
-    workspace: string,
-    dataset: string,
+  workspace: WorkspaceKey,
+  dataset: string,
 ): WorkspaceOptions => ({
-    name: workspace,
-    title: workspace.charAt(0).toUpperCase() + workspace.slice(1),
-    icon: Logo,
-    projectId,
-    dataset,
-    basePath: `/${workspace}`,
-    releases: {
-        enabled: true,
-    },
+  name: workspace,
+  title: workspace.charAt(0).toUpperCase() + workspace.slice(1),
+  icon: Logo,
+  projectId,
+  dataset,
+  basePath: `/${workspace}`,
+  releases: {
+    enabled: true,
+  },
 
-    studio: {
-        components: {
-            activeToolLayout: (defaultProps) =>
-                ToolLayout({ config: { workspace } }, defaultProps),
-        },
+  studio: {
+    components: {
+      activeToolLayout: (defaultProps) =>
+        ToolLayout({ config: { workspace } }, defaultProps),
     },
+  },
 
-    plugins: [
-        nbNOLocale(),
-        lucideIconPicker(),
-        unsplashImageAsset(),
-        assist(),
-        sharedConfig({ workspace }),
-        structureTool({
-            title: "Studio",
-            structure: (S, context) => createStructure(S, context, workspace),
-        }),
-        /*   media(), */
-        visionTool({
-            title: "GROQ Vision",
-            icon: JsonIcon,
-        }),
-    ],
+  plugins: [
+    nbNOLocale(),
+    lucideIconPicker(),
+    unsplashImageAsset(),
+    assist(),
+
+    structureTool({
+      title: "Studio",
+      structure: (S, context) => createStructure(S, context, workspace),
+    }),
+    /*   media(), */
+    visionTool({
+      title: "GROQ Vision",
+      icon: JsonIcon,
+    }),
+    sharedConfig({ workspace }),
+  ],
 });
 
-
-/* 
-
- templates: (prev) => [
-            ...prev,
-            ...[
-                "article",
-                "video",
-                "faq",
-                "product",
-                "page",
-                "articleIndex",
-                "homePage",
-            ].map((type) => ({
-                id: `${type}-with-site`,
-                title: `${type.charAt(0).toUpperCase() + type.slice(1)}`,
-                schemaType: type,
-                parameters: [{ name: "siteId", type: "string" }],
-                value: (params: { siteId: string }) => ({
-                    siteId: params.siteId,
-                    site: {
-                        _type: "reference",
-                        _ref: params.siteId,
-                    },
-                }),
-            })),
-            {
-                schemaType: `workspaceDefault`,
-                type: `document`,
-                parameters: [{ name: "workspace", type: "string" }],
-                value: (params: { workspace: string }) => ({
-                    workspace: params.workspace,
-                    title: `${params.workspace.charAt(0).toUpperCase() + params.workspace.slice(1)} - Standardinnstillinger}`,
-                }),
-            },
-            {
-                schemaType: "site",
-                type: "document",
-                parameters: [
-                    {
-                        name: "workspace",
-                        type: "string",
-                    },
-                ],
-                value: (params: { workspace: string }) => ({
-                    workspace: params.workspace,
-                }),
-            },
-        ],
-
-*/

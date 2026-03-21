@@ -2,9 +2,10 @@ import { defineField, defineType } from "sanity";
 
 import { customRichText } from "@/schemaTypes/definitions/rich-text";
 import { parseRichTextToString } from "@/utils/helper";
+import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
 
 export const faq = defineType({
-  name: "faq",
+  name: DOCUMENT_NAMES.faq,
   type: "document",
   title: "Frequently Asked Question",
   description:
@@ -49,7 +50,7 @@ export const faq = defineType({
       type: "string",
       hidden: true,
     }),
-     defineField({
+    defineField({
       name: "order",
       title: "Display Order",
       type: "number",

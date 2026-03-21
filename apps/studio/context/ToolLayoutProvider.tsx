@@ -1,4 +1,4 @@
-import { API_VERSION } from "@/utils/constant";
+import { API_VERSION, WorkspaceKey } from "@/utils/constant";
 import { STUDIO_CONTEXT_LS_KEY } from "@/utils/context";
 import { buildPreviewUrl, getPreviewContext } from "@/utils/preview";
 import { emitSiteChanged } from "@/utils/structure/structure-channel";
@@ -19,7 +19,7 @@ import { RouterPanes } from "sanity/structure";
 
 interface ToolLayoutContextValue {
     /** The Sanity workspace name this tool instance belongs to */
-    workspace: string;
+    workspace: WorkspaceKey;
     /** The currently active site, or null if at workspace level */
     activeSite: ActiveSite | null;
     /** Select a site — persists to sessionStorage */
@@ -55,7 +55,7 @@ const ToolLayoutContext = createContext<ToolLayoutContextValue | null>(null);
 
 // ─── Storage helpers ──────────────────────────────────────────────────────────
 
-function readFromSession(workspace: string): ActiveSite | null {
+function readFromSession(workspace: WorkspaceKey): ActiveSite | null {
     try {
         const raw = sessionStorage.getItem(STUDIO_CONTEXT_LS_KEY(workspace));
         return raw ? (JSON.parse(raw) as ActiveSite) : null;
@@ -64,7 +64,7 @@ function readFromSession(workspace: string): ActiveSite | null {
     }
 }
 
-function writeToSession(workspace: string, site: ActiveSite | null) {
+function writeToSession(workspace: WorkspaceKey, site: ActiveSite | null) {
     try {
         if (site) {
             sessionStorage.setItem(
@@ -82,7 +82,7 @@ function writeToSession(workspace: string, site: ActiveSite | null) {
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 interface ToolLayoutProviderProps {
-    workspace: string;
+    workspace: WorkspaceKey;
     children: React.ReactNode;
 }
 
@@ -111,6 +111,21 @@ export function ToolLayoutProvider({
 
     const previewBase = process.env.SANITY_STUDIO_PREVIEW_BASE_DOMAIN;
     const canPreview = !!preview && (!!activeSite?.domain || !!previewBase);
+
+    // Capture linked traffic
+    useEffect(() => {
+      const params = new URLSearchParams(window.location.search);
+      const siteIdFromUrl = params.get("site");
+
+      if (siteIdFromUrl && activeSite?._id !== siteIdFromUrl) {
+        // Fetch the site metadata and call selectSite(site)
+        client
+          .fetch(`*[_id == $siteId][0]`, { siteId: siteIdFromUrl })
+          .then((newSite) => {
+            if (newSite) selectSite(newSite);
+          });
+      }
+    }, []);
 
     useEffect(() => {
         if (!preview || !activeSite || (!activeSite?.domain && !previewBase))

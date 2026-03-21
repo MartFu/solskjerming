@@ -3,6 +3,7 @@ import { defineField, defineType } from "sanity";
 
 import { lucideIconPreview } from "@/components/icon-preview";
 import { buttonsField, iconField } from "@/schemaTypes/common";
+import { DOCUMENT_NAMES } from "../constant";
 
 const navbarLink = defineField({
   name: "navbarLink",
@@ -145,42 +146,42 @@ const navbarColumn = defineField({
 });
 
 export const navbar = defineType({
-    name: "navbar",
-    title: "Site Navigation",
-    type: "document",
-    icon: PanelTop,
-    description: "Configure the main navigation structure for your site",
-    fields: [
-        defineField({
-            name: "label",
-            type: "string",
-            initialValue: "Navbar",
-            title: "Navigation Label",
-            description:
-                "Internal label to identify this navigation configuration in the CMS",
-            validation: (rule) => rule.required(),
-        }),
-        defineField({
-            name: "site",
-            type: "reference",
-            to: [{ type: "site" }],
-        }),
-        defineField({
-            name: "columns",
-            type: "array",
-            title: "Navigation Structure",
-            description:
-                "Build your navigation menu using columns and links. Add either a column of links or individual links.",
-            of: [navbarColumn, navbarLink],
-        }),
-        buttonsField,
-    ],
-    preview: {
-        select: {
-            title: "label",
-        },
-        prepare: ({ title }) => ({
-            title: title || "Untitled Navigation",
-        }),
+  name: DOCUMENT_NAMES.navbar,
+  title: "Site Navigation",
+  type: "document",
+  icon: PanelTop,
+  description: "Configure the main navigation structure for your site",
+  fields: [
+    defineField({
+      name: "label",
+      type: "string",
+      initialValue: "Navbar",
+      title: "Navigation Label",
+      description:
+        "Internal label to identify this navigation configuration in the CMS",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "site",
+      type: "reference",
+      to: [{ type: "site" }],
+    }),
+    defineField({
+      name: "columns",
+      type: "array",
+      title: "Navigation Structure",
+      description:
+        "Build your navigation menu using columns and links. Add either a column of links or individual links.",
+      of: [navbarColumn, navbarLink],
+    }),
+    buttonsField,
+  ],
+  preview: {
+    select: {
+      title: "label",
     },
+    prepare: ({ title }) => ({
+      title: title || "Untitled Navigation",
+    }),
+  },
 });

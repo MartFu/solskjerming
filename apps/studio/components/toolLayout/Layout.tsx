@@ -28,7 +28,7 @@ export function Layout(props: ActiveToolLayoutProps) {
             >
                 <Box
                     flex={1}
-                    style={{ minHeight: 0 }}
+                    style={{ minHeight: 0, overflow: "auto" }}
                 >
                     {props.renderDefault(props)}
                 </Box>

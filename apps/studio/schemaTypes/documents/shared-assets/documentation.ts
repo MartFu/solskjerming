@@ -1,9 +1,10 @@
+import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
 import { customRichText } from "@/schemaTypes/definitions/rich-text";
 import { DocumentTextIcon } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
 
 export const documentation = defineType({
-  name: "documentation",
+  name: DOCUMENT_NAMES.documentation,
   title: "Dokument",
   type: "document",
   icon: DocumentTextIcon,
@@ -12,14 +13,16 @@ export const documentation = defineType({
       name: "title",
       title: "Tittel",
       type: "string",
-      description: "Internt navn på dokumentet, f.eks. «Personvernerklæring 2025».",
+      description:
+        "Internt navn på dokumentet, f.eks. «Personvernerklæring 2025».",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "docType",
       title: "Dokumenttype",
       type: "string",
-      description: "Velg hvilken type juridisk eller informativt dokument dette er.",
+      description:
+        "Velg hvilken type juridisk eller informativt dokument dette er.",
       options: {
         list: [
           { title: "Personvernerklæring", value: "privacy-policy" },

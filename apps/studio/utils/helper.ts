@@ -202,3 +202,10 @@ export function clamp(v: number, min: number, max: number) {
 export function asStudioIcon(icon: LucideIcon) {
   return () => createElement(icon, { size: 16, strokeWidth: 1.5 });
 }
+
+/**
+ * Converts camelCase to kebab-case
+ * @example cardForeground -> card-foreground
+ */
+export const camelToKebabCase = (str: string) => 
+  str.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();

@@ -1,5 +1,7 @@
+import { WorkspaceKey } from "@/utils/constant";
+
 export interface ProductsPluginConfig {
-  workspace: string;
+  workspace: WorkspaceKey;
 }
 
 export interface Site {

@@ -1,10 +1,11 @@
+import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
 import { GROUPS } from "@/utils/constant";
 // import { ogFields } from "@/utils/og-fields";
 // import { seoFields } from "@/utils/seo-fields";
 import { defineField, defineType } from "sanity";
 
 export const video = defineType({
-  name: "video",
+  name: DOCUMENT_NAMES.video,
   title: "Video",
   type: "document",
   groups: GROUPS(),
@@ -81,7 +82,12 @@ export const video = defineType({
       status: "deployment.status",
     },
     prepare({ title, siteId, status }) {
-      const emoji = { draft: "📝", preview: "👁️", staged: "🚀", published: "✅" };
+      const emoji = {
+        draft: "📝",
+        preview: "👁️",
+        staged: "🚀",
+        published: "✅",
+      };
       return {
         title: `${title} ${emoji?.[status as keyof typeof emoji] || ""}`,
         subtitle: `Video • ${siteId}`,

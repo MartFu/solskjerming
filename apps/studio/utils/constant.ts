@@ -13,11 +13,14 @@ import {
   UsersIcon,
   LockIcon,
   PlugIcon,
-  CaseIcon
+  CaseIcon,
+  SunIcon,
+  MoonIcon,
+  RobotIcon
 } from "@sanity/icons";
 import type { FieldGroupDefinition } from "sanity";
 import { OklchColor } from "./types";
-import { Brush, Building, Building2, Fingerprint, Scale } from "lucide-react";
+import { Brush, Building, Building2, Cookie, Fingerprint, Scale, ShieldCheck } from "lucide-react";
 import { asStudioIcon } from "./helper";
 
 
@@ -37,15 +40,23 @@ export const GROUP = {
   THEME: "theme",
   INTEGRATIONS: "integrations",
   LEGAL: "legal",
+  LIGHT_MODE: "light",
+  DARK_MODE: "dark",
+  COOKIES: 'cookies',
+  ROBOTS: 'robots'
 } as const;
 
 export type GroupValue = typeof GROUP[keyof typeof GROUP];
 
 export const GROUPS = (
-  defaultGroup: GroupValue = GROUP.MAIN_CONTENT,
+  defaultGroup?: GroupValue,
 ): FieldGroupDefinition[] => {
   const baseGroups: FieldGroupDefinition[] = [
-    { name: GROUP.IDENTITY, icon: asStudioIcon(Fingerprint), title: "Identitet" },
+    {
+      name: GROUP.IDENTITY,
+      icon: asStudioIcon(Fingerprint),
+      title: "Identitet",
+    },
     { name: GROUP.MAIN_CONTENT, icon: ComposeIcon, title: "Innhold" },
     { name: GROUP.SEO, icon: SearchIcon, title: "SEO" },
     { name: GROUP.OG, icon: InsertAboveIcon, title: "Open Graph" },
@@ -55,13 +66,37 @@ export const GROUPS = (
     { name: GROUP.RELATIONSHIPS, icon: LinkIcon, title: "Relasjoner" },
     { name: GROUP.STRUCTURED_DATA, icon: JsonIcon, title: "JSON-LD" },
     { name: GROUP.SOME, icon: FaceHappyIcon, title: "Sosiale Medier" },
-    { name: GROUP.ORGANIZATION, icon: asStudioIcon(Building2), title: "Organisasjon" },
+    {
+      name: GROUP.ORGANIZATION,
+      icon: asStudioIcon(Building2),
+      title: "Organisasjon",
+    },
     { name: GROUP.THEME, icon: asStudioIcon(Brush), title: "CSS Variabler" },
     { name: GROUP.INTEGRATIONS, icon: PlugIcon, title: "Integrasjoner" },
     {
       name: GROUP.LEGAL,
       icon: asStudioIcon(Scale),
       title: "Juridisk",
+    },
+    {
+      name: GROUP.LIGHT_MODE,
+      icon: SunIcon,
+      title: "Lys modus",
+    },
+    {
+      name: GROUP.DARK_MODE,
+      icon: MoonIcon,
+      title: "Mørk modus",
+    },
+    {
+      name: GROUP.COOKIES,
+      icon: asStudioIcon(Cookie),
+      title: "Cookiesamtykke",
+    },
+    {
+      name: GROUP.ROBOTS,
+      icon: RobotIcon,
+      title: "Roboter",
     },
   ];
 
@@ -85,127 +120,6 @@ export type WorkspaceKey = (typeof WORKSPACES)[number]["value"];
 export type Workspace = (typeof WORKSPACES)[number];
 
 
-// ─── Token catalogue ──────────────────────────────────────────────────────────
-// One entry per shadcn/ui CSS variable. These map directly to the frontend's
-// Tailwind theme: --background → bg-background, --primary → bg-primary, etc.
-
-export const TOKEN_DEFS = [
-  {
-    name: "background",
-    title: "Bakgrunn",
-    description: "Sidens bakgrunnsfarge",
-  },
-  {
-    name: "foreground",
-    title: "Forgrunn",
-    description: "Primær tekstfarge",
-  },
-  {
-    name: "card",
-    title: "Kort > Bakgrunn",
-    description: "Bakgrunnsfargen på kort og paneler",
-  },
-  {
-    name: "cardForeground",
-    title: "Kort > Forgrunn",
-    description: "Tekstfargen på kort og paneler",
-  },
-  {
-    name: "popover",
-    title: "Popup > Bakgrunn",
-    description: "Bakgrunnsfargen på nedtrekksmenyer og tooltips",
-  },
-  {
-    name: "popoverForeground",
-    title: "Popup > Forgrunn",
-    description: "Tekstfargen i nedtrekksmenyer og tooltips",
-  },
-  {
-    name: "primary",
-    title: "Primær > Bakgrunn",
-    description: "Hovedfargen for handlinger og merkevare",
-  },
-  {
-    name: "primaryForeground",
-    title: "Primær > Forgrunn",
-    description: "Tekstfargen på primærbakgrunn",
-  },
-  {
-    name: "secondary",
-    title: "Sekundær > Bakgrunn",
-    description: "Sekundærfarge for dempede handlinger",
-  },
-  {
-    name: "secondaryForeground",
-    title: "Sekundær > Forgrunn",
-    description: "Tekstfargen på sekundærbakgrunn",
-  },
-  {
-    name: "muted",
-    title: "Dempet",
-    description: "Bakgrunnsfarge for dempede seksjoner",
-  },
-  {
-    name: "mutedForeground",
-    title: "Dempet > Forgrunn",
-    description: "Dempet tekstfarge for sekundær informasjon",
-  },
-  {
-    name: "accent",
-    title: "Aksent",
-    description: "Fargen for hover-tilstander og valgte elementer",
-  },
-  {
-    name: "accentForeground",
-    title: "Aksent > Forgrunn",
-    description: "Tekstfargen på aksent-bakgrunn",
-  },
-  {
-    name: "destructive",
-    title: "Destruktiv",
-    description: "Bakgrunnfarge for feil og sletthandlinger",
-  },
-  {
-    name: "destructiveForeground",
-    title: "Destruktiv > Forgrunn",
-    description: "Tekstfargen på destruktiv-bakgrunn",
-  },
-  {
-    name: "warning",
-    title: "Advarsel",
-    description: "Bakgrunnfarge for advarsler.",
-  },
-  {
-    name: "warningForeground",
-    title: "Advarsel > Forgrunn",
-    description: "Tekstfargen på advarsel-bakgrunn",
-  },
-  {
-    name: "success",
-    title: "Suksess",
-    description: "Bakgrunnfarge for suksessmeldinger.",
-  },
-  {
-    name: "successForeground",
-    title: "Suksess > Forgrunn",
-    description: "Tekstfargen på suksess-bakgrunn",
-  },
-  {
-    name: "border",
-    title: "Kant",
-    description: "Fargen på kanter og skillelinjer",
-  },
-  {
-    name: "input",
-    title: "Skjemafelt > Kant",
-    description: "Kantfargen på skjemafelt",
-  },
-  {
-    name: "ring",
-    title: "Fokusring",
-    description: "Farge på fokusring ved tastaturnavigasjon",
-  },
-] as const;
 
 export const OKLCH_PATTERN =
   /^oklch\(\s*[\d.]+\s+[\d.]+\s+[\d.]+(\s*\/\s*[\d.]+)?\s*\)$/;

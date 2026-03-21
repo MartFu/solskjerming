@@ -10,6 +10,8 @@ import { ActiveSite } from "../types";
 import { capitalize } from "../helper";
 import { buildSiteItems } from "./build-site-items";
 import { buildGlobalItems } from "./build-global-items";
+import { Site } from "@workspace/sanity/types";
+import { WorkspaceKey } from "../constant";
 
 // ─────────────────────────────────────────────────────────────
 // Main structure export
@@ -18,10 +20,10 @@ import { buildGlobalItems } from "./build-global-items";
 export const createStructure = (
   S: StructureBuilder,
   context: StructureResolverContext,
-  workspace: string,
+  workspace: WorkspaceKey,
 ) => {
   const { documentStore } = context;
-
+  
   const sites$ = documentStore
     .listenQuery(
       `*[_type == "site" && workspace == $workspace]{ _id, title, enabledPackages, _updatedAt }`,
@@ -37,11 +39,12 @@ export const createStructure = (
   const siteChanged$ = fromEvent(window, SITE_CHANGED_EVENT);
 
   return merge(sites$, siteChanged$.pipe(switchMap(() => sites$))).pipe(
-    map((sites: ActiveSite[]) => {
-      const studioContext = getActiveSite(workspace);
-      const activeSite = studioContext?._id
-        ? (sites.find((s) => s._id === studioContext._id) ?? sites[0])
-        : sites[0];
+    map((sites: Site[]) => {
+     const studioContext = getActiveSite(workspace);
+     const activeSite =
+       sites.find((s) => s._id === studioContext?._id) || sites[0];
+
+     if (!activeSite) return S.list().title("Loading...").items([]);
 
       return S.list()
         .id(`root`)

@@ -2,7 +2,7 @@
 
 export type BorderRadius = "0rem" | "0.25rem" | "0.5rem" | "0.75rem" | "1rem";
 
-export interface ColorTokens {
+export interface ThemeTokens {
   background: string;
   foreground: string;
   card: string;
@@ -26,12 +26,21 @@ export interface ColorTokens {
   border: string;
   input: string;
   ring: string;
+  radius?: BorderRadius;
 }
 
 export interface ThemeConfig {
-  light: Partial<ColorTokens>;
-  dark: Partial<ColorTokens>;
-  radius: BorderRadius;
+  light: Partial<ThemeTokens>;
+  dark: Partial<ThemeTokens>;
+
+  // Tokens declared outside of a theme are applied to both.
+  // This can be extended safely, as long as the properties remain
+  // optional.
+
+  /**
+   * Assign the same radius to both themes
+   */
+  radius?: BorderRadius;
 }
 
 export interface Theme extends ThemeConfig {
@@ -39,3 +48,13 @@ export interface Theme extends ThemeConfig {
   label: string;
 }
 
+export type TokenType = "color" | "unit" | "selection";
+
+export interface TokenDefinition {
+  name: string;
+  title: string;
+  type: TokenType;
+  description?: string;
+  options?: { title: string; value: string }[]; // For things like Radius
+  default?: string | number;
+}

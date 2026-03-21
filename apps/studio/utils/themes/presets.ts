@@ -153,6 +153,7 @@ export const ocean = createTheme("ocean", "Hav", {
     border: "oklch(0.9 0.01 220)",
     input: "oklch(0.9 0.01 220)",
     ring: "oklch(0.5 0.22 255)",
+    radius: "0.5rem",
   },
   dark: {
     background: "oklch(0.17 0.025 245)",
@@ -175,8 +176,8 @@ export const ocean = createTheme("ocean", "Hav", {
     border: "oklch(0.27 0.025 240)",
     input: "oklch(0.27 0.025 240)",
     ring: "oklch(0.6 0.22 255)",
+    radius: "0.5rem",
   },
-  radius: "0.5rem",
 });
 
 /**
@@ -204,6 +205,7 @@ export const amethyst = createTheme("amethyst", "Ametyst", {
     border: "oklch(0.9225 0.0027 286.3471)",
     input: "oklch(0.9225 0.0027 286.3471)",
     ring: "oklch(0.5106 0.2301 276.9656)",
+    radius: "0.75rem",
   },
   dark: {
     background: "oklch(0 0 0)",
@@ -226,8 +228,10 @@ export const amethyst = createTheme("amethyst", "Ametyst", {
     border: "oklch(0.2286 0.0096 285.6168)",
     input: "oklch(0.2286 0.0096 285.6168)",
     ring: "oklch(0.5679 0.2113 276.7065)",
+    radius: "0.75rem",
   },
-  radius: "0.75rem",
 });
 
 export const themes = [slate, solskjerming, ocean, amethyst];
+
+
