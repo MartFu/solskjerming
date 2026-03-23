@@ -12,7 +12,7 @@ export async function buildPreviewUrl(
     slug?: { current: string } | string;
     domain?: string | null;
   },
-  preview: { type: string; docId: string },
+  preview: { type: string | null; docId: string },
   slug?: string,
 ): Promise<string | null> {
   let base: string;
@@ -34,9 +34,8 @@ export async function buildPreviewUrl(
   }
 
   const basePath = "";
-  const pkgMeta = packageRegistry.lookup(preview.type);
 
-  if (preview.type !== "page" && !pkgMeta) {
+  if (preview.type && preview.type !== "page" && !packageRegistry.lookup(preview.type)) {
     return null;
   }
 
@@ -56,11 +55,12 @@ export async function buildPreviewUrl(
 
 export function getPreviewContext(panes: RouterPanes): {
   siteId: string;
-  type: string;
+  type: string | null;
   docId: string;
 } | null {
   const first = parsePaneId(panes[0]?.[0]?.id ?? "");
   const secondId = panes[1]?.[0]?.id;
+  const second = parsePaneId(secondId ?? "");
 
   if (first.kind === "list") {
     if (!secondId) return null;
@@ -72,6 +72,15 @@ export function getPreviewContext(panes: RouterPanes): {
   }
 
   if (first.kind === "singleton") {
+    // Page tree: panes[0] is "${siteId}-pages", panes[1] is the document UUID
+    if (second.kind === "document" && secondId) {
+      return {
+        siteId: first.siteId!,
+        type: null, // unknown — fetched from Sanity in usePreviewResolver
+        docId: secondId.replace(/^drafts\./, ""),
+      };
+    }
+    // True singleton (no child doc pane open)
     return {
       siteId: first.siteId!,
       type: first.type!,

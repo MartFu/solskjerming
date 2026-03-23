@@ -12,6 +12,7 @@ export const paneId = {
 export type PaneKind =
     | "singleton"
     | "list"
+    | "pageTree"
     | "workspace"
     | "settings"
     | "document"
@@ -45,6 +46,12 @@ export function parsePaneId(id: string): ParsedPaneId {
 
     if (settingsMatch) {
         return { kind: "settings", siteId: settingsMatch[1], raw: id };
+    }
+
+    // "{siteId}-page-tree" — custom PageTreePane
+    const pageTreeMatch = id.match(/^([a-zA-Z0-9]{20,})-page-tree$/);
+    if (pageTreeMatch) {
+        return { kind: "pageTree", siteId: pageTreeMatch[1], raw: id };
     }
 
     // "{siteId}-{type}" — singleton
