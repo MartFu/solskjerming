@@ -8,16 +8,6 @@ import { DOCUMENT_NAMES } from "../constant";
 // ===========================================================================
 
 /**
- * ⚠️ ========================================== ⚠️  
- * 
- *      Do not forget to add new page document 
- *      names to the type export at the bottom
- * 
- * ⚠️ ========================================== ⚠️
- */
-
-
-/**
  * Generic page — the default content page.
  * Can nest under other pages: /about, /about/team, /about/team/leadership
  */

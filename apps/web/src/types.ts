@@ -8,7 +8,7 @@ import type {
 } from "@workspace/sanity/types";
 
 export type PageBuilderBlock = Get<
-  QueryHomePageDataResult,
+  QueryPageBySlugResult,
   "pagebuilder",
   number
 >;

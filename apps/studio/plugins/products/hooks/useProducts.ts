@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useClient } from "sanity";
 import { PRODUCTS_QUERY, FOLDERS_QUERY } from "../queries";
 import type { ProductListItem, FolderNode } from "../types";
-import { API_VERSION } from "@/utils/constant";
+import { API_VERSION } from '@/utils/env';
 
 export function useProducts() {
   const client = useClient({ apiVersion: API_VERSION });

@@ -11,10 +11,11 @@ import {
   Users,
 } from "lucide-react";
 import { StructureBuilder } from "sanity/structure";
-import { API_VERSION } from "../constant";
+import { API_VERSION } from "@/utils/env";
 import { DocumentsIcon, JsonIcon, PackageIcon, RobotIcon } from "@sanity/icons";
 import { DeploymentDashboard } from "@/components/deployment-dashboard";
 import { asStudioIcon } from "../helper";
+import { packageRegistry } from "@/schemaTypes/documents/packages/index";
 
 // ─────────────────────────────────────────────────────────────
 // Global items (workspace-level, shared across sites)
@@ -24,58 +25,22 @@ export function buildGlobalItems(
   S: StructureBuilder,
   enabledPackages: string[],
 ) {
-  const pkgScopedGlobals = [
-    {
-      pkg: "commerce",
-      item: S.listItem()
-        .title("Produkter")
-        .id("global-products")
-        .icon(Handbag)
+  const globalItems = packageRegistry
+    .globalsForPackages(enabledPackages)
+    .map((global) =>
+      S.listItem()
+        .title(global.structureTitle)
+        .id(global.structureId)
+        .icon(global.icon)
         .child(
           S.documentList()
-            .id("global-products-list")
-            .title("Produkter")
-            .filter('_type == "product"')
+            .id(`global-${global.type}-list`)
+            .title(global.structureTitle)
+            .filter(global.filter)
             .apiVersion(API_VERSION)
-            .defaultOrdering([{ field: "title", direction: "asc" }]),
+            .defaultOrdering(global.defaultOrdering),
         ),
-    },
-    {
-      pkg: "articles",
-      item: S.listItem()
-        .title("Artikler")
-        .id("global-articles")
-        .icon(Book)
-        .child(
-          S.documentList()
-            .id("global-articles-list")
-            .title("Artikler")
-            .filter('_type == "article"')
-            .apiVersion(API_VERSION)
-            .defaultOrdering([{ field: "title", direction: "asc" }]),
-        ),
-    },
-
-    {
-      pkg: "articles",
-      item: S.listItem()
-        .title("Forfattere")
-        .id("global-authors")
-        .icon(Users)
-        .child(
-          S.documentList()
-            .id("global-authors-list")
-            .title("Forfattere")
-            .filter('_type == "author"')
-            .apiVersion(API_VERSION)
-            .defaultOrdering([{ field: "name", direction: "asc" }]),
-        ),
-    },
-  ];
-
-  const filteredPkgScopedGlobals = pkgScopedGlobals
-    .filter((item) => enabledPackages.includes(item.pkg))
-    .map((item) => item.item);
+    );
 
   return [
     S.divider().title("Globaler"),
@@ -89,7 +54,7 @@ export function buildGlobalItems(
           .id("resources-list")
           .title("Ressurser")
           .items([
-            ...filteredPkgScopedGlobals,
+            ...globalItems,
             S.listItem()
               .title("Dokumenter")
               .id("global-documentation")

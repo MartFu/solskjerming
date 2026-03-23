@@ -6,7 +6,7 @@ import type {
 
 import { PageTreePane } from "@/components/structure/page-tree-pane";
 import { getRoutableTypes } from "@/utils/page-tree";
-import { API_VERSION } from "@/utils/constant";
+import { API_VERSION } from '@/utils/env';
 
 /**
  * Builds the "Sider" list item with the custom PageTreePane component.

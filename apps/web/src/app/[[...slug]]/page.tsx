@@ -1,16 +1,32 @@
 import { notFound } from "next/navigation";
-import { client } from "@workspace/sanity/client";
 import { getSiteId } from "@/lib/site";
 import { getPageData } from "@/lib/pages";
 import { getSEOMetadata } from "@/lib/seo";
-import { queryAllPageSlugsForBuild } from "@workspace/sanity/query";
 import { PageBuilder } from "@/components/pagebuilder";
+import { sanityFetchBuild } from "@workspace/sanity/build-client";
+import { queryAllRoutableDocumentSlugs } from "@workspace/sanity/query";
+import { QueryAllRoutableDocumentSlugsResult } from "@workspace/sanity/types";
 
 export async function generateStaticParams() {
-  const slugs = await client.fetch(queryAllPageSlugsForBuild);
-  return slugs.map((s: { slug: string }) => ({
-    slug: s.slug.split("/").filter(Boolean),
-  }));
+  const siteId = process.env.NEXT_PUBLIC_DEFAULT_SITE_ID;
+  if (!siteId) return [];
+
+  const pages = await sanityFetchBuild<QueryAllRoutableDocumentSlugsResult>({
+    query: queryAllRoutableDocumentSlugs,
+    params: {
+      siteId,
+    },
+  });
+
+  return pages
+    .filter((p): p is typeof p & { slug: string } => !!p.slug)
+    .map((p) => {
+      const slugArray = p.slug.split("/").filter(Boolean);
+
+      return {
+        slug: slugArray,
+      };
+    });
 }
 
 export async function generateMetadata({
@@ -21,7 +37,6 @@ export async function generateMetadata({
   const [{ slug }, siteId] = await Promise.all([params, getSiteId()]);
   const slugString = slug?.length ? `/${slug.join("/")}` : "/";
   const pageData = await getPageData(slugString, siteId);
-
 
   return getSEOMetadata(
     {
@@ -47,9 +62,9 @@ export default async function Page({
   const slugString = slug?.length ? `/${slug.join("/")}` : "/";
   const pageData = await getPageData(slugString, siteId);
 
-  console.log('PAGE_DATA', pageData)
-  console.log('SITE_ID', siteId)
-  console.log('SLUG_STRING', slugString)
+  console.log("SITE_ID", siteId);
+  console.log("SLUG_STRING", slugString);
+  console.log("PAGE_DATA", pageData);
 
   if (!pageData) return notFound();
 

@@ -21,7 +21,7 @@ import type {
   ProductListItem,
   ProductsPluginConfig,
 } from "../types";
-import { API_VERSION } from "@/utils/constant";
+import { API_VERSION } from '@/utils/env';
 import { useSites } from "../hooks/useSites";
 
 interface ProductsViewProps {

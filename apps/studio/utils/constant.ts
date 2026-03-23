@@ -108,8 +108,7 @@ export const GROUPS = (
 };
 
 
-export const API_VERSION =
-  process.env.SANITY_STUDIO_API_VERSION ?? "2025-05-08";
+
 
 export const WORKSPACES = [
   { title: "Solskjerming", value: "solskjerming" },

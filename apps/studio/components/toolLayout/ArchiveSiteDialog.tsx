@@ -2,11 +2,9 @@
 
 import { DrilldownSection } from "@/hooks/useDrilldownState";
 import { asStudioIcon, capitalize } from "@/utils/helper";
-import { ArchiveResult } from "@/utils/site/archiveSite";
 import {
   Breadcrumb,
   DocumentTreeNode,
-  PreparedDeletionData,
   findAncestors,
   findNode,
 } from "@/utils/site/buildSiteDocumentTree";
@@ -22,15 +20,18 @@ import {
   Dialog,
   Flex,
   Grid,
+  Spinner,
   Stack,
   Text,
+  TextInput,
+  useToast,
 } from "@sanity/ui";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
-import { Divider, DividerProps } from "./divider";
+import { Divider, DividerProps } from "../divider";
 import { useArchiveSite } from "@/context/ArchiveSiteProvider";
 import { SITE_OWNED_TYPES } from "@/schemaTypes/documents";
-import { Fragment, useState } from "react";
-import { CircleIcon } from "@sanity/icons";
+import { Fragment, useEffect, useState } from "react";
+import { InfoOutlineIcon, WarningOutlineIcon } from "@sanity/icons";
 import { truncateString } from "sanity";
 
 const StudioArrowUpRight = asStudioIcon(ArrowUpRight);
@@ -338,19 +339,15 @@ function TreeRow({
   depth: number;
   onSelect: (id: string) => void;
 }) {
-  const [hovered, setHovered] = useState(false);
   return (
     <>
       <Button
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
         onClick={() => onSelect(node._id)}
         tone="neutral"
         mode="bleed"
         padding={1}
         style={{
           height: 24,
-
           cursor: "pointer",
           paddingLeft: `${depth * 8}px`,
         }}
@@ -388,7 +385,6 @@ function TreeRow({
             style={{ marginLeft: "auto" }}
           >
             {node.hasDraft && <DraftBadge />}
-            {hovered && <StudioArrowRight />}
           </Flex>
         </Flex>
       </Button>
@@ -452,21 +448,18 @@ function PagesSection({
 
 // ─── Config row ────────────────────────────────────────────────────────────
 
+// FIX #12: Removed unused `slug` prop
 function ConfigRow({
   doc,
   style,
   onClick,
 }: {
   doc: DocumentTreeNode;
-  slug?: string;
   style?: React.CSSProperties;
   onClick: () => void;
 }) {
-  const [hovered, setHovered] = useState(false);
   return (
     <Button
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       onClick={onClick}
       tone="neutral"
       mode="bleed"
@@ -505,7 +498,6 @@ function ConfigRow({
           style={{ marginLeft: "auto" }}
         >
           {doc.hasDraft && <DraftBadge />}
-          {hovered && <StudioArrowRight />}
         </Flex>
       </Flex>
     </Button>
@@ -565,11 +557,8 @@ function SharedRow({
   asset: SharedAssetReference;
   onClick: () => void;
 }) {
-  const [hovered, setHovered] = useState(false);
   return (
     <Button
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       onClick={onClick}
       tone="neutral"
       mode="bleed"
@@ -599,15 +588,6 @@ function SharedRow({
             {asset.title}
           </Text>
         </Grid>
-
-        <Flex
-          align="center"
-          justify="flex-end"
-          gap={1}
-          style={{ marginLeft: "auto" }}
-        >
-          {hovered && <StudioArrowRight />}
-        </Flex>
       </Flex>
     </Button>
   );
@@ -716,11 +696,13 @@ function SummaryBar({ counts }: { counts: SiteDeletionPreview["counts"] }) {
 
   const items = [
     pageCount > 0 && `${pageCount} ${pageCount === 1 ? "side" : "sider"}`,
-    (counts.byType.redirect ?? 0) > 0 && `${counts.byType.redirect} redirects`,
+    // FIX #13: Use Norwegian consistently
+    (counts.byType.redirect ?? 0) > 0 &&
+      `${counts.byType.redirect} ${counts.byType.redirect === 1 ? "viderekobling" : "viderekoblinger"}`,
     (counts.byType.navbar ?? 0) > 0 && "navbar",
     (counts.byType.footer ?? 0) > 0 && "footer",
     counts.drafts > 0 &&
-      `${counts.drafts} ${counts.drafts === 1 ? "kladd" : "kladder"}`,
+      `hvorav ${counts.drafts} ${counts.drafts === 1 ? "kladd" : "kladder"}`,
   ].filter(Boolean) as string[];
 
   return (
@@ -744,28 +726,57 @@ function SummaryBar({ counts }: { counts: SiteDeletionPreview["counts"] }) {
   );
 }
 
-// ─── Receipt ──────────────────────────────────────────────────────────────────
+// ─── Archive site dialog ──────────────────────────────────────────────────────
 
 /**
- * The receipt content — pure display, no Dialog wrapper.
- * Compose this inside whatever Dialog/Sheet the caller provides.
+ * The archive confirmation dialog.
+ * Uses ArchiveSiteProvider context for all state and actions.
  */
-export function ArchiveSiteDialog({
-  data,
-  onConfirm,
-  onCancel,
-  isArchiving,
-  isAlreadyArchived,
-  archiveResult,
-}: {
-  data: PreparedDeletionData;
-  onConfirm: () => void;
-  onCancel: () => void;
-  isArchiving: boolean;
-  isAlreadyArchived: boolean;
-  archiveResult?: ArchiveResult;
-}) {
-  const { state, drill, back } = useArchiveSite();
+export function ArchiveSiteDialog() {
+  const {
+    state,
+    drill,
+    back,
+    data,
+    archiving,
+    previewLoading,
+    error,
+    close,
+    archiveSite,
+    isAlreadyArchived,
+  } = useArchiveSite();
+  const toast = useToast();
+  const [confirmName, setConfirmName] = useState("");
+
+  useEffect(() => {
+    if (!error) return;
+
+    toast.push({
+      title: error,
+      duration: 3000,
+      status: "error",
+    });
+  }, [error]);
+
+  const isReady = !previewLoading && data !== null;
+  if (!isReady) {
+    return (
+      <Dialog
+        id="archive-site-dialog"
+        header="Laster..."
+        onClose={close}
+      >
+        <Flex
+          align="center"
+          justify="center"
+          padding={6}
+        >
+          <Spinner />
+        </Flex>
+      </Dialog>
+    );
+  }
+
   const { siteName, pageTree, otherOwned, sharedAssets, counts } = data;
 
   const drillSection = (section: DrilldownSection) => (id: string) =>
@@ -782,20 +793,41 @@ export function ArchiveSiteDialog({
   return (
     <Dialog
       id="archive-site-dialog"
-      header={`Arkivere «${data.siteName}»`}
-      onClose={onCancel}
+      header={`Arkivere «${siteName}»`}
+      onClickOutside={close}
+      onClose={close}
       zOffset={1000}
       width={1}
     >
       <Stack space={3}>
-        {/* Header */}
-
         <Divider {...dividerProps} />
         <Stack
-          space={2}
+          space={3}
           paddingX={4}
         >
-          <Text size={0}>{counts.total} dokumenter totalt</Text>
+          <Card
+            padding={3}
+            tone="caution"
+            border
+            radius={2}
+          >
+            <Stack space={3}>
+              <Flex
+                gap={2}
+                align="center"
+              >
+                <WarningOutlineIcon />
+                <Text size={1}>Advarsel</Text>
+              </Flex>
+              <Text
+                size={1}
+                muted
+              >
+                Du er i ferd med å arkivere <strong>{counts.total}</strong>{" "}
+                dokumenter.
+              </Text>
+            </Stack>
+          </Card>
 
           {/* Summary — always visible regardless of section drill-down state */}
           <SummaryBar counts={counts} />
@@ -830,66 +862,118 @@ export function ArchiveSiteDialog({
 
         {/* Shared assets */}
         {sharedAssets.length > 0 && (
-          <>
-            <SharedSection
-              sharedAssets={sharedAssets}
-              view={state.shared}
-              onDrill={drillSection("shared")}
-              onBack={backSection("shared")}
-            />
-          </>
+          <SharedSection
+            sharedAssets={sharedAssets}
+            view={state.shared}
+            onDrill={drillSection("shared")}
+            onBack={backSection("shared")}
+          />
         )}
 
+        {/* No preview available for types */}
+        {sharedAssets.length === 0 &&
+          otherOwned.length === 0 &&
+          pageTree.length === 0 && (
+            <Box paddingX={4} paddingY={3}>
+              <Card
+                padding={4}
+                tone="neutral"
+                border
+                radius={2}
+              >
+                <Flex
+                  gap={4}
+                  align="flex-start"
+                  justify="center"
+                >
+                  <InfoOutlineIcon
+                    style={{ width: 28, height: 28, flexShrink: 0 }}
+                  />
+                  <Text size={1}>
+                    Sidens registrerte
+                    {counts.total > 1 ? " dokumenter " : " dokument "}har lav
+                    betydelse, dermed ble ingen forhåndsvisning generert. Du
+                    kan anse det som trygt arkivere siden uten å foreta deg noe
+                    mer her.
+                  </Text>
+                </Flex>
+              </Card>
+            </Box>
+          )}
+
         {/* Error feedback */}
-        {archiveResult && !archiveResult.success && (
+        {error && (
           <Box paddingX={4}>
             <Card
               padding={3}
               radius={2}
               tone="critical"
             >
-              <Text size={1}>{archiveResult.error}</Text>
+              <Text size={1}>{error}</Text>
             </Card>
           </Box>
         )}
 
         {/* Actions */}
         <Card
-          paddingX={4}
-          paddingY={3}
+          padding={4}
           borderTop
         >
-          <Flex
-            gap={1}
-            align="center"
-            justify="flex-end"
-          >
-            <Button
-              onClick={onCancel}
-              disabled={isArchiving}
-              tone="neutral"
-              mode="ghost"
-              style={{
-                cursor: isArchiving ? "not-allowed" : "pointer",
-                opacity: isArchiving ? 0.5 : 1,
-              }}
-            >
-              <Text size={1}>Avbryt</Text>
-            </Button>
-            <Button
-              onClick={onConfirm}
-              disabled={isArchiving || isAlreadyArchived}
-              loading={isArchiving}
-              tone="critical"
-              style={{
-                cursor:
-                  isArchiving || isAlreadyArchived ? "not-allowed" : "pointer",
-              }}
-            >
-              <Text size={1}>
-                {isArchiving ? "Arkiverer…" : "Arkiver nettsted"}
+          <Flex align="flex-end" justify="space-between">
+            <Stack space={2}>
+              <Text
+                size={1}
+                muted
+              >
+                Skriv inn <strong>{siteName}</strong> for å bekrefte arkivering.
               </Text>
-            </Button>
+              <TextInput
+                value={confirmName}
+                onChange={(e) => setConfirmName(e.currentTarget.value)}
+                placeholder={siteName}
+                disabled={archiving}
+              />
+            </Stack>
+            <Flex
+              gap={1}
+              align="center"
+              justify="flex-end"
+            >
+              <Button
+                onClick={close}
+                disabled={archiving}
+                tone="neutral"
+                mode="ghost"
+                style={{
+                  cursor: archiving ? "not-allowed" : "pointer",
+                  opacity: archiving ? 0.5 : 1,
+                }}
+              >
+                <Text size={1}>Avbryt</Text>
+              </Button>
+              <Button
+                onClick={archiveSite}
+                disabled={
+                  archiving ||
+                  isAlreadyArchived ||
+                  confirmName.trim() !== siteName
+                }
+                loading={archiving}
+                tone="critical"
+                style={{
+                  cursor:
+                    archiving ||
+                    isAlreadyArchived ||
+                    confirmName.trim() !== siteName
+                      ? "not-allowed"
+                      : "pointer",
+                }}
+              >
+                <Text size={1}>
+                  {archiving ? "Arkiverer…" : "Arkiver nettsted"}
+                </Text>
+              </Button>
+            </Flex>
           </Flex>
         </Card>
       </Stack>

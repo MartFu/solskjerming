@@ -4,9 +4,9 @@ import {
   defineType,
   FieldDefinition,
   PreviewConfig,
+  SanityDocument,
 } from "sanity";
 import { createSiteScopedSlugField } from "./create-site-scoped-slug-field";
-import { ArticleRoot, CatalogRoot, Page } from "@workspace/sanity/types";
 import { createSEOFields } from "./create-seo-fields";
 import { createOGFields } from "./create-og-fields";
 import { createStructuredDataFields } from "./create-structured-data-fields";
@@ -15,8 +15,6 @@ import { createRobotsFields } from "./create-robots-fields";
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
-
-export type AnyRoutableDocument = Page | ArticleRoot | CatalogRoot;
 
 /**
  * Configuration for createRoutableDocument.
@@ -113,7 +111,7 @@ function _createParentField(parentTypes: string[]): FieldDefinition {
     initialValue: undefined,
     options: {
       filter: ({ document }) => {
-        const doc = document as AnyRoutableDocument;
+        const doc = document as SanityDocument & { site?: { _ref: string } };
 
         return {
           filter: "site._ref == $siteId && _type in $allowedTypes",
@@ -127,7 +125,7 @@ function _createParentField(parentTypes: string[]): FieldDefinition {
     validation: (Rule) =>
       Rule.custom((value, context) => {
         // Top-level pages intentionally have no parent
-        return true; // or your actual logic
+        return true; 
       }),
     readOnly: true,
   });

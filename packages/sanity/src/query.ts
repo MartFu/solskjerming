@@ -31,6 +31,8 @@ export const queryGenericPageOGData = defineQuery(`
   }
 `);
 
+// ─── Shared Fragments ─────────────────────────────────────────────────────────
+
 const imageFields = /* groq */ `
   "id": asset._ref,
   "preview": asset->metadata.lqip,
@@ -127,6 +129,20 @@ const articleCardFragment = /* groq */ `
   ${articleAuthorFragment}
 `;
 
+const productCardFragment = /* groq */ `
+  _id,
+  _type,
+  title,
+  "slug": slug.current,
+  "coverImage": coverImage { ${imageFields} },
+  product->{
+    _id,
+    title,
+    category,
+    "images": images[]{ ${imageFields} }
+  }
+`;
+
 const buttonsFragment = /* groq */ `
   buttons[]{
     text,
@@ -141,6 +157,8 @@ const buttonsFragment = /* groq */ `
     ),
   }
 `;
+
+// ─── Pagebuilder Blocks ───────────────────────────────────────────────────────
 
 const ctaBlock = /* groq */ `
   _type == "cta" => {
@@ -234,26 +252,29 @@ const richTextBlockFragment = /* groq */ `
   }
 `;
 
-
+// FIX: Site-scoped filteredArticles + read limit from the block's own field.
+// GROQ traversal: inside pagebuilder[]{ ... }, ^ = block, ^.^ = parent document.
 const articleFeedBlock = /* groq */ `
   _type == "articleFeed" => {
     ...,
-    _type,
-    _key,
-    title,
-    eyebrow,
-    articleView,
-    columns,
-    showExcerpt,
-    limit,
-    // Expand the referenced articles if they are manually selected
     "articles": articles[]->{
       ${articleCardFragment}
     },
-    // If you are fetching articles dynamically based on the 'articleView'
-    "filteredArticles": *[_type == "articlePage" && !(_id in path("drafts.**"))] | order(publishedAt desc) [0...$limit] {
+    "filteredArticles": *[
+      _type == "articlePage"
+      && site._ref == ^.^.site._ref
+      && !(_id in path("drafts.**"))
+    ] | order(publishedAt desc) [0...12] {
       ${articleCardFragment}
     }
+  }
+`;
+
+const productGridBlock = /* groq */ `
+  _type == "productGrid" => {
+    ...,
+    ${richTextFragment},
+    ${buttonsFragment}
   }
 `;
 
@@ -268,7 +289,8 @@ const pageBuilderFragment = /* groq */ `
     ${featureCardsIconBlock},
     ${subscribeNewsletterBlock},
     ${imageLinkCardsBlock},
-    ${richTextBlockFragment}
+    ${richTextBlockFragment},
+    ${productGridBlock}
   }
 `;
 
@@ -306,7 +328,7 @@ export const querySiteDomains = defineQuery(`
 `);
 
 // ─── Pages ────────────────────────────────────────────────────────────────────
- 
+
 export const queryPageBySlug = defineQuery(`
   *[
     _type in ["page","articleRoot","articlePage","catalogRoot","productPage"]
@@ -322,19 +344,35 @@ export const queryPageBySlug = defineQuery(`
     seoDescription,
     seoNoIndex,
     ${pageBuilderFragment},
+
+    // ── articleRoot config ───────────────────────────────────
+    postsPerPage,
     "displayFeaturedArticles": displayFeaturedArticles == "yes",
-    "featuredArticlesCount": featuredArticlesCount,
+    featuredArticlesCount,
+    categories,
+
+    // ── catalogRoot config ──────────────────────────────────
+    filterCategories,
+
+    // ── articlePage fields ──────────────────────────────────
     excerpt,
     publishedAt,
+    category,
     ${articleAuthorFragment},
     "coverImage": coverImage { ${imageFields} },
     ${articleBodyFragment},
+
+    // ── productPage fields ─────────────────────────────────
+    marketingCopy,
     product->{
       _id,
       title,
       "slug": slug.current,
+      description,
+      category,
+      "images": images[]{ ${imageFields} },
+      specifications[]{ label, value }
     },
-    marketingCopy,
   }
 `);
 
@@ -355,6 +393,56 @@ export const queryAllPageSlugs = defineQuery(`
   ]{
     _type,
     "slug": slug.current
+  }
+`);
+
+export const queryAllRoutableDocumentSlugs = defineQuery(`
+  *[
+    site._ref == $siteId && 
+    defined(slug.current)
+  ]{
+    _type,
+    "slug": slug.current
+  }
+`);
+
+// ─── Article List ─────────────────────────────────────────────────────────────
+// Paginated articles for articleRoot archive pages.
+// The page component passes its own _id as $parentId,
+// and computes $start / $end from the page number and postsPerPage.
+
+export const queryArticleListByParent = defineQuery(`
+  *[
+    _type == "articlePage"
+    && site._ref == $siteId
+    && parent._ref == $parentId
+    && defined(slug.current)
+  ] | order(publishedAt desc) [$start...$end] {
+    ${articleCardFragment}
+  }
+`);
+
+export const queryArticleCountByParent = defineQuery(`
+  count(*[
+    _type == "articlePage"
+    && site._ref == $siteId
+    && parent._ref == $parentId
+  ])
+`);
+
+// ─── Product List ─────────────────────────────────────────────────────────────
+// Filterable product grid for catalogRoot pages.
+// Pass $category as "" to return all, or a category string to filter.
+
+export const queryProductListByParent = defineQuery(`
+  *[
+    _type == "productPage"
+    && site._ref == $siteId
+    && parent._ref == $parentId
+    && defined(slug.current)
+    && ($category == "" || product->category == $category)
+  ] | order(sortOrder asc) {
+    ${productCardFragment}
   }
 `);
 
@@ -418,18 +506,79 @@ export const queryNavbarData = defineQuery(`
   }
 `);
 
-// ─── Site Config (replaces Settings) ──────────────────────────────────────────
+// ─── Site Config ──────────────────────────────────────────────────────────────
 
 export const querySiteConfig = defineQuery(`
   *[_type == "site" && _id == $siteId][0]{
+    _id,
     title,
-    "logo": logo { ${imageFields} },
-    "favicon": favicon { ${imageFields} },
-    social,
+    workspace,
+    "homePage": homePage->slug.current,
+    siteIdentity,
+    // Expand the objects that typegen showed as null
+    "organization": {
+       ..., 
+       "logo": logo { ${imageFields} },
+       "favicon": favicon { ${imageFields} }
+    },
+    "socials": {
+       linkedin, facebook, instagram, youtube, twitter
+    },
+    "cookieConsent": {
+       bannerTitle,
+       bannerDescription,
+       categories
+    },
+    "integrations": {
+       googleAnalyticsId,
+       gtmContainerId,
+       facebookPixelId
+    },
+    "theme": {
+       light,
+       dark
+    },
+    "legalDocuments": legalDocuments[]->{
+      title,
+      "slug": slug.current
+    }
+  }
+`);
+
+export const querySiteMetadata = defineQuery(`
+  *[_type == "site" && _id == $siteId][0]{
     metaTitle,
     metaDescription,
+    googleSiteVerification,
+    bingSiteVerification,
+    "og": {
+      ogTitle,
+      ogDescription,
+      ogSiteName,
+      "ogImage": ogImage { ${imageFields} }
+    },
+    robots,
+    structuredData
+  }
+`);
+
+// ─── Global Documents ─────────────────────────────────────────────────────────
+
+export const queryGlobalSeo = defineQuery(`
+  *[_type == "globalSeo"][0]{
+    metaTitle,
+    metaDescription,
+    "ogImage": ogImage { ${imageFields} }
+  }
+`);
+
+export const queryGlobalOrganization = defineQuery(`
+  *[_type == "globalOrganization"][0]{
+    name,
     email,
     phone,
+    address,
+    "logo": logo { ${imageFields} }
   }
 `);
 

@@ -1,9 +1,7 @@
 import { defineConfig } from "sanity";
 import { defineWorkspace } from "./workspace";
 import { WORKSPACES } from "./utils/constant";
+import { DATASET } from "./utils/env";
 
 
-const dataset = process.env.SANITY_STUDIO_DATASET ?? "production";
-
-
-export default defineConfig(WORKSPACES.map((workspace) => defineWorkspace(workspace.value, dataset)));
+export default defineConfig(WORKSPACES.map((workspace) => defineWorkspace(workspace.value, DATASET)));

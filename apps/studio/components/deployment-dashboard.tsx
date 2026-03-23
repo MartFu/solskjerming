@@ -1,8 +1,8 @@
 // components/DeploymentDashboard.tsx
+import { API_VERSION } from '@/utils/env';
 import { Card, Stack, Text, Button, Badge, Flex } from '@sanity/ui';
 import { useEffect, useState } from 'react';
 import { useClient } from 'sanity';
-import {API_VERSION} from "@/utils/constant"
 
 interface SiteStatus {
   siteId: string;

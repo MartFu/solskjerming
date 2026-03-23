@@ -1,5 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Box, Button, Card, Flex, Stack, Text, TextInput } from "@sanity/ui";
+import {
+  Box,
+  Button,
+  Card,
+  Flex,
+  Spinner,
+  Stack,
+  Text,
+  TextInput,
+  useToast,
+} from "@sanity/ui";
 import { AddIcon, SearchIcon } from "@sanity/icons";
 import { useDocumentStore } from "sanity";
 import { usePaneRouter } from "sanity/structure";
@@ -13,13 +23,18 @@ import {
   type RoutableDoc,
   getChildTypes,
 } from "@/utils/page-tree";
-import { API_VERSION } from "@/utils/constant";
+import { API_VERSION } from '@/utils/env';
 import { useRouter } from "sanity/router";
 
 import { DrillDownTree } from "./DrillDownTree";
 import { ExpandableTree } from "./ExpandableTree";
 import { SearchResults } from "./SearchResults";
-import { ModalState } from "./types";
+import { packageRegistry } from "@/schemaTypes/documents/packages";
+import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
+import {
+  PageCreationProvider,
+  usePageCreation,
+} from "@/context/PageCreationProvider";
 
 // ─────────────────────────────────────────────────────────────
 // Types
@@ -55,21 +70,25 @@ function useIsNarrow(breakpoint = 500): boolean {
 }
 
 // ─────────────────────────────────────────────────────────────
-// Main component
+// Inner content (has access to PageCreationContext)
 // ─────────────────────────────────────────────────────────────
 
-export function PageTreePane({ options }: PageTreePaneProps) {
-  const { siteId, enabledPackages } = options;
+function PageTreeContent({
+  siteId,
+  enabledPackages,
+}: {
+  siteId: string;
+  enabledPackages: string[];
+}) {
   const documentStore = useDocumentStore();
   const paneRouter = usePaneRouter();
-  const router = useRouter();
   const isNarrow = useIsNarrow();
+  const { openCreationModal } = usePageCreation();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [tree, setTree] = useState<TreeNode[]>([]);
   const [allNodes, setAllNodes] = useState<TreeNode[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [modalState, setModalState] = useState<ModalState | null>(null);
 
   // Subscribe to live document data
   useEffect(() => {
@@ -79,8 +98,6 @@ export function PageTreePane({ options }: PageTreePaneProps) {
       .listenQuery(query, { siteId }, { apiVersion: API_VERSION })
       .pipe(
         map((docs: RoutableDoc[]) => {
-          // Deduplicate: prefer draft over published so editors always work on
-          // the latest version. Fall back to published if no draft exists.
           const draftIds = new Set(
             docs
               .filter((doc) => doc._id.startsWith("drafts."))
@@ -115,27 +132,6 @@ export function PageTreePane({ options }: PageTreePaneProps) {
     [paneRouter],
   );
 
-  const handleCreate = useCallback(
-    (
-      type: string,
-      templateId: string,
-      parentId: string | null,
-      title: string,
-    ) => {
-      // Always use the published ID as parent reference
-      const publishedParentId = parentId?.replace(/^drafts\./, "") ?? null;
-      router.navigateIntent("create", [
-        { type, template: templateId },
-        {
-          siteId,
-          ...(publishedParentId ? { parentId: publishedParentId } : {}),
-          ...(title ? { title } : {}),
-        },
-      ]);
-    },
-    [router, siteId],
-  );
-
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) return [];
     const q = searchQuery.toLowerCase();
@@ -151,12 +147,16 @@ export function PageTreePane({ options }: PageTreePaneProps) {
 
   if (isLoading) {
     return (
-      <Box
+      <Flex
+        justify="center"
+        align="center"
         flex={1}
         padding={4}
+        gap={2}
       >
+        <Spinner />
         <Text muted>Laster sidetreet…</Text>
-      </Box>
+      </Flex>
     );
   }
 
@@ -195,7 +195,7 @@ export function PageTreePane({ options }: PageTreePaneProps) {
             padding={2}
             style={{ width: 32 }}
             onClick={() =>
-              setModalState({
+              openCreationModal({
                 types: rootChildTypes,
                 parentNode: null,
                 ancestors: [],
@@ -222,21 +222,79 @@ export function PageTreePane({ options }: PageTreePaneProps) {
             siteId={siteId}
             enabledPackages={enabledPackages}
             onEdit={openEditor}
-            onCreate={handleCreate}
           />
         ) : (
           <ExpandableTree
             tree={tree}
             siteId={siteId}
             enabledPackages={enabledPackages}
-            rootChildTypes={rootChildTypes}
-            modalState={modalState}
-            onSetModalState={setModalState}
             onEdit={openEditor}
-            onCreate={handleCreate}
           />
         )}
       </Box>
     </Stack>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Main component
+// ─────────────────────────────────────────────────────────────
+
+export function PageTreePane({ options }: PageTreePaneProps) {
+  const { siteId, enabledPackages } = options;
+  const router = useRouter();
+  const toast = useToast();
+
+  const handleCreate = useCallback(
+    (
+      type: string,
+      templateId: string,
+      parentId: string | null,
+      title?: string,
+    ) => {
+      const entry = packageRegistry.lookup(type);
+      if (!entry && type !== DOCUMENT_NAMES.page) {
+        console.error(
+          `[PageTreePane] Unknown document type "${type}" — skipping creation.`,
+        );
+        toast.push({
+          title: "En feil oppstod",
+          description: `[PageTreePane] Ukjent dokumenttype ("${type}") - kan ikke opprette siden.`,
+          status: "error",
+        });
+        return;
+      }
+
+      console.table({
+        head: `--- creating page ---`,
+        type,
+        templateId,
+        parentId,
+        title,
+      });
+
+      const publishedParentId = parentId?.replace(/^drafts\./, "") ?? null;
+      router.navigateIntent("create", [
+        { type, template: templateId },
+        {
+          siteId,
+          ...(publishedParentId ? { parentId: publishedParentId } : {}),
+          ...(title ? { title } : {}),
+        },
+      ]);
+    },
+    [router, siteId, toast],
+  );
+
+  return (
+    <PageCreationProvider
+      onCreate={handleCreate}
+      siteId={siteId}
+    >
+      <PageTreeContent
+        siteId={siteId}
+        enabledPackages={enabledPackages}
+      />
+    </PageCreationProvider>
   );
 }

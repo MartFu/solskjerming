@@ -1,25 +1,28 @@
-import { File, type LucideIcon } from "lucide-react";
-
+import { File } from "lucide-react";
 import {
-  PACKAGES,
-  packagesByChildType,
-  packagesByRootType,
-} from "@/utils/package";
+  type PackageResult,
+  type DocumentRoleMeta,
+  type PackageRegistry,
+  packageRegistry,
+} from "@/schemaTypes/documents/packages";
+import { ComponentType, ReactNode } from "react";
 
 // ─────────────────────────────────────────────────────────────
 // Type display metadata
 // ─────────────────────────────────────────────────────────────
 
-export function getTypeDisplay(docType: string): {
-  icon: LucideIcon;
-  title: string;
-} {
-  const asRoot = packagesByRootType.get(docType);
-  if (asRoot) return { icon: asRoot.rootIcon, title: asRoot.rootTitle };
-
-  const asChild = packagesByChildType.get(docType);
-  if (asChild) return { icon: asChild.childIcon, title: asChild.childTitle };
-
+/**
+ * Returns display metadata (icon, title) for any document type.
+ * Looks up the type in the package registry; falls back to a
+ * generic "Side" (page) label for unknown types.
+ */
+export function getTypeDisplay(
+  docType: string,
+): { icon: ComponentType | ReactNode; title: string } {
+  const entry = packageRegistry.lookup(docType);
+  if (entry) {
+    return { icon: entry.meta.icon, title: entry.meta.title };
+  }
   return { icon: File, title: "Side" };
 }
 
@@ -31,46 +34,26 @@ export interface ChildTypeInfo {
   type: string;
   title: string;
   description?: string;
-  icon: LucideIcon;
+  icon: ComponentType | ReactNode;
   templateId: string;
-  // Add these to preserve package context
-  childTitle?: string; // For child-level creation
-  childDescription?: string;
-  packageKey?: string; // To identify which package this belongs to
+  packageKey?: string;
 }
-
 
 /**
  * Given a parent type and the site's enabled packages, returns
  * which document types can be created as children at that level.
  *
- * - null (top-level) or "page" → ["page", ...enabled package root types]
- * - package root → [its child type]
- * - anything else → [] (leaf)
+ * Uses `resolvedParentTypes` from the registry metadata — a role
+ * is a valid child if its resolved parents include the given type.
+ *
+ * - `null` or `"page"` → ["page", ...entry points from enabled packages]
+ * - Any other type → all roles whose `resolvedParentTypes` includes it
  */
 export function getChildTypes(
   parentType: string | null,
   enabledPackages: string[],
 ): ChildTypeInfo[] {
-  // Package root → its specific child type
-  if (parentType) {
-    const pkg = packagesByRootType.get(parentType);
-    if (pkg) {
-      return [
-        {
-          type: pkg.childType,
-          title: pkg.childTitle, // This is the display name for the child
-          icon: pkg.childIcon,
-          templateId: pkg.childTemplateId,
-          description: pkg.rootDescription,
-          childTitle: pkg.childTitle, // Preserve for context
-          packageKey: pkg.packageKey,
-        },
-      ];
-    }
-  }
-
-  // Top-level or generic page → pages + enabled roots
+  // Top-level or under a page → pages + enabled entry points
   if (parentType === null || parentType === "page") {
     const children: ChildTypeInfo[] = [
       {
@@ -78,63 +61,99 @@ export function getChildTypes(
         title: "Side",
         icon: File,
         templateId: "page-with-parent",
-        description: "En fleksibel toppnivåside som benytter hovedsidebyggeren.",
-        childTitle: "Underside", // For child level
-        childDescription: "En fleksibel underside som benytter hovedsidebyggeren."
+        description:
+          "En fleksibel toppnivåside som benytter hovedsidebyggeren.",
       },
     ];
 
-    for (const pkg of PACKAGES) {
-      if (enabledPackages.includes(pkg.packageKey)) {
-        children.push({
-          type: pkg.rootType,
-          title: pkg.rootTitle, // Default display name
-          icon: pkg.rootIcon,
-          templateId: pkg.rootTemplateId,
-          description: pkg.rootDescription,
-          childTitle: pkg.childTitle,
-          childDescription: pkg.childDescription,
-          packageKey: pkg.packageKey,
-        });
+    for (const pkg of packageRegistry.packages) {
+      if (!enabledPackages.includes(pkg.key)) continue;
+
+      for (const meta of Object.values<DocumentRoleMeta>(pkg.documents)) {
+        if (meta.isEntryPoint) {
+          children.push({
+            type: meta.type,
+            title: meta.title,
+            icon: meta.icon,
+            templateId: meta.templateId,
+            description: meta.description,
+            packageKey: pkg.key,
+          });
+        }
       }
     }
 
     return children;
   }
 
-  // Leaf type
-  return [];
+  // Any other type → find all roles that accept it as a parent
+  const children: ChildTypeInfo[] = [];
+
+  for (const pkg of packageRegistry.packages) {
+    if (!enabledPackages.includes(pkg.key)) continue;
+
+    for (const meta of Object.values<DocumentRoleMeta>(pkg.documents)) {
+      if (meta.resolvedParentTypes.includes(parentType)) {
+        children.push({
+          type: meta.type,
+          title: meta.title,
+          icon: meta.icon,
+          templateId: meta.templateId,
+          description: meta.description,
+          packageKey: pkg.key,
+        });
+      }
+    }
+  }
+
+  return children;
 }
 
 // ─────────────────────────────────────────────────────────────
 // GROQ query
 // ─────────────────────────────────────────────────────────────
 
-export function getRoutableTypes(enabledPackages: string[]): string[] {
+/**
+ * Returns all routable document type names for the given set of
+ * enabled packages. Always includes "page".
+ */
+export function getRoutableTypes(
+  enabledPackages: string[],
+): string[] {
   const types = ["page"];
-  for (const pkg of PACKAGES) {
-    if (enabledPackages.includes(pkg.packageKey)) {
-      types.push(pkg.rootType, pkg.childType);
+
+  for (const pkg of packageRegistry.packages) {
+    if (!enabledPackages.includes(pkg.key)) continue;
+
+    for (const meta of Object.values<DocumentRoleMeta>(pkg.documents)) {
+      types.push(meta.type);
     }
   }
+
   return types;
 }
 
-export function buildTreeQuery(enabledPackages: string[]): string {
+/**
+ * Builds the GROQ query that fetches all routable documents for a
+ * site's page tree. The query is scoped to the enabled packages.
+ */
+export function buildTreeQuery(
+  enabledPackages: string[],
+): string {
   const types = getRoutableTypes(enabledPackages);
   const typeList = types.map((t) => `"${t}"`).join(", ");
 
   return `
-        *[_type in [${typeList}] && site._ref == $siteId] | order(sortOrder asc, title asc) {
-            _id,
-            _type,
-            title,
-            "slug": slug.current,
-            sortOrder,
-            "parentRef": parent._ref,
-            seoNoIndex
-        }
-    `;
+    *[_type in [${typeList}] && site._ref == $siteId] | order(sortOrder asc, title asc) {
+      _id,
+      _type,
+      title,
+      "slug": slug.current,
+      sortOrder,
+      "parentRef": parent._ref,
+      seoNoIndex
+    }
+  `;
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -167,7 +186,6 @@ export function buildTree(
   docs: RoutableDoc[],
   enabledPackages: string[],
 ): TreeNode[] {
-  // Group documents by their parent ref
   const childrenOf = new Map<string | null, RoutableDoc[]>();
 
   for (const doc of docs) {
@@ -199,7 +217,7 @@ export function buildTree(
     });
   }
 
-  return buildNodes(null, []); 
+  return buildNodes(null, []);
 }
 
 /**

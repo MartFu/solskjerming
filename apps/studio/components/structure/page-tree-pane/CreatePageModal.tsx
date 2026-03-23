@@ -97,7 +97,7 @@ function TypeButton({
   isChild: boolean;
   onSelect: () => void;
 }) {
-  const { title, childTitle, description, childDescription } = typeInfo;
+  const { title, description } = typeInfo;
 
   return (
     <Button
@@ -122,7 +122,7 @@ function TypeButton({
               size={1}
               weight="semibold"
             >
-              {isChild && childTitle ? childTitle : title}
+              {title}
             </Text>
           </Stack>
           <Text
@@ -132,13 +132,13 @@ function TypeButton({
             <DocumentIcon />
           </Text>
         </Flex>
-          {(childDescription || description) && (
+          {(description) && (
             <Text
               size={1}
               muted
               style={{ whiteSpace: "normal" }}
             >
-              {isChild && childDescription ? childDescription : description}
+              {description}
             </Text>
           )}
       </Flex>
@@ -220,6 +220,27 @@ export function CreatePageModal({
           />
         </Stack>
 
+        {/* Title */}
+        <Stack space={2}>
+          <Text
+            size={0}
+            weight="semibold"
+            muted
+            style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}
+          >
+            Tittel
+          </Text>
+          <TextInput
+            placeholder="Sidens tittel…"
+            value={title}
+            onChange={(e) => setTitle(e.currentTarget.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && title.trim()) handleConfirm();
+            }}
+            autoFocus
+          />
+        </Stack>
+
         {/* Type selection — only shown when there's a choice */}
         {types.length > 1 && (
           <Stack space={3}>
@@ -247,27 +268,6 @@ export function CreatePageModal({
             </Grid>
           </Stack>
         )}
-
-        {/* Title */}
-        <Stack space={2}>
-          <Text
-            size={0}
-            weight="semibold"
-            muted
-            style={{ textTransform: "uppercase", letterSpacing: "0.05em" }}
-          >
-            Tittel
-          </Text>
-          <TextInput
-            placeholder="Sidens tittel…"
-            value={title}
-            onChange={(e) => setTitle(e.currentTarget.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && title.trim()) handleConfirm();
-            }}
-            autoFocus
-          />
-        </Stack>
       </Stack>
     </Dialog>
   );

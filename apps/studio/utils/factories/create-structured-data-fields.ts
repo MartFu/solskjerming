@@ -1,6 +1,6 @@
-import { defineField, InputProps } from "sanity";
-import {  GroupValue } from "../constant";
-import { PageSchemaInput, SchemaAutocomplete } from "@/components/inputs/schema-org-select-field";
+import { defineField } from "sanity";
+import { GroupValue } from "../constant";
+import { PageSchemaInput } from "@/components/inputs/schema-org-select-field";
 
 interface CreateStructuredDataFieldsOptions {
   isDefault?: boolean;
@@ -8,32 +8,6 @@ interface CreateStructuredDataFieldsOptions {
   isPage?: boolean;
   group?: GroupValue;
 }
-
-// ─── Schema.org type definitions ────────────────────────────────────────────
-// Each type maps to required/recommended properties per Google's rich results docs.
-
-const SCHEMA_TYPES = [
-  { title: "Artikkel (Article)", value: "Article" },
-  { title: "Blogginnlegg (BlogPosting)", value: "BlogPosting" },
-  { title: "Nyhetsartikkel (NewsArticle)", value: "NewsArticle" },
-  { title: "Produkt (Product)", value: "Product" },
-  { title: "Vanlige spørsmål (FAQPage)", value: "FAQPage" },
-  { title: "Fremgangsmåte (HowTo)", value: "HowTo" },
-  { title: "Arrangemement (Event)", value: "Event" },
-  { title: "Lokal bedrift (LocalBusiness)", value: "LocalBusiness" },
-  { title: "Organisasjon (Organization)", value: "Organization" },
-  { title: "Person (Person)", value: "Person" },
-  { title: "Brødsmuler (BreadcrumbList)", value: "BreadcrumbList" },
-  { title: "Nettside (WebSite)", value: "WebSite" },
-  { title: "Nettside-side (WebPage)", value: "WebPage" },
-  { title: "Video (VideoObject)", value: "VideoObject" },
-  { title: "Oppskrift (Recipe)", value: "Recipe" },
-  { title: "Kurs (Course)", value: "Course" },
-  { title: "Jobbutlysning (JobPosting)", value: "JobPosting" },
-  { title: "Programvare (SoftwareApplication)", value: "SoftwareApplication" },
-  { title: "Anmeldelse (Review)", value: "Review" },
-  { title: "Egendefinert (Custom)", value: "Custom" },
-] as const;
 
 const DEFAULTS = {
   structuredData: {
@@ -46,7 +20,7 @@ const DEFAULTS = {
 export const createStructuredDataFields = (
   options: CreateStructuredDataFieldsOptions = {},
 ) => {
-  const { isDefault, isSite, isPage, group = undefined } = options;
+  const { isDefault, isSite, group = undefined } = options;
 
   // ─── Site-level: Organization + WebSite schema ──────────────────────────
   if (isSite || isDefault) {
@@ -238,14 +212,6 @@ export const createStructuredDataFields = (
           components: {
             input: PageSchemaInput,
           },
-          //   options: {
-          //     list: SCHEMA_TYPES.map((t) => ({
-          //       title: t.title,
-          //       value: t.value,
-          //     })),
-          //     layout: "dropdown",
-          //     searchable: true
-          //   },
           hidden: ({ parent }: { parent?: { enabled?: boolean } }) =>
             !parent?.enabled,
         },

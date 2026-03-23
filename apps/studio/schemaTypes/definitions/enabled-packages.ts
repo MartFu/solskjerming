@@ -1,6 +1,6 @@
 import { defineField } from "sanity";
 import { GROUP } from "@/utils/constant";
-import { PACKAGE_OPTIONS } from "@/utils/package";
+import { packageRegistry } from "../documents/packages";
 
 /**
  * Field for the site document that controls which packages
@@ -16,7 +16,10 @@ export const enabledPackagesField = defineField({
         "Velg hvilke innholdstyper som skal være tilgjengelige for dette nettstedet. Kun aktiverte pakker vises i studioet og kan opprettes/utvides. Noter at kun aktiverte pakker vil ha tilgjengelige URL-er på nettstedets frontend.",
     of: [{ type: "string" }],
     options: {
-        list: [...PACKAGE_OPTIONS],
+        list: packageRegistry.packages.map((pkg) => ({
+            title: pkg.title,
+            value: pkg.key,
+        })),
         layout: "grid",
     },
 });

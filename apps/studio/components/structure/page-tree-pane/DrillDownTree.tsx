@@ -13,8 +13,8 @@ import {
   getChildTypes,
   type TreeNode,
 } from "@/utils/page-tree";
-import { CreatePageModal } from "./CreatePageModal";
-import { DrillDownTreeProps, ModalState } from "./types";
+import { usePageCreation } from "@/context/PageCreationProvider";
+import { DrillDownTreeProps } from "./types";
 
 // ─────────────────────────────────────────────────────────────
 // Breadcrumb
@@ -180,10 +180,9 @@ export function DrillDownTree({
   tree,
   enabledPackages,
   onEdit,
-  onCreate,
 }: DrillDownTreeProps) {
   const [currentParentId, setCurrentParentId] = useState<string | null>(null);
-  const [modalState, setModalState] = useState<ModalState | null>(null);
+  const { openCreationModal } = usePageCreation();
 
   const navigateTo = useCallback((id: string | null) => {
     setCurrentParentId(id);
@@ -215,84 +214,66 @@ export function DrillDownTree({
     const ancestors = currentNode
       ? getAncestors(tree, currentNode.doc._id)
       : [];
-    setModalState({
+    openCreationModal({
       types: creatableTypes,
       parentNode: currentNode,
       ancestors,
     });
   };
 
-  const handleConfirm = (type: string, templateId: string, title: string) => {
-    const parentId = modalState?.parentNode?.doc._id ?? null;
-    onCreate(type, templateId, parentId, title);
-    setModalState(null);
-  };
-
   return (
-    <>
-      <Stack
-        space={0}
-        style={{ height: "100%" }}
+    <Stack
+      space={0}
+      style={{ height: "100%" }}
+    >
+      <Breadcrumb
+        crumbs={breadcrumbs}
+        onNavigate={navigateTo}
+      />
+
+      <Box
+        flex={1}
+        overflow="auto"
+        padding={2}
       >
-        <Breadcrumb
-          crumbs={breadcrumbs}
-          onNavigate={navigateTo}
-        />
-
-        <Box
-          flex={1}
-          overflow="auto"
-          padding={2}
-        >
-          {currentChildren.length === 0 ? (
-            <Box padding={3}>
-              <Text
-                muted
-                size={1}
-              >
-                Ingen undersider ennå.
-              </Text>
-            </Box>
-          ) : (
-            <Stack space={1}>
-              {currentChildren.map((node) => (
-                <DrillDownRow
-                  key={node.doc._id}
-                  node={node}
-                  onNavigate={navigateTo}
-                  onEdit={onEdit}
-                />
-              ))}
-            </Stack>
-          )}
-        </Box>
-
-        {/* Bottom bar — create button opens modal */}
-        {creatableTypes.length > 0 && (
-          <Card
-            padding={3}
-            borderTop
-          >
-            <Button
-              icon={AddIcon}
-              text={currentNode ? "Ny underside" : "Ny side"}
-              mode="ghost"
-              tone="primary"
-              onClick={handleOpenModal}
-            />
-          </Card>
+        {currentChildren.length === 0 ? (
+          <Box padding={3}>
+            <Text
+              muted
+              size={1}
+            >
+              Ingen undersider ennå.
+            </Text>
+          </Box>
+        ) : (
+          <Stack space={1}>
+            {currentChildren.map((node) => (
+              <DrillDownRow
+                key={node.doc._id}
+                node={node}
+                onNavigate={navigateTo}
+                onEdit={onEdit}
+              />
+            ))}
+          </Stack>
         )}
-      </Stack>
+      </Box>
 
-      {modalState && (
-        <CreatePageModal
-          types={modalState.types}
-          parentNode={modalState.parentNode}
-          ancestors={modalState.ancestors}
-          onConfirm={handleConfirm}
-          onClose={() => setModalState(null)}
-        />
+      {/* Bottom bar — create button opens modal */}
+      {creatableTypes.length > 0 && (
+        <Card
+          padding={3}
+          borderTop
+        >
+          <Button
+            icon={AddIcon}
+            text={currentNode ? "Ny underside" : "Ny side"}
+            mode="ghost"
+            tone="primary"
+            onClick={handleOpenModal}
+          />
+        </Card>
       )}
-    </>
+    </Stack>
   );
 }

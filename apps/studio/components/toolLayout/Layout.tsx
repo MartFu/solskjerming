@@ -1,40 +1,40 @@
 import { Box, Flex } from "@sanity/ui";
-import {  type ActiveToolLayoutProps } from "sanity";
+import { type ActiveToolLayoutProps } from "sanity";
 import { TopBar } from "./TopBar";
 import { useToolLayout } from "@/context/ToolLayoutProvider";
+import { usePreviewResolver } from "@/hooks/usePreviewResolver";
 
 import { PreviewPane } from "./PreviewPane";
 
+function PreviewResolver() {
+  usePreviewResolver();
+  return null;
+}
+
 export function Layout(props: ActiveToolLayoutProps) {
-    const { activeSite, preview, previewUrl, previewHidden, previewLoading } =
-        useToolLayout();
+  const { activeSite, previewUrl, previewHidden } = useToolLayout();
 
-    const showPreview =
-        props.activeTool.name === "structure" &&
-        !!preview &&
-        !!activeSite &&
-        !previewHidden;
+  const showPreview =
+    props.activeTool.name === "structure" &&
+    !!activeSite &&
+    !previewHidden &&
+    !!previewUrl;
 
-    return (
-        <Flex
-            direction="column"
-            height="fill"
-        >
-            {props.activeTool.name !== "vision" && <TopBar />}
+  return (
+    <Flex direction="column" height="fill">
+      {props.activeTool.name !== "vision" && <TopBar />}
 
-            <Flex
-                flex={1}
-                style={{ minHeight: 0 }}
-            >
-                <Box
-                    flex={1}
-                    style={{ minHeight: 0, overflow: "auto" }}
-                >
-                    {props.renderDefault(props)}
-                </Box>
+      <Flex flex={1} style={{ minHeight: 0 }}>
+        <Box flex={1} style={{ minHeight: 0, overflow: "auto" }}>
+          {props.renderDefault(props)}
+        </Box>
 
-                {showPreview && previewUrl && <PreviewPane url={previewUrl} loading={previewLoading} />}
-            </Flex>
-        </Flex>
-    );
+        {props.activeTool.name === "structure" && activeSite && (
+          <PreviewResolver />
+        )}
+
+        {showPreview && <PreviewPane url={previewUrl} loading={false} />}
+      </Flex>
+    </Flex>
+  );
 }

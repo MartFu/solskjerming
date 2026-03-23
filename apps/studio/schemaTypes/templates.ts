@@ -1,16 +1,7 @@
-import { API_VERSION, WorkspaceKey } from "@/utils/constant";
-import { PACKAGES } from "@/utils/package";
-import {
-  GlobalCompliance,
-  GlobalIntegrations,
-  GlobalOrganization,
-  GlobalRobots,
-  GlobalSeo,
-  GlobalStructuredData,
-  GlobalTheme,
-} from "@workspace/sanity/types";
+import {  WorkspaceKey } from "@/utils/constant";
+import { API_VERSION } from "@/utils/env";
+
 import type { SanityClient, SourceClientOptions, Template } from "sanity";
-import slugify from "slugify";
 
 // ─────────────────────────────────────────────────────────────
 // Helpers
@@ -55,13 +46,20 @@ export const siteTemplate: Template<SiteTemplateParams> = {
     const client = getClient({ apiVersion: API_VERSION });
 
     const globals = await client.fetch<{
-      org: GlobalOrganization;
-      seo: GlobalSeo;
-      theme: GlobalTheme;
-      integrations: GlobalIntegrations;
-      compliance: GlobalCompliance;
-      structuredData: GlobalStructuredData;
-      robots: GlobalRobots;
+      org: any;
+      seo: any;
+      theme: any;
+      integrations: any;
+      compliance: any;
+      structuredData: any;
+      robots: any;
+      // org: GlobalOrganization;
+      // seo: GlobalSeo;
+      // theme: GlobalTheme;
+      // integrations: GlobalIntegrations;
+      // compliance: GlobalCompliance;
+      // structuredData: GlobalStructuredData;
+      // robots: GlobalRobots;
     }>(`{
       "org":            *[_type == "globalOrganization"][0],
       "seo":            *[_type == "globalSeo"][0],
@@ -310,44 +308,7 @@ function createWorkspaceTemplates(): Template[] {
   ];
 }
 
-/**
- * Generates Root Templates (Site-scoped)
- * Used for articleRoot, catalogRoot, etc.
- */
-function createPackageRootTemplates(): Template[] {
-  console.log("-- createPackageRootTemplates --");
-  createWorkspaceTemplates;
-  return PACKAGES.map((pkg) => ({
-    id: pkg.rootTemplateId, // Use the ID from your definition
-    title: pkg.rootTitle,
-    schemaType: pkg.rootType,
-    parameters: [{ name: "siteId", type: "string" as const }],
-    value: (params: SiteParams) => ({
-      site: { _type: "reference", _ref: params.siteId },
-    }),
-  }));
-}
 
-/**
- * Generates Child Templates (Parent-scoped)
- * Used for articlePage, productPage, etc.
- */
-function createPackageChildTemplates(): Template[] {
-  console.log("-- createPackageChildTemplates --");
-  return PACKAGES.map((pkg) => ({
-    id: pkg.childTemplateId, // Use the ID from your definition
-    title: pkg.childTitle,
-    schemaType: pkg.childType,
-    parameters: [
-      { name: "siteId", type: "string" as const },
-      { name: "parentId", type: "string" as const },
-    ],
-    value: (params: ChildParams) => ({
-      site: { _type: "reference", _ref: params.siteId },
-      parent: { _ref: params.parentId },
-    }),
-  }));
-}
 
 // Following your existing pattern
 const cookieTemplate: Template = {
@@ -391,8 +352,6 @@ const cookieTemplate: Template = {
 export const initialValueTemplates: Template[] = [
   ...createSiteTemplates(),
   ...createChildTemplates(),
-  ...createPackageChildTemplates(),
-  ...createPackageRootTemplates(),
   createPageNestingTemplate(),
   ...createWorkspaceTemplates(),
   cookieTemplate,

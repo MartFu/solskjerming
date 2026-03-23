@@ -3,11 +3,13 @@ import { defineField, defineType } from "sanity";
 
 import { imageWithAltField } from "@/schemaTypes/common";
 import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
+import { defineGlobal } from "./define-global";
 
-export const author = defineType({
+export const author = defineGlobal({
   name: DOCUMENT_NAMES.author,
   title: "Forfatter",
   type: "document",
+  sortFields: ["name"],
   icon: UserIcon,
   fields: [
     // Add component linking to the author's creations

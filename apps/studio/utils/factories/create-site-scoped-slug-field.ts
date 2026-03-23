@@ -1,11 +1,12 @@
 import { defineField, Slug } from "sanity";
-import { API_VERSION, GROUP } from "../constant";
+import { GROUP } from "../constant";
 import { isSiteDocument } from "../types";
 import {
   createSlugErrorValidator,
   createSlugWarningValidator,
   getDocumentTypeConfig,
 } from "../slug-validation";
+import { API_VERSION } from "@/utils/env";
 
 export const createSiteScopedSlugField = (
   options: {

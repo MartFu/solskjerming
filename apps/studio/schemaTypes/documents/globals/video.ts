@@ -3,10 +3,12 @@ import { GROUPS } from "@/utils/constant";
 // import { ogFields } from "@/utils/og-fields";
 // import { seoFields } from "@/utils/seo-fields";
 import { defineField, defineType } from "sanity";
+import { defineGlobal } from "./define-global";
 
-export const video = defineType({
+export const video = defineGlobal({
   name: DOCUMENT_NAMES.video,
   title: "Video",
+  sortFields: [],
   type: "document",
   groups: GROUPS(),
   fields: [

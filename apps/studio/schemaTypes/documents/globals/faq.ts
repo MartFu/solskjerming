@@ -3,10 +3,12 @@ import { defineField, defineType } from "sanity";
 import { customRichText } from "@/schemaTypes/definitions/rich-text";
 import { parseRichTextToString } from "@/utils/helper";
 import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
+import { defineGlobal } from "./define-global";
 
-export const faq = defineType({
+export const faq = defineGlobal({
   name: DOCUMENT_NAMES.faq,
   type: "document",
+  sortFields: [],
   title: "Frequently Asked Question",
   description:
     "A simple question and answer pair that helps visitors find information quickly. Think of it like writing down the questions customers often ask, along with clear answers.",

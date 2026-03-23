@@ -27,3 +27,5 @@ export const DOCUMENT_NAMES = {
   globalStructuredData: "globalStructuredData",
   globalRobots: "globalRobots",
 } as const;
+
+export type DocumentName = (typeof DOCUMENT_NAMES)[keyof typeof DOCUMENT_NAMES];

@@ -7,47 +7,50 @@ import { defineArrayMember, defineField, defineType } from "sanity";
 import { documentSlugField, imageWithAltField } from "@/schemaTypes/common";
 import { GROUP, GROUPS } from "@/utils/constant";
 import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
+import { defineGlobal } from "./define-global";
 // import { ogFields } from "@/utils/og-fields";
 // import { seoFields } from "@/utils/seo-fields";
 
-export const article = defineType({
+
+
+export const article = defineGlobal({
   name: DOCUMENT_NAMES.article,
-  title: "Article",
+  title: "Artikkel",
   type: "document",
   // icon: FileTextIcon,
   groups: GROUPS(),
+  sortFields: ["title", "description", "publishedAt"],
   orderings: [orderRankOrdering],
   description:
-    "An article that will be published on the website. Add a title, description, author, and content to create a new article for readers.",
+    "En artikkel som vil bli publisert på nettsiden. Legg til tittel, beskrivelse, forfatter og innhold for å opprette en ny artikkel.",
   fields: [
     orderRankField({ type: "article" }),
     defineField({
       name: "title",
       type: "string",
-      title: "Title",
-      description: "The headline of your post that readers will see first",
+      title: "Tittel",
+      description: "Overskriften på artikkelen som leserne ser først",
       group: GROUP.MAIN_CONTENT,
-      validation: (Rule) =>
-        Rule.required().error("An article title is required"),
+      validation: (Rule) => Rule.required().error("Artikkelen må ha en tittel"),
     }),
     defineField({
-      title: "Description",
+      title: "Beskrivelse",
       name: "description",
       type: "text",
       rows: 3,
       description:
-        "A short summary of what your article is about (appears in search results)",
+        "Et kort sammendrag av hva artikkelen handler om (vises i søkeresultater)",
       group: GROUP.MAIN_CONTENT,
       validation: (rule) => [
         rule
           .min(140)
           .warning(
-            "The meta description should be at least 140 characters for optimal SEO visibility in search results",
+            "Metabeskrivelsen bør være på minst 140 tegn for optimal synlighet i søkemotorer",
           ),
         rule
           .max(160)
           .warning(
-            "The meta description should not exceed 160 characters as it will be truncated in search results",
+            "Metabeskrivelsen bør ikke overstige 160 tegn, da den vil bli avkortet i søkeresultater",
           ),
       ],
     }),
@@ -57,8 +60,8 @@ export const article = defineType({
     defineField({
       name: "authors",
       type: "array",
-      title: "Authors",
-      description: "Who wrote this article (select from existing authors)",
+      title: "Forfattere",
+      description: "Hvem har skrevet denne artikkelen?",
       of: [
         defineArrayMember({
           type: "reference",
@@ -87,28 +90,28 @@ export const article = defineType({
       name: "publishedAt",
       type: "date",
       initialValue: () => new Date().toISOString().split("T")[0],
-      title: "Published At",
+      title: "Publiseringsdato",
       description:
-        "The date when your article will appear to have been published",
+        "Datoen som skal vises som publiseringstidspunkt for artikkelen",
       group: GROUP.MAIN_CONTENT,
     }),
     imageWithAltField({
-      title: "Image",
+      title: "Hovedbilde",
       description:
-        "The main picture that will appear at the top of your article and in previews",
+        "Hovedbildet som vises øverst på artikkelsiden og i forhåndsvisninger.",
       group: GROUP.MAIN_CONTENT,
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "richText",
       type: "richText",
-      description:
-        "The main content of your article with text, images, and formatting",
+      title: "Brødtekst",
+      description: "Artikkelens hovedinnhold med tekst, bilder og formatering.",
       group: GROUP.MAIN_CONTENT,
     }),
     defineField({
       name: "siteId",
-      title: "Site ID",
+      title: "Nettsteds-ID",
       type: "string",
       readOnly: true,
       hidden: true,
@@ -118,11 +121,7 @@ export const article = defineType({
       type: "reference",
       to: [{ type: "site" }],
     }),
-    defineField({
-      name: "deployment",
-      title: "Publishing Status",
-      type: "deploymentMeta",
-    }),
+
     // ...seoFields,
     // ...ogFields,
   ],
@@ -145,25 +144,27 @@ export const article = defineType({
       slug,
       publishDate,
     }) => {
-      // Status indicators
-      let visibility = "🌎 Public";
+      // Status-indikatorer
+      let visibility = "Offentlig";
       if (isPrivate) {
-        visibility = "🔒 Private";
+        visibility = "Privat";
       } else if (isHidden) {
-        visibility = "🙈 Hidden";
+        visibility = "Skjult";
       }
 
-      // Author and date
-      const authorInfo = author ? `✍️ ${author}` : "👻 No author";
+      // Forfatter og dato
+      const authorInfo = author ? `${author}` : "Ukjent forfatter";
       const dateInfo = publishDate
-        ? `📅 ${new Date(publishDate).toLocaleDateString()}`
-        : "⏳ Draft";
+        ? `${new Date(publishDate).toLocaleDateString("nb-NO")}`
+        : "Utkast";
 
       return {
-        title: title || "Untitled article",
+        title: title || "Artikkel uten tittel",
         media,
         subtitle: `🔗 ${slug} | ${visibility} | ${authorInfo} | ${dateInfo}`,
       };
     },
   },
 });
+
+

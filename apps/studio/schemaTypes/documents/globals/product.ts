@@ -3,10 +3,12 @@ import { GROUP, GROUPS } from "@/utils/constant";
 // import { ogFields } from "@/utils/og-fields";
 // import { seoFields } from "@/utils/seo-fields";
 import { defineField, defineType } from "sanity";
+import { defineGlobal } from "./define-global";
 
-export const product = defineType({
+export const product = defineGlobal({
   name: DOCUMENT_NAMES.product,
   title: "Produkt",
+  sortFields: [],
   type: "document",
   groups: GROUPS(),
   fields: [

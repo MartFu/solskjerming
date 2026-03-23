@@ -209,3 +209,12 @@ export function asStudioIcon(icon: LucideIcon) {
  */
 export const camelToKebabCase = (str: string) => 
   str.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+
+
+export const formatBytes = (bytes: number) => {
+  if (bytes === 0) return "0 B";
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB", "TB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+};

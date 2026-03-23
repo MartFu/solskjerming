@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useClient } from "sanity";
 import type { ProductsPluginConfig, Site } from "../types";
-import { API_VERSION } from "@/utils/constant";
+import { API_VERSION } from '@/utils/env';
 
 
 

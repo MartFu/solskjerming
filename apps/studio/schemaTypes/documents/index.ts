@@ -1,46 +1,27 @@
 // schemaTypes/documents/index.ts
 
+// ─── Workspace-scoped defaults ─────────────────────────────────────────────────────────────
+import { globalSettings } from "./global-settings";
+
+// ─── Workspace-scoped shared assets ─────────────────────────────────────
+import { globalSchemaTypes, GlobalType } from "./globals";
+
 // ─── Site config ─────────────────────────────────────────────────────────────
 import { site } from "@/schemaTypes/documents/site";
 import { redirect } from "@/schemaTypes/documents/redirect";
 
 // ─── Site-scoped, routable documents ─────────────────────────────────────────
-import {
-  articlePage,
-  articleRoot,
-  catalogRoot,
-  page,
-  productPage,
-} from "@/schemaTypes/documents/pages";
+import { page } from "./page";
+import { packageRegistry } from "./packages";
+
 
 // ─── Site-scoped, non-routable documents ─────────────────────────────────────
 import { footer } from "@/schemaTypes/documents/footer";
 import { navbar } from "@/schemaTypes/documents/navbar";
 
-// ─── Workspace-scoped shared assets ──────────────────────────────────────────
-import { documentation } from "@/schemaTypes/documents/shared-assets/documentation";
-import { video } from "./shared-assets/video";
-import { product } from "./shared-assets/product";
-import { article } from "@/schemaTypes/documents/shared-assets/article";
-import { author } from "@/schemaTypes/documents/shared-assets/author";
-import { faq } from "@/schemaTypes/documents/shared-assets/faq";
-
-// ─── Workspace-scoped globals ─────────────────────────────────────────────────
-import { globalSeo } from "@/schemaTypes/documents/global-settings/seo";
-import { globalIntegrations } from "@/schemaTypes/documents/global-settings/integrations";
-import { globalOrganization } from "@/schemaTypes/documents/global-settings/organization";
-import { globalTheme } from "@/schemaTypes/documents/global-settings/theme";
-import { globalCompliance } from "./global-settings/compliance";
-import { globalStructuredData } from "./global-settings/structured-data";
-import { globalRobots } from "./global-settings/robots";
-
-
 export const pageDocuments = [
   page,
-  articleRoot,
-  catalogRoot,
-  articlePage,
-  productPage,
+  ...packageRegistry.allSchemas
 ] as const
 
 export const PAGE_TYPES = pageDocuments.map((d) => d.name);
@@ -74,52 +55,6 @@ export function isSiteOwnedType(type: string): type is SiteOwnedType {
   return SITE_OWNED_TYPES.includes(type as SiteOwnedType);
 }
 
-/**
- * Workspace-level documents that are referenced by sites and their pages,
- * but are not owned by any single site.
- *
- * These are NEVER deleted or archived as part of a site operation. They are
- * used in the deletion preview to inform the editor which documents will be
- * left untouched, and to ensure we never accidentally treat a shared asset
- * reference as an owned document.
- *
- * ⚠️  If you add a new shared asset type, add it here so it is correctly
- *     excluded from site-scoped operations.
- */
-export const sharedAssetDocuments = [
-  documentation,
-  video,
-  product,
-  faq,
-  author,
-  article,
-] as const;
-
-export const SHARED_ASSET_TYPES = sharedAssetDocuments.map((d) => d.name);
-export type SharedAssetType = (typeof sharedAssetDocuments)[number]["name"];
-export function isSharedAssetType(type: string): type is SharedAssetType {
-  return SHARED_ASSET_TYPES.includes(type as SharedAssetType);
-}
-
-/**
- * Workspace-scoped singleton documents that hold global configuration.
- * One instance of each exists per workspace, shared across all sites.
- */
-export const globals = [
-  globalTheme,
-  globalSeo,
-  globalIntegrations,
-  globalOrganization,
-  globalCompliance,
-  globalStructuredData,
-  globalRobots,
-] as const;
-
-export const WORKSPACE_GLOBAL_TYPES = globals.map((d) => d.name);
-export type WorkspaceGlobalType = (typeof globals)[number]["name"];
-export function isWorkspaceGlobalType(type: string): type is WorkspaceGlobalType {
-  return WORKSPACE_GLOBAL_TYPES.includes(type as WorkspaceGlobalType);
-}
 
 
 /**
@@ -128,7 +63,7 @@ export function isWorkspaceGlobalType(type: string): type is WorkspaceGlobalType
  */
 export type PackageType = 
   | Exclude<SiteOwnedType, "page" | "redirect" | "site" | "navbar" | "footer"> 
-  | Exclude<SharedAssetType, "documentation" | "video" | "faq">;
+  | Exclude<GlobalType, "documentation" | "video" | "faq">;
 
 
 /**
@@ -147,7 +82,7 @@ export const DOCUMENT_PACKAGE_MAPPING: Record<string, string> = {
 
 /** ─── Config exports ──────────────────────────────────────────
  *
- * ⚠️ Exports should very rarely, if ever, be directly placed in the exports below.
+ * ⚠️  Exports should very rarely, if ever, be directly placed in the exports below.
  *     Before proceeding, ensure that they are placed in the appropriate exports
  *     above.
  *
@@ -159,7 +94,7 @@ export const DOCUMENT_PACKAGE_MAPPING: Record<string, string> = {
  * All singleton documents — things that should only ever have one instance.
  * Used to suppress the "create new" button in the Studio for these types.
  */
-export const singletons = [...globals];
+export const singletons = [...globalSettings];
 
 /**
  * The full set of document types registered with Sanity.
@@ -167,7 +102,7 @@ export const singletons = [...globals];
  */
 export const documents = [
   ...siteOwnedDocuments,
-  ...sharedAssetDocuments,
+  ...globalSchemaTypes,
 ];
 
 

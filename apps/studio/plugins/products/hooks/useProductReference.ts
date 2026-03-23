@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useClient } from "sanity";
 import { PRODUCT_REFERENCES_QUERY } from "../queries";
 import type { ProductReference } from "../types";
-import { API_VERSION } from "@/utils/constant";
+import { API_VERSION } from '@/utils/env';
 
 export function useProductReferences(productId: string | null) {
   const client = useClient({ apiVersion: API_VERSION });

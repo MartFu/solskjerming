@@ -4,30 +4,14 @@ export interface ExpandableTreeProps {
   tree: TreeNode[];
   siteId: string;
   enabledPackages: string[];
-  rootChildTypes: ChildTypeInfo[];
-  modalState: ModalState | null;
-  onSetModalState: (state: ModalState | null) => void;
   onEdit: (docId: string, docType: string) => void;
-  onCreate: (
-    type: string,
-    templateId: string,
-    parentId: string | null,
-    title: string,
-  ) => void;
 }
-
 
 export interface DrillDownTreeProps {
   tree: TreeNode[];
   siteId: string;
   enabledPackages: string[];
   onEdit: (docId: string, docType: string) => void;
-  onCreate: (
-    type: string,
-    templateId: string,
-    parentId: string | null,
-    title: string,
-  ) => void;
 }
 
 export interface CreatePageModalProps {
@@ -37,7 +21,7 @@ export interface CreatePageModalProps {
   parentNode: TreeNode | null;
   /** Ancestor chain from root down to (not including) parentNode */
   ancestors: TreeNode[];
-  onConfirm: (type: string, templateId: string, title: string) => void;
+  onConfirm: (type: string, templateId: string, title?: string) => void;
   onClose: () => void;
 }
 
@@ -46,7 +30,6 @@ export interface SearchResultsProps {
   onEdit: (docId: string, docType: string) => void;
   onClear: () => void;
 }
-
 
 export interface ModalState {
   types: ChildTypeInfo[];

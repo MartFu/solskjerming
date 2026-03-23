@@ -15,7 +15,7 @@ import {
     TextInput,
 } from "@sanity/ui";
 import { ChevronDownIcon, SearchIcon } from "@sanity/icons";
-import { API_VERSION } from "@/utils/constant";
+import { API_VERSION } from '@/utils/env';
 import { useToolLayout } from "@/context/ToolLayoutProvider";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { ActiveSite, Site } from "@/utils/types";

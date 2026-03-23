@@ -3,18 +3,17 @@ import "dotenv/config";
 import path from "node:path";
 import { defineCliConfig } from "sanity/cli";
 import tsconfigPaths from "vite-plugin-tsconfig-paths";
+import { DATASET, PROJECT_ID } from "./utils/env";
 
 const logger = new Logger("SanityCLI");
 
-const projectId = process.env.SANITY_STUDIO_PROJECT_ID ?? "";
-const dataset = process.env.SANITY_STUDIO_DATASET ?? "production";
 
-if (!projectId) {
+if (!PROJECT_ID) {
   logger.warn(
     "Missing or invalid SANITY_STUDIO_PROJECT_ID - some features may not work"
   );
 }
-if (!dataset) {
+if (!DATASET) {
   logger.warn(
     "Missing or invalid SANITY_STUDIO_DATASET - some features may not work"
   );
@@ -24,7 +23,7 @@ if (!dataset) {
  * Returns the correct studio host based on environment variables.
  * - If HOST_NAME is set and not "main", returns `${HOST_NAME}-${PRODUCTION_HOSTNAME}`
  * - If HOST_NAME is "main" or not set, returns PRODUCTION_HOSTNAME
- * - If PRODUCTION_HOSTNAME is not set, returns a default using projectId
+ * - If PRODUCTION_HOSTNAME is not set, returns a default using PROJECT_ID
  */
 function getStudioHost(): string | undefined {
   const host = process.env.HOST_NAME;
@@ -38,8 +37,8 @@ function getStudioHost(): string | undefined {
     return productionHostName;
   }
 
-  if (projectId) {
-    return `${projectId}`;
+  if (PROJECT_ID) {
+    return `${PROJECT_ID}`;
   }
 
   return;
@@ -53,8 +52,8 @@ if (studioHost) {
 
 export default defineCliConfig({
   api: {
-    projectId,
-    dataset,
+    projectId: PROJECT_ID,
+    dataset: DATASET,
   },
   studioHost,
   deployment: {

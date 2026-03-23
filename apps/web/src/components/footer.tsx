@@ -1,11 +1,8 @@
 import { sanityFetch } from "@workspace/sanity/live";
-import {
-  queryFooterData,
-  queryGlobalSeoSettings,
-} from "@workspace/sanity/query";
+import { queryFooterData, querySiteConfig } from "@workspace/sanity/query";
 import type {
   QueryFooterDataResult,
-  QueryGlobalSeoSettingsResult,
+  QuerySiteConfigResult,
 } from "@workspace/sanity/types";
 import Link from "next/link";
 
@@ -19,34 +16,35 @@ import {
 } from "./social-icons";
 
 type SocialLinksProps = {
-  data: NonNullable<QueryGlobalSeoSettingsResult>["socialLinks"];
+  data: NonNullable<QuerySiteConfigResult>["social"];
 };
 
 type FooterProps = {
   data: NonNullable<QueryFooterDataResult>;
-  settingsData: NonNullable<QueryGlobalSeoSettingsResult>;
+  siteConfig: NonNullable<QuerySiteConfigResult>;
 };
 
-export async function FooterServer({siteId}: {siteId: string}) {
-  const [response, settingsResponse] = await Promise.all([
-    sanityFetch({ 
+export async function FooterServer({ siteId }: { siteId: string }) {
+  const [response, configResponse] = await Promise.all([
+    sanityFetch({
       params: { siteId },
       query: queryFooterData,
     }),
     sanityFetch({
       params: { siteId },
-      query: queryGlobalSeoSettings,
+      query: querySiteConfig,
     }),
   ]);
 
-  console.log("footer response", response?.data, "siteId", siteId);
-  console.log("footer settings response", settingsResponse?.data, "siteId", siteId);
-
-
-  if (!(response?.data && settingsResponse?.data)) {
+  if (!(response?.data && configResponse?.data)) {
     return <FooterSkeleton />;
   }
-  return <Footer data={response.data} settingsData={settingsResponse.data} />;
+  return (
+    <Footer
+      data={response.data}
+      siteConfig={configResponse.data}
+    />
+  );
 }
 
 function SocialLinks({ data }: SocialLinksProps) {
@@ -154,9 +152,9 @@ export function FooterSkeleton() {
   );
 }
 
-function Footer({ data, settingsData }: FooterProps) {
+function Footer({ data, siteConfig }: FooterProps) {
   const { subtitle, columns } = data ?? {};
-  const { siteTitle, logo, socialLinks } = settingsData ?? {};
+  const { title: siteTitle, logo, social } = siteConfig ?? {};
   const year = new Date().getFullYear();
 
   return (
@@ -167,7 +165,11 @@ function Footer({ data, settingsData }: FooterProps) {
             <div className="flex w-full max-w-96 shrink flex-col items-center justify-between gap-6 md:gap-8 lg:items-start">
               <div>
                 <span className="flex items-center justify-center gap-4 lg:justify-start">
-                  <Logo alt={siteTitle} image={logo} priority />
+                  <Logo
+                    alt={siteTitle}
+                    image={logo}
+                    priority
+                  />
                 </span>
                 {subtitle && (
                   <p className="mt-6 text-muted-foreground text-sm dark:text-zinc-400">
@@ -175,7 +177,7 @@ function Footer({ data, settingsData }: FooterProps) {
                   </p>
                 )}
               </div>
-              {socialLinks && <SocialLinks data={socialLinks} />}
+              {social && <SocialLinks data={social} />}
             </div>
             {Array.isArray(columns) && columns?.length > 0 && (
               <div className="grid grid-cols-3 gap-6 lg:mr-20 lg:gap-28">

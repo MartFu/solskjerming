@@ -157,7 +157,7 @@ export function Navbar({
   };
   const { navbarData, settingsData } = navigationData;
   const { columns, buttons } = navbarData || {};
-  const { logo, siteTitle } = settingsData || {};
+  const { logo, title } = settingsData || {};
 
   // Show skeleton only on initial mount when no fallback data is available
   if (isLoading && !data && !(initialNavbarData && initialSettingsData)) {
@@ -172,7 +172,7 @@ export function Navbar({
           <div className="flex h-10 w-40 items-center">
             {logo && (
               <Logo
-                alt={siteTitle || ""}
+                alt={title || ""}
                 height={40}
                 image={logo}
                 priority

@@ -18,8 +18,9 @@ import { initialValueTemplates } from "./schemaTypes/templates";
 import { actionRegistry } from "./utils/actions";
 import { Logger } from "@workspace/logger";
 import { WorkspaceKey } from "./utils/constant";
+import { packageRegistry } from "./schemaTypes/documents/packages"; 
+import { PROJECT_ID } from "./utils/env";
 
-const projectId = process.env.SANITY_STUDIO_PROJECT_ID ?? "";
 const logger = new Logger("studio-config")
 
 const sharedConfig = definePlugin<{ workspace: WorkspaceKey }>(() => ({
@@ -43,7 +44,7 @@ const sharedConfig = definePlugin<{ workspace: WorkspaceKey }>(() => ({
     actions: (prev, context) => {
       const { schemaType } = context;
 
-      logger.info("[actions] -> initializing actions for schemaType:", schemaType)
+      // logger.info("[actions] -> initializing actions for schemaType:", schemaType)
 
       // Look up the enhancer for this specific type
       const enhancer = actionRegistry[schemaType];
@@ -54,20 +55,20 @@ const sharedConfig = definePlugin<{ workspace: WorkspaceKey }>(() => ({
 
       const isSingleton = (singletonType as string[]).includes(schemaType);
 
-      logger.info(
-        "[actions] -> Actions available:",
-        actions,
-      );
+      // logger.info(
+      //   "[actions] -> Actions available:",
+      //   actions,
+      // );
 
-      logger.info(
-        "[actions] -> Is schemaType a singleton?:",
-        isSingleton,
-      );
+      // logger.info(
+      //   "[actions] -> Is schemaType a singleton?:",
+      //   isSingleton,
+      // );
 
       // Enforce singleton rules for singleton schema types
       if (isSingleton) {
         actions.forEach((a) => {
-          logger.info("---- Initialized with Action:", a.action, a);
+          // logger.info("---- Initialized with Action:", a.action, a);
         });
 
         const allowedActions = ["publish", "discardChanges", "restore"];
@@ -83,7 +84,7 @@ const sharedConfig = definePlugin<{ workspace: WorkspaceKey }>(() => ({
   },
   schema: {
     types: schemaTypes,
-    templates: (prev) => [...prev, ...initialValueTemplates],
+    templates: (prev) => [...prev, ...initialValueTemplates, ...packageRegistry.allTemplates],
   },
 }));
 
@@ -94,7 +95,7 @@ export const defineWorkspace = (
   name: workspace,
   title: workspace.charAt(0).toUpperCase() + workspace.slice(1),
   icon: Logo,
-  projectId,
+  projectId: PROJECT_ID,
   dataset,
   basePath: `/${workspace}`,
   releases: {

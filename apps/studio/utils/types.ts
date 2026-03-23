@@ -3,6 +3,7 @@ import type {
   ObjectOptions,
   ObjectSchemaType,
   SanityDocument,
+  Slug,
   SlugDefinition,
   SlugOptions,
 } from "sanity";

@@ -1,5 +1,5 @@
 import type { SanityClient } from "sanity";
-import { SITE_OWNED_TYPES, SHARED_ASSET_TYPES } from "@/schemaTypes/documents";
+import { SITE_OWNED_TYPES} from "@/schemaTypes/documents";
 import { WorkspaceKey } from "../constant";
 
 export type OwnedType = (typeof SITE_OWNED_TYPES)[number];
@@ -30,9 +30,13 @@ export type SiteDeletionPreview = {
   owned: DeletionCandidate[];
   sharedAssets: SharedAssetReference[];
   counts: {
+    /** Number of published documents (owned + the site document itself) */
     documents: number;
+    /** Number of documents that also have a draft */
     drafts: number;
+    /** Total mutations: documents + their drafts */
     total: number;
+    /** Breakdown of owned documents by type (does NOT include the site doc) */
     byType: Partial<Record<OwnedType, number>>;
   };
 };
@@ -99,14 +103,20 @@ export async function getSiteDeletionPreview(
     ]),
   ) as Partial<Record<OwnedType, number>>;
 
+  // FIX #6: `documents` = owned + the site doc itself.
+  // `byType` only covers owned docs. The +1 for the site document is
+  // intentionally excluded from byType since the site isn't an "owned" type.
+  // Added documentation to the type to make this explicit.
+  const documents = raw.owned.length + 1;
+
   return {
     site: raw.site,
     owned: raw.owned,
     sharedAssets,
     counts: {
-      documents: raw.owned.length + 1,
+      documents,
       drafts: draftsCount,
-      total: raw.owned.length + 1 + draftsCount,
+      total: documents + draftsCount,
       byType,
     },
   };

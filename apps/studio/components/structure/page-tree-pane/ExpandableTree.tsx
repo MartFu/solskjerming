@@ -3,13 +3,8 @@ import { Box, Button, Card, Flex, Stack, Text } from "@sanity/ui";
 import { AddIcon, DocumentIcon, FolderIcon, EditIcon } from "@sanity/icons";
 import { ChevronDown, ChevronRight } from "lucide-react";
 
-import {
-  getChildTypes,
-  getAncestors,
-  type TreeNode,
-  type ChildTypeInfo,
-} from "@/utils/page-tree";
-import { CreatePageModal } from "./CreatePageModal";
+import { getChildTypes, getAncestors, type TreeNode } from "@/utils/page-tree";
+import { usePageCreation } from "@/context/PageCreationProvider";
 import { ExpandableTreeProps, ModalState } from "./types";
 import styled from "styled-components";
 
@@ -30,7 +25,6 @@ const HoverCard = styled(Card)`
 
   &:hover {
     background: var(--card-bg-color);
-    /* Manually setting a 'neutral' feel if the tone isn't enough */
     filter: brightness(0.92);
 
     .show-on-card-hover {
@@ -265,17 +259,9 @@ function ConnectedTreeNodeRow({
 export function ExpandableTree({
   tree,
   enabledPackages,
-  rootChildTypes,
-  modalState,
   onEdit,
-  onCreate,
-  onSetModalState,
 }: ExpandableTreeProps) {
-  const handleConfirm = (type: string, templateId: string, title: string) => {
-    const parentId = modalState?.parentNode?.doc._id ?? null;
-    onCreate(type, templateId, parentId, title);
-    onSetModalState(null);
-  };
+  const { openCreationModal } = usePageCreation();
 
   if (tree.length === 0) {
     return (
@@ -291,30 +277,18 @@ export function ExpandableTree({
   }
 
   return (
-    <>
-      <Box padding={0}>
-        {tree.map((node) => (
-          <ConnectedTreeNodeRow
-            key={node.doc._id}
-            node={node}
-            depth={0}
-            enabledPackages={enabledPackages}
-            tree={tree}
-            onEdit={onEdit}
-            onOpenModal={onSetModalState}
-          />
-        ))}
-      </Box>
-
-      {modalState && (
-        <CreatePageModal
-          types={modalState.types}
-          parentNode={modalState.parentNode}
-          ancestors={modalState.ancestors}
-          onConfirm={handleConfirm}
-          onClose={() => onSetModalState(null)}
+    <Box padding={0}>
+      {tree.map((node) => (
+        <ConnectedTreeNodeRow
+          key={node.doc._id}
+          node={node}
+          depth={0}
+          enabledPackages={enabledPackages}
+          tree={tree}
+          onEdit={onEdit}
+          onOpenModal={openCreationModal}
         />
-      )}
-    </>
+      ))}
+    </Box>
   );
 }

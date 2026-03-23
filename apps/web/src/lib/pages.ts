@@ -2,9 +2,10 @@ import { sanityFetch } from "@workspace/sanity/live";
 import { queryHomePageData, queryPageBySlug } from "@workspace/sanity/query";
 
 export async function getPageData(slug: string, siteId: string) {
-  const isHome = slug === "/" || slug === "";
+  const normalizedSlug = slug.replace(/^\/|\/$/g, "");
 
-  if (isHome) {
+  // If the normalized slug is empty, we are at the root
+  if (normalizedSlug === "") {
     const { data } = await sanityFetch({
       query: queryHomePageData,
       params: { siteId },
@@ -12,9 +13,13 @@ export async function getPageData(slug: string, siteId: string) {
     return data;
   }
 
+  // For all other pages
   const { data } = await sanityFetch({
     query: queryPageBySlug,
-    params: { slug, siteId },
+    params: {
+      slug: normalizedSlug,
+      siteId,
+    },
   });
 
   return data;
