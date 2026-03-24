@@ -12,7 +12,7 @@ import { redirect } from "@/schemaTypes/documents/redirect";
 
 // ─── Site-scoped, routable documents ─────────────────────────────────────────
 // import { page } from "@/schemaTypes/documents/page";
-import { page, packageRegistry } from "./page";
+import { page } from "./page";
 import { packageRegistry as _packageRegistry } from "./packages";
 
 // ─── Site-scoped, non-routable documents ─────────────────────────────────────
@@ -54,28 +54,6 @@ export function isSiteOwnedType(type: string): type is SiteOwnedType {
   return SITE_OWNED_TYPES.includes(type as SiteOwnedType);
 }
 
-/**
- * PackageType includes any document that is part of a feature module.
- * We exclude the "Core" site documents and "General" shared assets.
- */
-export type PackageType =
-  | Exclude<SiteOwnedType, "page" | "redirect" | "site" | "navbar" | "footer">
-  | Exclude<GlobalType, "documentation" | "video" | "faq">;
-
-/**
- * Maps document types to their respective package keys.
- * This keeps the schema objects "clean" while providing metadata for the studio UI.
- */
-export const DOCUMENT_PACKAGE_MAPPING: Record<string, string> = {
-  product: "commerce",
-  productPage: "commerce",
-  catalogRoot: "commerce",
-  article: "articles",
-  author: "articles",
-  articlePage: "articles",
-  articleRoot: "articles",
-};
-
 /** ─── Config exports ──────────────────────────────────────────
  *
  * ⚠️  Exports should very rarely, if ever, be directly placed in the exports below.
@@ -91,6 +69,13 @@ export const DOCUMENT_PACKAGE_MAPPING: Record<string, string> = {
  * The "create new" button in the Studio is suppressed for these types.
  */
 export const singletons = [...globalSettings, studioSettings];
+export const singletonNames = singletons.map((s) => s.name);
+export type SingletonType = (typeof singletons)[number]["name"];
+export function isSingletonType(type: string): type is SingletonType {
+  return singletonNames.includes(type as SingletonType);
+}
+
+
 
 /**
  * The full set of document types registered with Sanity.

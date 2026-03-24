@@ -16,7 +16,7 @@ import {
 } from "./social-icons";
 
 type SocialLinksProps = {
-  data: NonNullable<QuerySiteConfigResult>["social"];
+  data: NonNullable<QuerySiteConfigResult>["socialLinks"];
 };
 
 type FooterProps = {
@@ -154,7 +154,8 @@ export function FooterSkeleton() {
 
 function Footer({ data, siteConfig }: FooterProps) {
   const { subtitle, columns } = data ?? {};
-  const { title: siteTitle, logo, social } = siteConfig ?? {};
+  const { title: siteTitle, organization, socialLinks: social } = siteConfig ?? {};
+  const { logo } = organization ?? {};
   const year = new Date().getFullYear();
 
   return (

@@ -26,7 +26,7 @@ export function createOrganizationFields(
     emailDescription = "Primær kontakt-e-post for organisasjonen.",
     phoneDescription = "Primært telefonnummer, f.eks. «+47 123 45 678».",
     addressDescription = "Organisasjonens fysiske adresse.",
-    logoDescription = "Organisasjonens logo.",
+    logoDescription = "Organisasjonens logo. Vises på flere steder i nettstedet, f.eks. i navigasjon.",
     faviconDescription = "Ikonet som vises i nettleserfanen.",
     includeLogo = true,
     includeFavicon = true,
@@ -40,14 +40,14 @@ export function createOrganizationFields(
       name: "name",
       title: "Juridisk navn",
       type: "string",
-      group: GROUP.ORGANIZATION,
+      group: GROUP.IDENTITY,
       description: nameDescription,
     }),
     defineField({
       name: "organizationNumber",
       title: "Organisasjonsnummer",
       type: "string",
-      group: GROUP.ORGANIZATION,
+      group: GROUP.IDENTITY,
       description: organizationNumberDescription,
     }),
   ];
@@ -57,7 +57,7 @@ export function createOrganizationFields(
       name: "email",
       title: "E-postadresse",
       type: "string",
-      group: GROUP.ORGANIZATION,
+      group: GROUP.IDENTITY,
       description: emailDescription,
       validation: (Rule) => Rule.email(),
     }),
@@ -65,7 +65,7 @@ export function createOrganizationFields(
       name: "phone",
       title: "Telefonnummer",
       type: "string",
-      group: GROUP.ORGANIZATION,
+      group: GROUP.IDENTITY,
       description: phoneDescription,
     }),
   ];
@@ -74,7 +74,7 @@ export function createOrganizationFields(
     name: "address",
     title: "Adresse",
     type: "address",
-    group: GROUP.ORGANIZATION,
+    group: GROUP.IDENTITY,
     description: addressDescription,
   });
 

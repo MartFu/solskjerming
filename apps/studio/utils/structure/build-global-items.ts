@@ -22,6 +22,7 @@ import {
   globalSchemaTypes,
 } from "@/schemaTypes/documents/globals";
 import { moduleRegistry } from "@/schemaTypes/documents/modules";
+import { SeoReportsView } from "@/components/views/SeoReportView";
 
 // ─────────────────────────────────────────────────────────────
 // Global items (workspace-level, shared across sites)
@@ -174,7 +175,7 @@ export function buildGlobalItems(
                   .id("global-consent-editor")
                   .schemaType("globalCompliance")
                   .documentId("globalCompliance")
-                  .title("GDPR & Juridisk"),
+                  .title("GDPR & Juridisk").initialValueTemplate('cookie-consent-template')
               ),
           ]),
       ),
@@ -194,12 +195,12 @@ export function buildGlobalItems(
 
     S.listItem()
       .title("SEO Analyse")
-      .id("seo-center")
+      .id("seo")
       .icon(Search)
       .child(
         S.component()
           .id("seo-dashboard")
-          .component(DeploymentDashboard)
+          .component(SeoReportsView)
           .title("SEO Analyse"),
       ),
 

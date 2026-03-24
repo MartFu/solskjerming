@@ -17,12 +17,11 @@ import { GROUP, GROUPS } from "@/utils/constant";
 import {
   createIdentityFields,
   createPagebuilderField,
-  createPageSEOFields,
   createParentField,
   createSortOrderField,
 } from "@/utils/factories/create-page-fields";
 import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
-import { InternalRole, ROLE_RULES } from "./page/blueprint-validation";
+import { InternalRole, ROLE_RULES} from "@/utils/modules";
 
 // ---------------------------------------------------------------------------
 // Conditional validation helper
@@ -100,17 +99,14 @@ export const page = defineType({
     ...createParentField(["page"]), // all pages can nest under other pages
     ...createSortOrderField(),
 
-    // ── SEO (with conditional validation) ─────────────────────
-    ...createPageSEOFields().map((field) => {
-      // Wrap specific fields with conditional validation
-      if (field.name === "ogImage") {
-        return {
-          ...field,
-          validation: conditionalRule("ogImage"),
-        };
-      }
-      return field;
+    // ── SEO ─────────────────────
+    defineField({
+      name: "SEO",
+      title: "SEO",
+      type: "pageSEO",
+      group: GROUP.SEO,
     }),
+  
 
     // ── PAGEBUILDER ───────────────────────────────────────────
     // Single universal pagebuilder that accepts ALL block types.

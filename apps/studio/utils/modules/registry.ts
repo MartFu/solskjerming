@@ -26,6 +26,7 @@ import type {
   ResolvedBlueprint,
   ResolvedGlobalConfig,
   InitialValueTemplate,
+  TemplateParams,
 } from "./define-module";
 import { getValidationRule } from "./validation";
 import { buildStructure as buildStructureImpl } from "./structure";
@@ -80,27 +81,41 @@ const MODULE_COLORS: Record<string, BadgeInfo["color"]> = {
 };
 
 // ---------------------------------------------------------------------------
+// CreationIntent — what the router receives
+// ---------------------------------------------------------------------------
+ 
+/**
+ * A fully resolved creation intent, ready to pass to
+ * `router.navigateIntent("create", [intent.payload, intent.params])`.
+ *
+ * This is the final output of the creation flow. The component doesn't
+ * need to know about template IDs, type names, or parent ID normalization —
+ * it just passes this through to the router.
+ */
+export interface CreationIntent {
+  payload: { type: string; template: string };
+  params: Record<string, string>;
+}
+
+// ---------------------------------------------------------------------------
 // Factory
 // ---------------------------------------------------------------------------
-
+ 
 export function createModuleRegistry(modules: ModuleResult<string>[]) {
   // ── Index all data ────────────────────────────────────────
-
+ 
   const allTemplates: InitialValueTemplate[] = [];
-  const byRole = new Map<
-    string,
-    { module: ModuleResult<string>; blueprint: ResolvedBlueprint }
-  >();
+  const byRole = new Map<string, { module: ModuleResult<string>; blueprint: ResolvedBlueprint }>();
   const byKey = new Map<string, ModuleResult<string>>();
   const entryPointRoles = new Set<string>();
-
+ 
   for (const mod of modules) {
     if (byKey.has(mod.key)) {
       throw new Error(`Duplicate module key "${mod.key}".`);
     }
     byKey.set(mod.key, mod);
     allTemplates.push(...mod.templates);
-
+ 
     for (const bp of Object.values<ResolvedBlueprint>(mod.blueprints)) {
       if (byRole.has(bp.role)) {
         const existing = byRole.get(bp.role)!;
@@ -112,61 +127,93 @@ export function createModuleRegistry(modules: ModuleResult<string>[]) {
       if (bp.isEntryPoint) entryPointRoles.add(bp.role);
     }
   }
-
+ 
   // ── Shared helper: globals for enabled modules ────────────
-
+ 
   function globalsForModules(
     enabledKeys: string[],
-  ): Array<ResolvedGlobalConfig & { keys: string }> {
-    const result: Array<ResolvedGlobalConfig & { keys: string }> = [];
+  ): Array<ResolvedGlobalConfig & { packageKey: string }> {
+    const result: Array<ResolvedGlobalConfig & { packageKey: string }> = [];
     for (const key of enabledKeys) {
       const mod = byKey.get(key);
       if (!mod) continue;
       for (const config of Object.values(mod.globals)) {
-        result.push({ ...config, keys: key });
+        result.push({ ...config, packageKey: key });
       }
     }
     return result;
   }
-
+ 
+  // ── The standard page template ──────────────────────────────
+  //
+  // The universal "page" type needs its own template for creating
+  // standard pages (no internalRole). Without this, Sanity can't
+  // find "page-template" and creates a blank document.
+ 
+  const STANDARD_PAGE_TEMPLATE_ID = "page-template";
+ 
+  allTemplates.push({
+    id: STANDARD_PAGE_TEMPLATE_ID,
+    title: "Side",
+    schemaType: "page",
+    parameters: [
+      { name: "siteId", type: "string" },
+      { name: "parentId", type: "string" },
+      { name: "title", type: "string" },
+    ],
+    value: (params: TemplateParams) => {
+      const base: Record<string, unknown> = {};
+ 
+      if (params.title) base.title = params.title;
+      if (params.siteId) {
+        base.site = { _type: "reference", _ref: params.siteId };
+      }
+      if (params.parentId) {
+        base.parent = { _type: "reference", _ref: params.parentId };
+      }
+ 
+      return base;
+    },
+  });
+ 
   // ── The standard page creation option ─────────────────────
-
+ 
   const STANDARD_PAGE_OPTION: CreationOption = {
     type: "page",
-    templateId: "page-template",
+    templateId: STANDARD_PAGE_TEMPLATE_ID,
     title: "Side",
     description: "En standard innholdsside.",
     role: undefined,
   };
-
+ 
   // ── Public API ────────────────────────────────────────────
-
+ 
   return {
     // -- Raw data --
-
+ 
     /** All registered modules */
     modules,
-
+ 
     /** All initial value templates, ready for Sanity config */
     allTemplates,
-
+ 
     /** All roles that can appear at root level of the site tree */
     allEntryRoles: Array.from(entryPointRoles),
-
+ 
     /** For UI dropdowns (site's enabledPackages field) */
     moduleOptions: modules.map((m) => ({ title: m.title, value: m.key })),
-
+ 
     // -- Blueprint lookups --
-
+ 
     /**
      * Get the resolved blueprint and its parent module for a given role.
      * Returns `undefined` for unknown roles (including standard pages).
      */
     getBlueprint: (role: string) => byRole.get(role),
-
+ 
     /** Get a module by its key */
     getModule: (key: string) => byKey.get(key),
-
+ 
     /**
      * Get all resolved blueprints for a set of enabled module keys.
      */
@@ -177,9 +224,9 @@ export function createModuleRegistry(modules: ModuleResult<string>[]) {
         return Object.values<ResolvedBlueprint>(mod.blueprints);
       });
     },
-
+ 
     // -- Creation --
-
+ 
     /**
      * Get the list of page kinds that can be created as children of
      * a given parent.
@@ -196,20 +243,20 @@ export function createModuleRegistry(modules: ModuleResult<string>[]) {
       enabledKeys: string[],
     ): CreationOption[] => {
       const options: CreationOption[] = [STANDARD_PAGE_OPTION];
-
+ 
       const allBlueprints = enabledKeys.flatMap((key) => {
         const mod = byKey.get(key);
         if (!mod) return [];
         return Object.values<ResolvedBlueprint>(mod.blueprints);
       });
-
+ 
       for (const bp of allBlueprints) {
         const canCreate =
           // Entry points can be created under generic pages (no role)
           (!parentRole && bp.isEntryPoint) ||
           // Or under a parent whose role is in this blueprint's allowed list
           (parentRole && bp.allowedParentRoles.includes(parentRole));
-
+ 
         if (canCreate) {
           options.push({
             type: "page",
@@ -221,20 +268,20 @@ export function createModuleRegistry(modules: ModuleResult<string>[]) {
           });
         }
       }
-
+ 
       return options;
     },
-
+ 
     // -- Validation --
-
+ 
     /**
      * Get a conditional validation rule for a given role + field.
      * Returns `undefined` if no special rule exists.
      */
     getValidationRule,
-
+ 
     // -- Structure --
-
+ 
     /**
      * Build the Studio sidebar structure for a site.
      *
@@ -255,16 +302,16 @@ export function createModuleRegistry(modules: ModuleResult<string>[]) {
         globalsForModules,
       );
     },
-
+ 
     // -- Globals --
-
+ 
     /**
      * Collect resolved globals for a set of enabled module keys.
      */
     globalsForModules,
-
+ 
     // -- Tree query --
-
+ 
     /**
      * Build the GROQ query for the page tree pane.
      *
@@ -281,18 +328,67 @@ export function createModuleRegistry(modules: ModuleResult<string>[]) {
       // If you need to restrict the tree to only certain roles, filter
       // on internalRole in the query. For now, we fetch everything.
       return `*[_type == "page" && site._ref == $siteId] {
-  _id,
-  _type,
-  title,
-  "slug": slug.current,
-  parent,
-  sortOrder,
-  internalRole
-}`;
+        _id,
+        _type,
+        title,
+        "slug": slug.current,
+        parent,
+        sortOrder,
+        internalRole
+      }`;
     },
-
+ 
+    // -- Creation intent --
+ 
+    /**
+     * Build a creation intent from a CreationOption and template params.
+     *
+     * The `context` parameter is `TemplateParams` — the same shape the
+     * Initial Value Template expects. This ensures the intent builder and
+     * the template always agree on what fields are needed.
+     *
+     * Validates the option, normalizes the parent ID, and returns an
+     * object ready to pass to `router.navigateIntent("create", ...)`.
+     *
+     * Returns `null` if the option references an unknown role.
+     *
+     * @example
+     * const intent = moduleRegistry.buildCreationIntent(option, {
+     *   siteId,
+     *   parentId: parentNode?.doc._id,
+     *   title: "Cool Product",
+     * });
+     *
+     * if (intent) {
+     *   router.navigateIntent("create", [intent.payload, intent.params]);
+     * }
+     */
+    buildCreationIntent: (
+      option: CreationOption,
+      context: TemplateParams,
+    ): CreationIntent | null => {
+      // Validate blueprint roles exist
+      if (option.role && !byRole.has(option.role)) {
+        return null;
+      }
+ 
+      // Normalize parent ID (strip drafts. prefix)
+      const parentId = context.parentId?.replace(/^drafts\./, "") ?? undefined;
+ 
+      const params: Record<string, string> = {
+        siteId: context.siteId,
+      };
+      if (parentId) params.parentId = parentId;
+      if (context.title) params.title = context.title;
+ 
+      return {
+        payload: { type: option.type, template: option.templateId },
+        params,
+      };
+    },
+ 
     // -- Badge --
-
+ 
     /**
      * Get badge info for the Studio document header.
      *
@@ -300,16 +396,16 @@ export function createModuleRegistry(modules: ModuleResult<string>[]) {
      */
     getBadgeInfo: (role: string | undefined): BadgeInfo => {
       if (!role) return { label: "Side", color: "primary" };
-
+ 
       const entry = byRole.get(role);
       if (entry) {
         return {
           label: entry.blueprint.title,
-          color: MODULE_COLORS[entry.module.key] ?? "default",
+          color: MODULE_COLORS[entry.module.key] ?? "primary",
         };
       }
-
-      // Unknown role — capitalize and show with default color
+ 
+      // Unknown role — capitalize and show with primary color
       return {
         label: role.charAt(0).toUpperCase() + role.slice(1),
         color: "primary",
@@ -317,5 +413,5 @@ export function createModuleRegistry(modules: ModuleResult<string>[]) {
     },
   };
 }
-
+ 
 export type ModuleRegistry = ReturnType<typeof createModuleRegistry>;

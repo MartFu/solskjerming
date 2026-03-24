@@ -1,6 +1,6 @@
 "use client";
 
-import type { QueryBlogIndexPageDataResult } from "@workspace/sanity/types";
+import type { QueryBlogIndexPageDataResult, QueryPageBySlugResult } from "@workspace/sanity/types";
 
 import { BlogHeader } from "@/components/blog-card";
 import { BlogPagination } from "@/components/blog-pagination";
@@ -13,7 +13,7 @@ import type { PaginationMetadata } from "@/utils";
 import { SearchInput } from "./blog-search";
 
 type BlogPageContentProps = {
-  indexPageData: NonNullable<QueryBlogIndexPageDataResult>;
+  indexPageData: NonNullable<QueryPageBySlugResult>;
   blogs: Article[];
   paginationMetadata: PaginationMetadata;
 };
@@ -22,7 +22,7 @@ export function BlogPageContent({
   indexPageData,
   blogs,
   paginationMetadata,
-}: BlogPageContentProps) {
+}: BlogPageContentProps) {  
   const {
     title,
     description,

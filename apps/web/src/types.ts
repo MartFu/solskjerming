@@ -26,9 +26,9 @@ export type SanityImageProps = NonNullable<QueryImageTypeResult>;
 
 export type SanityRichTextProps = Get<QueryPageBySlugResult, "richText">;
 
-export type SanityRichTextBlock = FilterByType<
-  NonNullable<NonNullable<SanityRichTextProps>[number]>,
-  "block"
+export type SanityRichTextBlock = Extract<
+    NonNullable<SanityRichTextProps>[number],
+    { _type: "block" }
 >;
 
 export type Article = NonNullable<QueryPageBySlugResult>;
