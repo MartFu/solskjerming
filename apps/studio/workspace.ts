@@ -18,26 +18,23 @@ import { initialValueTemplates } from "./schemaTypes/templates";
 import { actionRegistry } from "./utils/actions";
 import { Logger } from "@workspace/logger";
 import { WorkspaceKey } from "./utils/constant";
-import { packageRegistry } from "./schemaTypes/documents/packages"; 
 import { PROJECT_ID } from "./utils/env";
+import { moduleRegistry } from "./schemaTypes/documents/modules";
+import { BlueprintBadge } from "./components/blueprint-badge";
+import { isSingletonType, singletons } from "./schemaTypes/documents";
 
 const logger = new Logger("studio-config")
 
 const sharedConfig = definePlugin<{ workspace: WorkspaceKey }>(() => ({
   name: "shared-config",
   document: {
+    badges: (prev, context) => {
+      if (context.schemaType === "page") return [...prev, BlueprintBadge]
+      return prev
+    },
     newDocumentOptions: (prev, { creationContext }) => {
       if (creationContext.type === "global") {
-        return prev.filter((template) => {
-          const siteSingletons = [
-            "homePage",
-            "navbar",
-            "footer",
-            "settings",
-            "blogIndex",
-          ];
-          return !siteSingletons.includes(template.templateId);
-        });
+        return prev.filter((template) => !isSingletonType(template.templateId));
       }
       return prev;
     },
@@ -53,30 +50,13 @@ const sharedConfig = definePlugin<{ workspace: WorkspaceKey }>(() => ({
       // Otherwise, return the default actions.
       let actions = enhancer ? enhancer(prev, context) : prev;
 
-      const isSingleton = (singletonType as string[]).includes(schemaType);
+     if (isSingletonType(schemaType)) {
+         const allowedActions = ["publish", "discardChanges", "restore"];
 
-      // logger.info(
-      //   "[actions] -> Actions available:",
-      //   actions,
-      // );
-
-      // logger.info(
-      //   "[actions] -> Is schemaType a singleton?:",
-      //   isSingleton,
-      // );
-
-      // Enforce singleton rules for singleton schema types
-      if (isSingleton) {
-        actions.forEach((a) => {
-          // logger.info("---- Initialized with Action:", a.action, a);
-        });
-
-        const allowedActions = ["publish", "discardChanges", "restore"];
-
-        actions = actions.filter(
-          (a) => a.action && allowedActions.includes(a.action),
-        );
-      }
+         actions = actions.filter(
+             (a) => a.action && allowedActions.includes(a.action),
+         );
+     }
 
       return actions;
     },
@@ -84,7 +64,7 @@ const sharedConfig = definePlugin<{ workspace: WorkspaceKey }>(() => ({
   },
   schema: {
     types: schemaTypes,
-    templates: (prev) => [...prev, ...initialValueTemplates, ...packageRegistry.allTemplates],
+    templates: (prev) => [...prev, ...initialValueTemplates, ...moduleRegistry.allTemplates],
   },
 }));
 

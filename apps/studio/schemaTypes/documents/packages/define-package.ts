@@ -4,7 +4,7 @@ import {
   createIdentityFields,
   createParentField,
   createSortOrderField,
-  createPageSEOFields,
+  // createPageSEOFields,
   createPagebuilderField,
 } from "@/utils/factories/create-page-fields";
 import { PageBuilderType } from "@/schemaTypes/definitions/pagebuilders";
@@ -497,7 +497,7 @@ function _buildFields(
     ...createIdentityFields(),
     ...createParentField(resolvedParentTypes),
     ...createSortOrderField(),
-    ...createPageSEOFields(),
+    // ...createPageSEOFields(),
     ...(pagebuilderType ? createPagebuilderField(pagebuilderType) : []),
     ...extraFields,
   ];

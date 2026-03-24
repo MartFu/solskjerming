@@ -91,7 +91,7 @@ export const GROUPS = (
     {
       name: GROUP.COOKIES,
       icon: asStudioIcon(Cookie),
-      title: "Cookiesamtykke",
+      title: "Cookiebanner",
     },
     {
       name: GROUP.ROBOTS,

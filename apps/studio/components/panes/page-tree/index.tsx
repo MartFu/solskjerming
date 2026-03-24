@@ -14,8 +14,6 @@ import { AddIcon, SearchIcon } from "@sanity/icons";
 import { useDocumentStore } from "sanity";
 import { usePaneRouter } from "sanity/structure";
 import { map } from "rxjs";
-import { useRouter } from "sanity/router";
-
 import {
   buildTree,
   flattenTree,
@@ -23,7 +21,6 @@ import {
   type RoutableDoc,
 } from "@/utils/page-tree";
 import { API_VERSION } from "@/utils/env";
-
 import { DrillDownTree } from "./DrillDownTree";
 import { ExpandableTree } from "./ExpandableTree";
 import { SearchResults } from "./SearchResults";
@@ -32,7 +29,6 @@ import {
   usePageCreation,
 } from "@/context/PageCreationProvider";
 import { moduleRegistry } from "@/schemaTypes/documents/modules";
-import { ModuleCreationOptions } from "@/utils/modules";
 
 // ─────────────────────────────────────────────────────────────
 // Types
@@ -255,45 +251,8 @@ function PageTreeContent({
 // ─────────────────────────────────────────────────────────────
 
 export function PageTreePane({ siteId, enabledPackages }: PageTreePaneProps) {
-  const router = useRouter();
-  const toast = useToast();
-
-  const handleCreate = useCallback(
-    (
-      option: ModuleCreationOptions,
-      parentId: string | null,
-      title?: string,
-    ) => {
-      // Validate if it's a blueprint-created page
-      if (option.role) {
-        const entry = moduleRegistry.getBlueprint(option.role);
-        if (!entry) {
-          toast.push({
-            title: "En feil oppstod",
-            description: `Ukjent rolle "${option.role}" — kan ikke opprette siden.`,
-            status: "error",
-          });
-          return;
-        }
-      }
-
-      const publishedParentId = parentId?.replace(/^drafts\./, "") ?? null;
-
-      router.navigateIntent("create", [
-        { type: option.type, template: option.templateId },
-        {
-          siteId,
-          ...(publishedParentId ? { parentId: publishedParentId } : {}),
-          ...(title ? { title } : {}),
-        },
-      ]);
-    },
-    [router, siteId, toast],
-  );
-
   return (
     <PageCreationProvider
-      onCreate={handleCreate}
       siteId={siteId}
     >
       <PageTreeContent

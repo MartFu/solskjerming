@@ -93,7 +93,7 @@ const richTextFragment = /* groq */ `
   }
 `;
 
-// For articlePage documents where the body field is named "body" (not "richText")
+// For article pages where the body field is named "body" (not "richText")
 const articleBodyFragment = /* groq */ `
   "richText": body[]{
     ...,
@@ -105,6 +105,14 @@ const articleBodyFragment = /* groq */ `
       ${imageFields},
       "caption": caption
     }
+  }
+`;
+
+const richTextContent = /* groq */ `
+  []{
+    ...,
+    _type == "block" => { ..., ${markDefsFragment} },
+    _type == "image" => { ${imageFields}, "caption": caption }
   }
 `;
 
@@ -122,6 +130,7 @@ const articleCardFragment = /* groq */ `
   _id,
   title,
   description,
+  internalRole,
   "slug":slug.current,
   orderRank,
   ${imageFragment},
@@ -133,6 +142,7 @@ const productCardFragment = /* groq */ `
   _id,
   _type,
   title,
+  internalRole,
   "slug": slug.current,
   "coverImage": coverImage { ${imageFields} },
   product->{
@@ -252,8 +262,8 @@ const richTextBlockFragment = /* groq */ `
   }
 `;
 
-// FIX: Site-scoped filteredArticles + read limit from the block's own field.
-// GROQ traversal: inside pagebuilder[]{ ... }, ^ = block, ^.^ = parent document.
+// CHANGED: articleFeed now queries pages with internalRole == "article"
+// instead of _type == "articlePage"
 const articleFeedBlock = /* groq */ `
   _type == "articleFeed" => {
     ...,
@@ -261,7 +271,8 @@ const articleFeedBlock = /* groq */ `
       ${articleCardFragment}
     },
     "filteredArticles": *[
-      _type == "articlePage"
+      _type == "page"
+      && internalRole == "article"
       && site._ref == ^.^.site._ref
       && !(_id in path("drafts.**"))
     ] | order(publishedAt desc) [0...12] {
@@ -310,6 +321,7 @@ export const queryHomePageData = defineQuery(`
       "slug": slug.current,
       title,
       description,
+      internalRole,
       seoTitle,
       seoDescription,
       seoNoIndex,
@@ -329,9 +341,11 @@ export const querySiteDomains = defineQuery(`
 
 // ─── Pages ────────────────────────────────────────────────────────────────────
 
+// CHANGED: Single type filter replaces the multi-type union.
+// Per-type field projections are now conditional on `internalRole`.
 export const queryPageBySlug = defineQuery(`
   *[
-    _type in ["page","articleRoot","articlePage","catalogRoot","productPage"]
+    _type == "page"
     && site._ref == $siteId
     && slug.current == $slug
   ][0]{
@@ -340,45 +354,57 @@ export const queryPageBySlug = defineQuery(`
     "slug": slug.current,
     title,
     description,
+    internalRole,
+    blueprintKey,
     seoTitle,
     seoDescription,
     seoNoIndex,
     ${pageBuilderFragment},
+    "richText": coalesce(body${richTextContent}, richText${richTextContent}),
 
-    // ── articleRoot config ───────────────────────────────────
-    postsPerPage,
-    "displayFeaturedArticles": displayFeaturedArticles == "yes",
-    featuredArticlesCount,
-    categories,
+    // ── articleHub config (was articleRoot) ──────────────────
+    internalRole == "articleHub" => {
+      postsPerPage,
+      "displayFeaturedArticles": displayFeaturedArticles == "yes",
+      featuredArticlesCount,
+      categories,
+    },
 
-    // ── catalogRoot config ──────────────────────────────────
-    filterCategories,
+    // ── catalog config (was catalogRoot) ────────────────────
+    internalRole == "catalog" => {
+      filterCategories,
+    },
 
-    // ── articlePage fields ──────────────────────────────────
-    excerpt,
-    publishedAt,
-    category,
-    ${articleAuthorFragment},
-    "coverImage": coverImage { ${imageFields} },
-    ${articleBodyFragment},
+    // ── article fields (was articlePage) ────────────────────
+    internalRole == "article" => {
+      excerpt,
+      publishedAt,
+      category,
+      ${articleAuthorFragment},
+      "coverImage": coverImage { ${imageFields} },
+      ${articleBodyFragment},
+    },
 
     // ── productPage fields ─────────────────────────────────
-    marketingCopy,
-    product->{
-      _id,
-      title,
-      "slug": slug.current,
-      description,
-      category,
-      "images": images[]{ ${imageFields} },
-      specifications[]{ label, value }
+    internalRole == "productPage" => {
+      marketingCopy,
+      product->{
+        _id,
+        title,
+        "slug": slug.current,
+        description,
+        category,
+        "images": images[]{ ${imageFields} },
+        specifications[]{ label, value }
+      },
     },
   }
 `);
 
+// CHANGED: All slug queries now use _type == "page"
 export const queryAllPageSlugsForBuild = defineQuery(`
   *[
-    _type in ["page","articleRoot","articlePage","catalogRoot","productPage"]
+    _type == "page"
     && defined(slug.current)
   ]{
     "slug": slug.current
@@ -387,33 +413,35 @@ export const queryAllPageSlugsForBuild = defineQuery(`
 
 export const queryAllPageSlugs = defineQuery(`
   *[
-    _type in ["page","articleRoot","articlePage","catalogRoot","productPage"]
+    _type == "page"
     && site._ref == $siteId
     && defined(slug.current)
   ]{
     _type,
+    internalRole,
     "slug": slug.current
   }
 `);
 
 export const queryAllRoutableDocumentSlugs = defineQuery(`
   *[
-    site._ref == $siteId && 
-    defined(slug.current)
+    _type == "page"
+    && site._ref == $siteId
+    && defined(slug.current)
   ]{
     _type,
+    internalRole,
     "slug": slug.current
   }
 `);
 
 // ─── Article List ─────────────────────────────────────────────────────────────
-// Paginated articles for articleRoot archive pages.
-// The page component passes its own _id as $parentId,
-// and computes $start / $end from the page number and postsPerPage.
+// CHANGED: _type == "articlePage" → _type == "page" && internalRole == "article"
 
 export const queryArticleListByParent = defineQuery(`
   *[
-    _type == "articlePage"
+    _type == "page"
+    && internalRole == "article"
     && site._ref == $siteId
     && parent._ref == $parentId
     && defined(slug.current)
@@ -424,19 +452,20 @@ export const queryArticleListByParent = defineQuery(`
 
 export const queryArticleCountByParent = defineQuery(`
   count(*[
-    _type == "articlePage"
+    _type == "page"
+    && internalRole == "article"
     && site._ref == $siteId
     && parent._ref == $parentId
   ])
 `);
 
 // ─── Product List ─────────────────────────────────────────────────────────────
-// Filterable product grid for catalogRoot pages.
-// Pass $category as "" to return all, or a category string to filter.
+// CHANGED: _type == "productPage" → _type == "page" && internalRole == "productPage"
 
 export const queryProductListByParent = defineQuery(`
   *[
-    _type == "productPage"
+    _type == "page"
+    && internalRole == "productPage"
     && site._ref == $siteId
     && parent._ref == $parentId
     && defined(slug.current)
@@ -447,6 +476,7 @@ export const queryProductListByParent = defineQuery(`
 `);
 
 // ─── Navigation & Layout ──────────────────────────────────────────────────────
+// (unchanged — these query strict data types, not pages)
 
 export const queryFooterData = defineQuery(`
   *[_type == "footer" && site._ref == $siteId][0]{
@@ -507,6 +537,7 @@ export const queryNavbarData = defineQuery(`
 `);
 
 // ─── Site Config ──────────────────────────────────────────────────────────────
+// (unchanged)
 
 export const querySiteConfig = defineQuery(`
   *[_type == "site" && _id == $siteId][0]{
@@ -515,28 +546,25 @@ export const querySiteConfig = defineQuery(`
     workspace,
     "homePage": homePage->slug.current,
     siteIdentity,
-    // Expand the objects that typegen showed as null
-    "organization": {
+    "organization": organization {
        ..., 
        "logo": logo { ${imageFields} },
        "favicon": favicon { ${imageFields} }
     },
-    "socials": {
-       linkedin, facebook, instagram, youtube, twitter
-    },
-    "cookieConsent": {
+    socialLinks,
+    "cookieBanner": cookieBanner {
        bannerTitle,
        bannerDescription,
        categories
     },
-    "integrations": {
+    "integrations": integrations {
        googleAnalyticsId,
        gtmContainerId,
        facebookPixelId
     },
-    "theme": {
-       light,
-       dark
+    "theme": theme {
+       dark,
+       light
     },
     "legalDocuments": legalDocuments[]->{
       title,
@@ -547,10 +575,13 @@ export const querySiteConfig = defineQuery(`
 
 export const querySiteMetadata = defineQuery(`
   *[_type == "site" && _id == $siteId][0]{
-    metaTitle,
-    metaDescription,
+    "title": metaTitle,
+    "description": metaDescription,
     googleSiteVerification,
     bingSiteVerification,
+    "logo": organization.logo { ${imageFields} },
+
+
     "og": {
       ogTitle,
       ogDescription,
@@ -563,6 +594,7 @@ export const querySiteMetadata = defineQuery(`
 `);
 
 // ─── Global Documents ─────────────────────────────────────────────────────────
+// (unchanged)
 
 export const queryGlobalSeo = defineQuery(`
   *[_type == "globalSeo"][0]{
@@ -573,7 +605,7 @@ export const queryGlobalSeo = defineQuery(`
 `);
 
 export const queryGlobalOrganization = defineQuery(`
-  *[_type == "globalOrganization"][0]{
+  *[_type == "globalOrganization"][0]{ 
     name,
     email,
     phone,
@@ -583,19 +615,22 @@ export const queryGlobalOrganization = defineQuery(`
 `);
 
 // ─── Sitemap ──────────────────────────────────────────────────────────────────
+// CHANGED: Multi-type union → _type == "page"
 
 export const querySitemapData = defineQuery(`{
   "pages": *[
-    _type in ["page","articleRoot","articlePage","catalogRoot","productPage"]
+    _type == "page"
     && site._ref == $siteId
     && defined(slug.current)
   ]{
     "slug": slug.current,
-    "lastModified": _updatedAt
+    "lastModified": _updatedAt,
+    internalRole
   }
 }`);
 
 // ─── Redirects ────────────────────────────────────────────────────────────────
+// (unchanged)
 
 export const queryRedirects = defineQuery(`
   *[_type == "redirect" && site._ref == $siteId && status == "active" && defined(source.current) && defined(destination.current)]{

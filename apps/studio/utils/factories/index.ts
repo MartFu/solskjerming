@@ -5,5 +5,5 @@ export { createPageBuilder } from "./create-page-builder";
 export { createRoutableDocument } from "./create-routable-document";
 export { createSEOFields } from "./create-seo-fields";
 export { createSiteScopedSlugField } from "./create-site-scoped-slug-field";
-export { createSocialFields } from "./create-social-fields";
+export { createSocialsObject } from "./create-socials-object";
 export { createTheme } from "./create-theme";

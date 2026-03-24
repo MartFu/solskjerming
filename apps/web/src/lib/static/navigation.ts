@@ -4,13 +4,11 @@ import { queryNavbarData, querySiteConfig } from "@workspace/sanity/query";
 import { QueryNavbarDataResult, QuerySiteConfigResult } from "@workspace/sanity/types";
 
 export const getNavigationData = async (siteId: string) => {
-  const [navbarData, settingsData] = await Promise.all([
+  const [navbarData] = await Promise.all([
     sanityFetchBuild<QueryNavbarDataResult>({ query: queryNavbarData, params: { siteId } }),
-    sanityFetchBuild<QuerySiteConfigResult>({ query: querySiteConfig, params: { siteId } }),
   ]);
 
   return {
     navbarData: navbarData,
-    settingsData: settingsData,
   };
 };

@@ -44,7 +44,7 @@ type FieldValidator = (
  * If a role/field combo isn't listed here, the field passes (no extra
  * constraint beyond whatever the field's own base validation does).
  */
-const ROLE_RULES: Record<string, Record<string, FieldValidator>> = {
+export const ROLE_RULES: Record<string, Record<string, FieldValidator>> = {
   article: {
     ogImage: (value) => (value ? true : "OG-bilde er påkrevd for artikler."),
   },

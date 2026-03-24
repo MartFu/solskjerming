@@ -312,7 +312,7 @@ function createWorkspaceTemplates(): Template[] {
 
 // Following your existing pattern
 const cookieTemplate: Template = {
-  id: "cookie-consent-with-defaults",
+  id: "cookie-consent-template",
   title: "Cookie Samtykke med standardvalg",
   schemaType: "cookieConsent",
   // We don't necessarily need params here if the defaults are hardcoded,

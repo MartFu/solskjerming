@@ -62,10 +62,6 @@ export default async function Page({
   const slugString = slug?.length ? `/${slug.join("/")}` : "/";
   const pageData = await getPageData(slugString, siteId);
 
-  console.log("SITE_ID", siteId);
-  console.log("SLUG_STRING", slugString);
-  console.log("PAGE_DATA", pageData);
-
   if (!pageData) return notFound();
 
   const { pagebuilder, _id, _type, title } = pageData;

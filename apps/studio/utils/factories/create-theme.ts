@@ -72,34 +72,34 @@ export function createThemeFields(
   },
 ): FieldDefinition[] {
   return [
-    defineField({
-      name: "themePreset",
-      type: "object",
-      title,
-      description,
-      group: ["light", "dark"],
-      fields: [defineField({ name: "nouse", type: "string" })],
-      components: {
-        input: LightThemePresetFieldInput,
-      },
-    }),
+      defineField({
+          name: "themePreset",
+          type: "object",
+          title,
+          description,
+          group: ["light", "dark"],
+          fields: [defineField({ name: "nouse", type: "string" })],
+          components: {
+              input: LightThemePresetFieldInput,
+          },
+      }),
 
-    // Generates all color AND unit fields for light mode
-    defineField({
-      name: "light",
-      title: "Lys modus",
-      type: "object",
-      group: "light",
-      fields: createTokenFields(false),
-    }),
+      // Generates all color AND unit fields for light mode
+      defineField({
+          name: "light",
+          title: "Lys modus",
+          type: "object",
+          group: "light",
+          fields: createTokenFields(false),
+      }),
 
-    // Generates all color AND unit fields for dark mode
-    defineField({
-      name: "dark",
-      title: "Mørk modus",
-      type: "object",
-      group: "dark",
-      fields: createTokenFields(false),
-    }),
+      // Generates all color AND unit fields for dark mode
+      defineField({
+          name: "dark",
+          title: "Mørk modus",
+          type: "object",
+          group: "dark",
+          fields: createTokenFields(false),
+      }),
   ];
 }

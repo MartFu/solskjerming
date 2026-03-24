@@ -1,6 +1,9 @@
 import { CreatePageModal } from "@/components/modals/create-page";
+import { moduleRegistry } from "@/schemaTypes/documents/modules";
 import type { ModuleCreationOptions } from "@/utils/modules";
+import { CreationOption } from "@/utils/modules/registry";
 import type { TreeNode } from "@/utils/page-tree";
+import { useToast } from "@sanity/ui";
 import {
   createContext,
   type ReactNode,
@@ -9,72 +12,88 @@ import {
   useMemo,
   useState,
 } from "react";
+import { useRouter } from "sanity/router";
 
 // ─────────────────────────────────────────────────────────────
 // Types
 // ─────────────────────────────────────────────────────────────
-
+ 
 export interface ModalState {
-  /** Available page kinds for this creation context */
-  options: ModuleCreationOptions[];
-  /** The parent node, or null for root-level creation */
+  options: CreationOption[];
   parentNode: TreeNode | null;
-  /** Ancestor chain for the breadcrumb */
   ancestors: TreeNode[];
 }
-
+ 
 export interface PageCreationContextValue {
   openCreationModal: (state: ModalState) => void;
   closeCreationModal: () => void;
 }
-
+ 
 export interface PageCreationProviderProps {
   children: ReactNode;
   siteId: string;
-  onCreate: (
-    option: ModuleCreationOptions,
-    parentId: string | null,
-    title?: string,
-  ) => void;
 }
-
+ 
 // ─────────────────────────────────────────────────────────────
 // Context
 // ─────────────────────────────────────────────────────────────
-
+ 
 const PageCreationContext = createContext<PageCreationContextValue | undefined>(
   undefined,
 );
-
+ 
 export function PageCreationProvider({
   children,
-  onCreate,
+  siteId,
 }: PageCreationProviderProps) {
   const [modalState, setModalState] = useState<ModalState | null>(null);
-
+  const router = useRouter();
+  const toast = useToast();
+ 
   const openCreationModal = useCallback((state: ModalState) => {
     setModalState(state);
   }, []);
-
+ 
   const closeCreationModal = useCallback(() => {
     setModalState(null);
   }, []);
-
+ 
+  /**
+   * Called when the modal confirms. Derives all context from the
+   * modal state (parentNode) and pane props (siteId), then delegates
+   * to the registry to build and validate the creation intent.
+   */
   const handleConfirm = useCallback(
-    (option: ModuleCreationOptions, title?: string) => {
-      const parentId =
-        modalState?.parentNode?.doc._id.replace(/^drafts\./, "") ?? null;
-      onCreate(option, parentId, title);
-      setModalState(null); 
-    },
-    [modalState, onCreate],
-  );
+    (option: CreationOption, title?: string) => {
+      const intent = moduleRegistry.buildCreationIntent(option, {
+        siteId,
+        parentId: modalState?.parentNode?.doc._id ?? undefined,
+        title,
+      });
+ 
+      console.log("INTENT: ", intent)
 
+      if (!intent) {
+        toast.push({
+          title: "En feil oppstod",
+          description: `Ukjent rolle "${option.role}" — kan ikke opprette siden.`,
+          status: "error",
+        });
+        setModalState(null);
+        return;
+      }
+ 
+      router.navigateIntent("create", [intent.payload, intent.params]);
+      setModalState(null);
+    },
+    [modalState, siteId, router, toast],
+  );
+ 
   const value = useMemo(
     () => ({ openCreationModal, closeCreationModal }),
     [openCreationModal, closeCreationModal],
   );
-
+ 
   return (
     <PageCreationContext.Provider value={value}>
       {children}
@@ -90,7 +109,7 @@ export function PageCreationProvider({
     </PageCreationContext.Provider>
   );
 }
-
+ 
 export function usePageCreation() {
   const context = useContext(PageCreationContext);
   if (!context) {

@@ -157,7 +157,8 @@ export function Navbar({
   };
   const { navbarData, settingsData } = navigationData;
   const { columns, buttons } = navbarData || {};
-  const { logo, title } = settingsData || {};
+  const { organization, title } = settingsData || {};
+  const { logo } = organization || {};
 
   // Show skeleton only on initial mount when no fallback data is available
   if (isLoading && !data && !(initialNavbarData && initialSettingsData)) {

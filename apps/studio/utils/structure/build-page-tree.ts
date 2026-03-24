@@ -32,7 +32,7 @@ export function buildPageTree(
             // this pane will claim the intent and open it in the tree context.
             const isTargetType = params.type === PAGE_TYPE;
 
-            // Optional: You could further verify if the document belongs to this site
+            // Optional: Could further verify if the document belongs to this site
             // by checking params.id, but usually checking type is enough for the pane router.
             return ["edit", "create"].includes(intentName) && isTargetType;
           })

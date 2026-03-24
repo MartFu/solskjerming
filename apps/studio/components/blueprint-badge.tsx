@@ -5,7 +5,7 @@
 // Thin wrapper around moduleRegistry.getBadgeInfo(). Displays the page's
 // blueprint identity in the Studio document header.
 //
-// Register in sanity.config.ts:
+// Registered in sanity.config.ts:
 //   document: {
 //     badges: (prev, context) => {
 //       if (context.schemaType === "page") return [...prev, BlueprintBadge]

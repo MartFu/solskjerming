@@ -153,15 +153,6 @@ export const navbar = defineType({
   description: "Configure the main navigation structure for your site",
   fields: [
     defineField({
-      name: "label",
-      type: "string",
-      initialValue: "Navbar",
-      title: "Navigation Label",
-      description:
-        "Internal label to identify this navigation configuration in the CMS",
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
       name: "site",
       type: "reference",
       to: [{ type: "site" }],
@@ -177,11 +168,8 @@ export const navbar = defineType({
     buttonsField,
   ],
   preview: {
-    select: {
-      title: "label",
-    },
-    prepare: ({ title }) => ({
-      title: title || "Untitled Navigation",
+    prepare: () => ({
+      title: "Navigasjon",
     }),
   },
 });

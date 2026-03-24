@@ -25,7 +25,7 @@ import {
 import { type GroupValue } from "@/utils/constant";
 
 // ---------------------------------------------------------------------------
-// Blueprint block — what gets seeded into pageBuilder on creation
+// Blueprint block — what gets seeded into pagebuilder on creation
 // ---------------------------------------------------------------------------
 
 export interface BlueprintBlock {
@@ -96,7 +96,7 @@ export interface BlueprintConfig<K extends string = string> {
   allowedParentBlueprints?: NoInfer<K>[];
 
   /**
-   * Blocks to pre-populate in the pageBuilder on creation.
+   * Blocks to pre-populate in the pagebuilder on creation.
    * This is what makes a generic page feel like a catalog, article, etc.
    */
   initialBlocks?: BlueprintBlock[];
@@ -371,9 +371,9 @@ function buildTemplate<K extends string>(
         base.parent = { _type: "reference", _ref: params.parentId };
       }
 
-      // Pre-populate pageBuilder with blueprint blocks
+      // Pre-populate pagebuilder with blueprint blocks
       if (bpConfig.initialBlocks?.length) {
-        base.pageBuilder = bpConfig.initialBlocks.map((block, i) => ({
+        base.pagebuilder = bpConfig.initialBlocks.map((block, i) => ({
           _type: block._type,
           _key: `bp-${bpKey}-${i}`,
           ...(block.initialData ?? {}),
