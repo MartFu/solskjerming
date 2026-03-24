@@ -231,7 +231,8 @@ export function WorkspaceView() {
   return (
     <Box
       padding={5}
-      style={{ maxWidth: 1440, margin: "0 auto" }}
+      flex={1}
+      style={{ maxWidth: 1440, margin: "0 auto", minHeight: 0, overflow: "auto" }}
     >
       <Stack space={6}>
         {/* Header */}

@@ -21,20 +21,34 @@ export function Layout(props: ActiveToolLayoutProps) {
     !!previewUrl;
 
   return (
-    <Flex direction="column" height="fill">
+    <Flex
+      direction="column"
+      height="fill"
+    >
       {props.activeTool.name !== "vision" && <TopBar />}
 
-      <Flex flex={1} style={{ minHeight: 0 }}>
-        <Box flex={1} style={{ minHeight: 0, overflow: "auto" }}>
+      <Flex
+        flex={1}
+        style={{ minHeight: 0 }}
+      >
+        <Box
+          flex={1}
+          style={{ minHeight: 0, overflow: "auto" }}
+        >
           {props.renderDefault(props)}
         </Box>
 
-        {props.activeTool.name === "structure" && activeSite && (
-          <PreviewResolver />
-        )}
 
-        {showPreview && <PreviewPane url={previewUrl} loading={false} />}
+        {showPreview && (
+          <PreviewPane
+          url={previewUrl}
+          loading={false}
+          />
+        )}
       </Flex>
+      {props.activeTool.name === "structure" && activeSite && (
+        <PreviewResolver />
+      )}
     </Flex>
   );
 }

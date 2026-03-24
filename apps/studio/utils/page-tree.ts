@@ -168,6 +168,7 @@ export interface RoutableDoc {
   sortOrder: number | null;
   parentRef: string | null;
   seoNoIndex: boolean | null;
+  internalRole: string;
 }
 
 export interface TreeNode {

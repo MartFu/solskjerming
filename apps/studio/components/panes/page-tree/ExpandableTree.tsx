@@ -1,42 +1,17 @@
 import { useState, useCallback } from "react";
-import { Box, Button, Card, Flex, Stack, Text } from "@sanity/ui";
+import { Box, Button, Card, Flex, Text } from "@sanity/ui";
 import { AddIcon, DocumentIcon, FolderIcon, EditIcon } from "@sanity/icons";
 import { ChevronDown, ChevronRight } from "lucide-react";
 
-import { getChildTypes, getAncestors, type TreeNode } from "@/utils/page-tree";
+import { getAncestors, type TreeNode } from "@/utils/page-tree";
+import { moduleRegistry } from "@/schemaTypes/documents/modules";
 import { usePageCreation } from "@/context/PageCreationProvider";
-import { ExpandableTreeProps, ModalState } from "./types";
-import styled from "styled-components";
+import type { ExpandableTreeProps, ModalState } from "./types";
+import { HoverCard } from "@/components/hover-card";
 
 // ─────────────────────────────────────────────────────────────
 // TreeNodeRow
 // ─────────────────────────────────────────────────────────────
-
-const HoverCard = styled(Card)`
-  position: relative;
-  transition: background 120ms ease-in-out;
-  cursor: default;
-
-  .show-on-card-hover {
-    opacity: 0;
-    transition: opacity 120ms ease-in-out;
-    pointer-events: none;
-  }
-
-  &:hover {
-    background: var(--card-bg-color);
-    filter: brightness(0.92);
-
-    .show-on-card-hover {
-      opacity: 1;
-      pointer-events: auto;
-    }
-  }
-
-  &[data-hovered] {
-    background-color: var(--card-muted-bg-color);
-  }
-`;
 
 function TreeNodeRow({
   node,
@@ -58,15 +33,20 @@ function TreeNodeRow({
   onOpenModal: (state: ModalState) => void;
 }) {
   const hasChildren = node.children.length > 0;
-  const childTypes = getChildTypes(node.doc._type, enabledPackages);
-  const canCreate = childTypes.length > 0;
   const title = node.doc.title ?? "Uten tittel";
   const slug = node.doc.slug;
+
+  // Ask the registry what can be created under this node
+  const creationOptions = moduleRegistry.getCreationOptions(
+    node.doc.internalRole,
+    enabledPackages,
+  );
+  const canCreate = creationOptions.length > 0;
 
   const handleAddClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     const ancestors = getAncestors(tree, node.doc._id);
-    onOpenModal({ types: childTypes, parentNode: node, ancestors });
+    onOpenModal({ options: creationOptions, parentNode: node, ancestors });
   };
 
   return (
@@ -160,9 +140,7 @@ function TreeNodeRow({
             align="center"
             paddingRight={1}
             className="show-on-card-hover"
-            style={{
-              transition: "opacity 120ms ease",
-            }}
+            style={{ transition: "opacity 120ms ease" }}
           >
             <Button
               icon={EditIcon}

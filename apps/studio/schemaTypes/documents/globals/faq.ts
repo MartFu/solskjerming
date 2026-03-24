@@ -1,66 +1,68 @@
 import { defineField, defineType } from "sanity";
 
 import { customRichText } from "@/schemaTypes/definitions/rich-text";
-import { parseRichTextToString } from "@/utils/helper";
+import { asStudioIcon, parseRichTextToString } from "@/utils/helper";
 import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
 import { defineGlobal } from "./define-global";
+import { MessageCircleQuestionMark } from "lucide-react";
 
 export const faq = defineGlobal({
   name: DOCUMENT_NAMES.faq,
   type: "document",
+  icon: asStudioIcon(MessageCircleQuestionMark),
   sortFields: [],
-  title: "Frequently Asked Question",
+  alwaysAvailable: true,
+  title: "Ofte stilte spørsmål (FAQ)",
   description:
-    "A simple question and answer pair that helps visitors find information quickly. Think of it like writing down the questions customers often ask, along with clear answers.",
-  // icon: MessageCircle,
+    "Et enkelt par med spørsmål og svar som hjelper besøkende med å finne informasjon raskt. Tenk på det som å skrive ned spørsmålene kundene ofte stiller, sammen med klare svar.",
   fields: [
     defineField({
       name: "title",
-      title: "Question",
+      title: "Spørsmål",
       type: "string",
       description:
-        "Write the question exactly as someone might ask it. For example: 'How do I reset my password?'",
+        "Skriv spørsmålet nøyaktig slik noen ville stilt det. For eksempel: «Hvordan nullstiller jeg passordet mitt?»",
       validation: (Rule) => Rule.required(),
     }),
     customRichText(["block"], {
-      title: "Answer",
+      title: "Svar",
       description:
-        "Write a friendly, clear answer that directly addresses the question. Keep it simple enough that anyone can understand it.",
+        "Skriv et vennlig og tydelig svar som svarer direkte på spørsmålet. Hold det enkelt nok til at alle kan forstå det.",
     }),
     defineField({
       name: "category",
-      title: "Category",
+      title: "Kategori",
       type: "string",
       options: {
         list: [
-          { title: "General", value: "general" },
-          { title: "Installation", value: "installation" },
-          { title: "Maintenance", value: "maintenance" },
-          { title: "Pricing", value: "pricing" },
+          { title: "Generelt", value: "general" },
+          { title: "Installasjon", value: "installation" },
+          { title: "Vedlikehold", value: "maintenance" },
+          { title: "Priser", value: "pricing" },
         ],
       },
     }),
     defineField({
       name: "siteId",
-      title: "Site",
+      title: "Nettsted-ID",
       type: "string",
       hidden: true,
     }),
     defineField({
       name: "workspace",
-      title: "Workspace",
+      title: "Arbeidsområde",
       type: "string",
       hidden: true,
     }),
     defineField({
       name: "order",
-      title: "Display Order",
+      title: "Visningsrekkefølge",
       type: "number",
       initialValue: 0,
     }),
     defineField({
       name: "deployment",
-      title: "Publishing Status",
+      title: "Publiseringsstatus",
       type: "deploymentMeta",
     }),
   ],
@@ -73,10 +75,10 @@ export const faq = defineGlobal({
       // Create a playful subtitle with emojis
       const subtitle = `${parseRichTextToString(richText, 20)}`;
 
-      return {
-        title: `❓ ${title || "Untitled Question"}`,
-        subtitle,
-      };
+     return {
+       title: `❓ ${title || "Uten tittel"}`,
+       subtitle,
+     };
     },
   },
 });

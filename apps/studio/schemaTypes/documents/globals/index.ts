@@ -27,10 +27,11 @@ export const globals = [
   article,
 ] as const;
 
+export type GlobalDefinition = (typeof globals)[number];
+export type GlobalType = (typeof globals)[number]["schema"]["name"];
+
 export const globalSchemaTypes = globals.map((d) => d.schema);
 export const globalNames = globals.map((d) => d.schema.name);
-
-export type GlobalType = (typeof globals)[number]["schema"]["name"];
 
 export const GLOBAL_REGISTRY = Object.fromEntries(
   globals.map((g) => [g.schema.name, g]),
@@ -44,3 +45,32 @@ export type GlobalFieldNames<T extends GlobalType> =
 export function isGlobalType(type: string): type is GlobalType {
   return globalNames.includes(type as GlobalType);
 }
+
+
+export function createGlobalRegistry(globals: readonly GlobalDefinition[]) {
+  const byName = new Map(globals.map((g) => [g.schema.name, g]));
+
+  return {
+    /** Every schema, ready to spread into Sanity config */
+    allSchemas: globals.map((g) => g.schema),
+
+    /** All globals that appear regardless of enabled packages */
+    alwaysAvailable: globals.filter((g) => g.alwaysAvailable),
+
+    /** Look up a global by its type name */
+    lookup: (type: GlobalType) => byName.get(type),
+
+    /** Check if a type name is a known global */
+    isGlobalType: (type: string): type is GlobalType => byName.has(type as GlobalType),
+
+    /** Map over all registered globals */
+    map: <T>(fn: (global: GlobalDefinition) => T): T[] => globals.map(fn),
+  };
+}
+
+
+/**
+ * Primary interface for interacting with the globals outside of the schemaTypes directory.
+ * 
+ */
+export const globalRegistry = createGlobalRegistry(globals);

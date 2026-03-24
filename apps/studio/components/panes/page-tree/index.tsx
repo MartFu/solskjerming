@@ -14,27 +14,25 @@ import { AddIcon, SearchIcon } from "@sanity/icons";
 import { useDocumentStore } from "sanity";
 import { usePaneRouter } from "sanity/structure";
 import { map } from "rxjs";
+import { useRouter } from "sanity/router";
 
 import {
   buildTree,
-  buildTreeQuery,
   flattenTree,
   type TreeNode,
   type RoutableDoc,
-  getChildTypes,
 } from "@/utils/page-tree";
-import { API_VERSION } from '@/utils/env';
-import { useRouter } from "sanity/router";
+import { API_VERSION } from "@/utils/env";
 
 import { DrillDownTree } from "./DrillDownTree";
 import { ExpandableTree } from "./ExpandableTree";
 import { SearchResults } from "./SearchResults";
-import { packageRegistry } from "@/schemaTypes/documents/packages";
-import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
 import {
   PageCreationProvider,
   usePageCreation,
 } from "@/context/PageCreationProvider";
+import { moduleRegistry } from "@/schemaTypes/documents/modules";
+import { ModuleCreationOptions } from "@/utils/modules";
 
 // ─────────────────────────────────────────────────────────────
 // Types
@@ -46,7 +44,8 @@ export interface PageTreeOptions {
 }
 
 export interface PageTreePaneProps {
-  options: PageTreeOptions;
+  siteId: string;
+  enabledPackages: string[];
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -90,10 +89,14 @@ function PageTreeContent({
   const [allNodes, setAllNodes] = useState<TreeNode[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Subscribe to live document data
-  useEffect(() => {
-    const query = buildTreeQuery(enabledPackages);
+  // ── Tree query from registry ──────────────────────────────
+  const query = useMemo(
+    () => moduleRegistry.buildTreeQuery(enabledPackages),
+    [enabledPackages],
+  );
 
+  // ── Subscribe to live document data ───────────────────────
+  useEffect(() => {
     const subscription = documentStore
       .listenQuery(query, { siteId }, { apiVersion: API_VERSION })
       .pipe(
@@ -123,7 +126,7 @@ function PageTreeContent({
       });
 
     return () => subscription.unsubscribe();
-  }, [documentStore, siteId, enabledPackages]);
+  }, [documentStore, siteId, query]);
 
   const openEditor = useCallback(
     (docId: string, docType: string) => {
@@ -132,6 +135,13 @@ function PageTreeContent({
     [paneRouter],
   );
 
+  // ── Creation options from registry ────────────────────────
+  const rootCreationOptions = useMemo(
+    () => moduleRegistry.getCreationOptions(undefined, enabledPackages),
+    [enabledPackages],
+  );
+
+  // ── Search ────────────────────────────────────────────────
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) return [];
     const q = searchQuery.toLowerCase();
@@ -143,7 +153,6 @@ function PageTreeContent({
   }, [allNodes, searchQuery]);
 
   const isSearching = searchQuery.trim().length > 0;
-  const rootChildTypes = getChildTypes(null, enabledPackages);
 
   if (isLoading) {
     return (
@@ -166,16 +175,19 @@ function PageTreeContent({
       style={{ height: "100%" }}
       flex={1}
     >
-      {/* Search */}
+      {/* Search + New */}
       <Card
-        paddingBottom={3}
         paddingX={3}
+        borderTop
         borderBottom
         flex={1}
+        style={{ height: "49px" }}
       >
         <Flex
           flex={1}
           gap={1}
+          height={"fill"}
+          align="center"
         >
           <Box flex={1}>
             <TextInput
@@ -187,21 +199,23 @@ function PageTreeContent({
               onChange={(e) => setSearchQuery(e.currentTarget.value)}
             />
           </Box>
-          <Button
-            icon={AddIcon}
-            mode="ghost"
-            tone="primary"
-            fontSize={1}
-            padding={2}
-            style={{ width: 32 }}
-            onClick={() =>
-              openCreationModal({
-                types: rootChildTypes,
-                parentNode: null,
-                ancestors: [],
-              })
-            }
-          />
+          <Box>
+            <Button
+              icon={AddIcon}
+              mode="ghost"
+              text="Ny side"
+              tone="neutral"
+              fontSize={1}
+              padding={3}
+              onClick={() =>
+                openCreationModal({
+                  options: rootCreationOptions,
+                  parentNode: null,
+                  ancestors: [],
+                })
+              }
+            /> 
+          </Box>
         </Flex>
       </Card>
 
@@ -240,42 +254,33 @@ function PageTreeContent({
 // Main component
 // ─────────────────────────────────────────────────────────────
 
-export function PageTreePane({ options }: PageTreePaneProps) {
-  const { siteId, enabledPackages } = options;
+export function PageTreePane({ siteId, enabledPackages }: PageTreePaneProps) {
   const router = useRouter();
   const toast = useToast();
 
   const handleCreate = useCallback(
     (
-      type: string,
-      templateId: string,
+      option: ModuleCreationOptions,
       parentId: string | null,
       title?: string,
     ) => {
-      const entry = packageRegistry.lookup(type);
-      if (!entry && type !== DOCUMENT_NAMES.page) {
-        console.error(
-          `[PageTreePane] Unknown document type "${type}" — skipping creation.`,
-        );
-        toast.push({
-          title: "En feil oppstod",
-          description: `[PageTreePane] Ukjent dokumenttype ("${type}") - kan ikke opprette siden.`,
-          status: "error",
-        });
-        return;
+      // Validate if it's a blueprint-created page
+      if (option.role) {
+        const entry = moduleRegistry.getBlueprint(option.role);
+        if (!entry) {
+          toast.push({
+            title: "En feil oppstod",
+            description: `Ukjent rolle "${option.role}" — kan ikke opprette siden.`,
+            status: "error",
+          });
+          return;
+        }
       }
 
-      console.table({
-        head: `--- creating page ---`,
-        type,
-        templateId,
-        parentId,
-        title,
-      });
-
       const publishedParentId = parentId?.replace(/^drafts\./, "") ?? null;
+
       router.navigateIntent("create", [
-        { type, template: templateId },
+        { type: option.type, template: option.templateId },
         {
           siteId,
           ...(publishedParentId ? { parentId: publishedParentId } : {}),

@@ -4,6 +4,7 @@ import {
   Brush,
   Building2,
   Handbag,
+  LayoutDashboard,
   Rocket,
   Search,
   Settings,
@@ -14,8 +15,13 @@ import { StructureBuilder } from "sanity/structure";
 import { API_VERSION } from "@/utils/env";
 import { DocumentsIcon, JsonIcon, PackageIcon, RobotIcon } from "@sanity/icons";
 import { DeploymentDashboard } from "@/components/deployment-dashboard";
-import { asStudioIcon } from "../helper";
+import { asStudioIcon, capitalize } from "../helper";
 import { packageRegistry } from "@/schemaTypes/documents/packages/index";
+import {
+  globalRegistry,
+  globalSchemaTypes,
+} from "@/schemaTypes/documents/globals";
+import { moduleRegistry } from "@/schemaTypes/documents/modules";
 
 // ─────────────────────────────────────────────────────────────
 // Global items (workspace-level, shared across sites)
@@ -25,8 +31,8 @@ export function buildGlobalItems(
   S: StructureBuilder,
   enabledPackages: string[],
 ) {
-  const globalItems = packageRegistry
-    .globalsForPackages(enabledPackages)
+  const packagedGlobals = moduleRegistry
+    .globalsForModules(enabledPackages)
     .map((global) =>
       S.listItem()
         .title(global.structureTitle)
@@ -42,6 +48,32 @@ export function buildGlobalItems(
         ),
     );
 
+  const alwaysAvailableGlobals = globalRegistry.alwaysAvailable.map((global) =>
+    S.listItem()
+      .title(
+        global.schema?.title
+          ? capitalize(global.schema.title)
+          : capitalize(global.schema.name),
+      )
+      .id(`global-aa-${global.schema.name}`)
+      .icon(global.schema.icon)
+      .child(
+        S.documentList()
+          .id(`global-aa-${global.schema.name}-list`)
+          .title(
+            global.schema?.title
+              ? capitalize(global.schema.title)
+              : capitalize(global.schema.name),
+          )
+          .params({ type: global.schema.name })
+          .filter("_type == $type")
+          .apiVersion(API_VERSION)
+          .defaultOrdering(
+            global.sortFields.map((field) => ({ field, direction: "asc" })),
+          ),
+      ),
+  );
+
   return [
     S.divider().title("Globaler"),
 
@@ -53,21 +85,7 @@ export function buildGlobalItems(
         S.list()
           .id("resources-list")
           .title("Ressurser")
-          .items([
-            ...globalItems,
-            S.listItem()
-              .title("Dokumenter")
-              .id("global-documentation")
-              .icon(DocumentsIcon)
-              .child(
-                S.documentList()
-                  .id("global-documentation-list")
-                  .title("Dokumenter")
-                  .filter('_type == "documentation"')
-                  .apiVersion(API_VERSION)
-                  .defaultOrdering([{ field: "title", direction: "asc" }]),
-              ),
-          ]),
+          .items([...packagedGlobals, ...alwaysAvailableGlobals]),
       ),
 
     // ...filteredPkgScopedGlobals,
@@ -183,6 +201,18 @@ export function buildGlobalItems(
           .id("seo-dashboard")
           .component(DeploymentDashboard)
           .title("SEO Analyse"),
+      ),
+
+    S.listItem()
+      .title("Studio")
+      .id("studio-settings")
+      .icon(asStudioIcon(LayoutDashboard))
+      .child(
+        S.document()
+          .id("studio-settings-editor")
+          .schemaType("studioSettings")
+          .documentId("studioSettings")
+          .title("Studio"),
       ),
   ];
 }

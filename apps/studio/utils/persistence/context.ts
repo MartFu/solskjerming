@@ -1,5 +1,5 @@
-import { WorkspaceKey } from "./constant";
-import { ActiveSite } from "./types";
+import { WorkspaceKey } from "../constant";
+import { ActiveSite } from "../types";
 
 export const STUDIO_CONTEXT_LS_KEY = (
   workspace: WorkspaceKey | undefined = "solskjerming",

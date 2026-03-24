@@ -59,10 +59,7 @@ export default defineCliConfig({
   deployment: {
     autoUpdates: false,
   },
- /*  server: {
-    hostname: process.env.SANITY_STUDIO_LOCAL_HOSTNAME ?? '0.0.0.0',
-    port: 3333,
-  }, */
+
   schemaExtraction: {
     enabled: true,
     enforceRequiredFields: true,
@@ -76,12 +73,20 @@ export default defineCliConfig({
     generates: "../../packages/sanity/src/sanity.types.ts",
     overloadClientMethods: true,
   },
-  vite: {
-    plugins: [tsconfigPaths()],
+  vite: async (config) => ({
+    ...config,
+    plugins: [...(config.plugins ?? []), tsconfigPaths()],
     resolve: {
+      ...config.resolve,
       alias: {
+        ...(config.resolve?.alias ?? {}),
         "@": path.resolve(__dirname, "."),
       },
     },
-  },
+    server: {
+      ...config.server,
+      host: "0.0.0.0",
+      allowedHosts: [".trycloudflare.com"],
+    },
+  }),
 });

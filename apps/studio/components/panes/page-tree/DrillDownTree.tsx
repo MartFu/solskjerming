@@ -7,14 +7,10 @@ import {
   EditIcon,
 } from "@sanity/icons";
 
-import {
-  findNode,
-  getAncestors,
-  getChildTypes,
-  type TreeNode,
-} from "@/utils/page-tree";
+import { findNode, getAncestors, type TreeNode } from "@/utils/page-tree";
+import { moduleRegistry } from "@/schemaTypes/documents/modules";
 import { usePageCreation } from "@/context/PageCreationProvider";
-import { DrillDownTreeProps } from "./types";
+import type { DrillDownTreeProps } from "./types";
 
 // ─────────────────────────────────────────────────────────────
 // Breadcrumb
@@ -205,8 +201,13 @@ export function DrillDownTree({
     return ancestors;
   }, [tree, currentParentId, currentNode]);
 
-  const creatableTypes = useMemo(
-    () => getChildTypes(currentNode?.doc._type ?? null, enabledPackages),
+  // Ask the registry what can be created under the current node
+  const creationOptions = useMemo(
+    () =>
+      moduleRegistry.getCreationOptions(
+        currentNode?.doc.internalRole,
+        enabledPackages,
+      ),
     [currentNode, enabledPackages],
   );
 
@@ -215,7 +216,7 @@ export function DrillDownTree({
       ? getAncestors(tree, currentNode.doc._id)
       : [];
     openCreationModal({
-      types: creatableTypes,
+      options: creationOptions,
       parentNode: currentNode,
       ancestors,
     });
@@ -259,8 +260,7 @@ export function DrillDownTree({
         )}
       </Box>
 
-      {/* Bottom bar — create button opens modal */}
-      {creatableTypes.length > 0 && (
+      {creationOptions.length > 0 && (
         <Card
           padding={3}
           borderTop

@@ -1,3 +1,5 @@
+"use client"
+
 import { cn } from "@workspace/ui/lib/utils";
 import { TriangleAlert } from "lucide-react";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
@@ -29,3 +31,5 @@ export const SanityIcon = memo(function SanityIconUnmemorized({
     />
   );
 });
+
+

@@ -11,7 +11,7 @@ import { nbNOLocale } from "@sanity/locale-nb-no";
 import { Logo } from "@/components/logo";
 import { schemaTypes, singletonType } from "@/schemaTypes/index";
 import { JsonIcon } from "@sanity/icons";
-import { ToolLayout } from "./components/toolLayout";
+import { ToolLayout } from "./components/tool-layout";
 
 import { createStructure } from "@/utils/structure/structure";
 import { initialValueTemplates } from "./schemaTypes/templates";
@@ -113,11 +113,12 @@ export const defineWorkspace = (
     nbNOLocale(),
     lucideIconPicker(),
     unsplashImageAsset(),
-    assist(),
+    // assist({}),
 
     structureTool({
       title: "Studio",
       structure: (S, context) => createStructure(S, context, workspace),
+      
     }),
     /*   media(), */
     visionTool({

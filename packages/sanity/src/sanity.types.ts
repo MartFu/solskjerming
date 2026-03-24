@@ -438,20 +438,6 @@ export type RichText = Array<
     }
 >;
 
-export type ArticlePageReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "articlePage";
-};
-
-export type ArticleRootReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "articleRoot";
-};
-
 export type PageReference = {
   _ref: string;
   _type: "reference";
@@ -479,12 +465,257 @@ export type CustomUrl = {
   openInNewTab?: boolean;
   external?: string;
   href?: string;
-  internal?:
-    | ArticlePageReference
-    | ArticleRootReference
-    | PageReference
-    | ProductReference
-    | VideoReference;
+  internal?: PageReference | ProductReference | VideoReference;
+};
+
+export type StudioSettings = {
+  _id: string;
+  _type: "studioSettings";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  tabs?: {
+    enabled?: boolean;
+    maxTabs?: number;
+  };
+};
+
+export type GlobalRobots = {
+  _id: string;
+  _type: "globalRobots";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  robots?: {
+    maxSnippet?: number;
+    maxImagePreview?: "none" | "standard" | "large";
+    maxVideoPreview?: number;
+  };
+};
+
+export type GlobalStructuredData = {
+  _id: string;
+  _type: "globalStructuredData";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  structuredData?: {
+    organization?: {
+      name: string;
+      legalName?: string;
+      url?: string;
+      logo?: {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+      };
+      description?: string;
+      foundingDate?: string;
+      contactPoint?: {
+        telephone?: string;
+        email?: string;
+        contactType?:
+          | "customer service"
+          | "technical support"
+          | "sales"
+          | "billing support";
+      };
+      address?: {
+        streetAddress?: string;
+        postalCode?: string;
+        addressLocality?: string;
+        addressRegion?: string;
+        addressCountry?: string;
+      };
+      sameAs?: Array<string>;
+    };
+    website?: {
+      name?: string;
+      alternateName?: string;
+      searchUrlTemplate?: string;
+    };
+  };
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x: number;
+  y: number;
+  height: number;
+  width: number;
+};
+
+export type DocumentationReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "documentation";
+};
+
+export type GlobalCompliance = {
+  _id: string;
+  _type: "globalCompliance";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  legalDocuments?: Array<
+    {
+      _key: string;
+    } & DocumentationReference
+  >;
+  bannerTitle?: string;
+  bannerDescription?: string;
+  categories?: Array<{
+    label: string;
+    id: Slug;
+    description?: string;
+    isNecessary?: boolean;
+    _type: "category";
+    _key: string;
+  }>;
+};
+
+export type Slug = {
+  _type: "slug";
+  current: string;
+  source?: string;
+};
+
+export type GlobalOrganization = {
+  _id: string;
+  _type: "globalOrganization";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  organizationNumber?: string;
+  email?: string;
+  phone?: string;
+  address?: Address;
+  logo?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  favicon?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  linkedin?: string;
+  facebook?: string;
+  instagram?: string;
+  youtube?: string;
+  twitter?: string;
+};
+
+export type GlobalIntegrations = {
+  _id: string;
+  _type: "globalIntegrations";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  googleAnalyticsId?: string;
+  gtmContainerId?: string;
+  facebookPixelId?: string;
+};
+
+export type GlobalSeo = {
+  _id: string;
+  _type: "globalSeo";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  metaTitle: string;
+  metaDescription: string;
+  ogTitle: string;
+  ogDescription: string;
+  ogImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  socialPreview?: string;
+  googleSiteVerification?: string;
+};
+
+export type GlobalTheme = {
+  _id: string;
+  _type: "globalTheme";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  themePreset?: {
+    nouse?: string;
+  };
+  light?: {
+    background: string;
+    foreground: string;
+    card: string;
+    cardForeground: string;
+    popover: string;
+    popoverForeground: string;
+    primary: string;
+    primaryForeground: string;
+    secondary: string;
+    secondaryForeground: string;
+    muted: string;
+    mutedForeground: string;
+    accent: string;
+    accentForeground: string;
+    destructive: string;
+    destructiveForeground: string;
+    warning: string;
+    warningForeground: string;
+    success: string;
+    successForeground: string;
+    border: string;
+    input: string;
+    ring: string;
+    radius: "0rem" | "0.25rem" | "0.5rem" | "0.75rem" | "1rem";
+  };
+  dark?: {
+    background: string;
+    foreground: string;
+    card: string;
+    cardForeground: string;
+    popover: string;
+    popoverForeground: string;
+    primary: string;
+    primaryForeground: string;
+    secondary: string;
+    secondaryForeground: string;
+    muted: string;
+    mutedForeground: string;
+    accent: string;
+    accentForeground: string;
+    destructive: string;
+    destructiveForeground: string;
+    warning: string;
+    warningForeground: string;
+    success: string;
+    successForeground: string;
+    border: string;
+    input: string;
+    ring: string;
+    radius: "0rem" | "0.25rem" | "0.5rem" | "0.75rem" | "1rem";
+  };
 };
 
 export type AuthorReference = {
@@ -528,41 +759,6 @@ export type Article = {
   richText?: RichText;
   siteId?: string;
   site?: SiteReference;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top: number;
-  bottom: number;
-  left: number;
-  right: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x: number;
-  y: number;
-  height: number;
-  width: number;
-};
-
-export type Author = {
-  _id: string;
-  _type: "author";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name: string;
-  position?: string;
-  image?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-  };
-  bio?: string;
 };
 
 export type Faq = {
@@ -618,12 +814,6 @@ export type Video = {
   description?: string;
   duration?: string;
   category?: "installation" | "maintenance" | "product-guide";
-};
-
-export type Slug = {
-  _type: "slug";
-  current: string;
-  source?: string;
 };
 
 export type Documentation = {
@@ -730,633 +920,14 @@ export type Redirect = {
   site?: SiteReference;
 };
 
-export type CatalogRootReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "catalogRoot";
-};
-
-export type ProductPageReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "productPage";
-};
-
-export type ProductPage = {
-  _id: string;
-  _type: "productPage";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title: string;
-  description?: string;
-  site: SiteReference;
-  slug: Slug;
-  parent?: CatalogRootReference | ProductPageReference;
-  sortOrder?: number;
-  focusKeyphrase?: string;
-  metaTitle: string;
-  metaDescription: string;
-  canonicalUrl?: string;
-  ogTitle?: string;
-  ogDescription?: string;
-  ogImage?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  };
-  socialPreview?: string;
-  structuredData?: {
-    enabled?: boolean;
-    type?: string;
-    article?: {
-      headline?: string;
-      datePublished?: string;
-      dateModified?: string;
-      authorName?: string;
-      authorUrl?: string;
-      publisherName?: string;
-    };
-    product?: {
-      name?: string;
-      description?: string;
-      sku?: string;
-      brand?: string;
-      price?: number;
-      priceCurrency?: string;
-      availability?:
-        | "https://schema.org/InStock"
-        | "https://schema.org/OutOfStock"
-        | "https://schema.org/PreOrder"
-        | "https://schema.org/Discontinued";
-      additionalProperties?: Array<{
-        name?: string;
-        value?: string;
-        _key: string;
-      }>;
-      ratingValue?: number;
-      reviewCount?: number;
-    };
-    faq?: Array<{
-      question: string;
-      answer: string;
-      _key: string;
-    }>;
-    event?: {
-      name?: string;
-      startDate?: string;
-      endDate?: string;
-      locationName?: string;
-      locationAddress?: string;
-      eventAttendanceMode?:
-        | "https://schema.org/OfflineEventAttendanceMode"
-        | "https://schema.org/OnlineEventAttendanceMode"
-        | "https://schema.org/MixedEventAttendanceMode";
-      eventStatus?:
-        | "https://schema.org/EventScheduled"
-        | "https://schema.org/EventCancelled"
-        | "https://schema.org/EventPostponed"
-        | "https://schema.org/EventMovedOnline";
-      organizerName?: string;
-      offerPrice?: number;
-      offerCurrency?: string;
-      offerUrl?: string;
-    };
-    localBusiness?: {
-      name?: string;
-      description?: string;
-      telephone?: string;
-      email?: string;
-      streetAddress?: string;
-      postalCode?: string;
-      addressLocality?: string;
-      addressCountry?: string;
-      geo?: {
-        latitude?: number;
-        longitude?: number;
-      };
-      priceRange?: string;
-      openingHours?: Array<string>;
-    };
-    video?: {
-      name?: string;
-      description?: string;
-      uploadDate?: string;
-      duration?: string;
-      contentUrl?: string;
-      embedUrl?: string;
-      thumbnailUrl?: string;
-    };
-    howTo?: {
-      name?: string;
-      description?: string;
-      totalTime?: string;
-      steps?: Array<{
-        name?: string;
-        text?: string;
-        _key: string;
-      }>;
-    };
-    customJsonLd?: string;
-  };
-  robots?: {
-    noIndex?: boolean;
-    noFollow?: boolean;
-    noArchive?: boolean;
-    noImageIndex?: boolean;
-    maxSnippet?: number;
-    maxImagePreview?: "none" | "standard" | "large";
-    maxVideoPreview?: number;
-  };
-  hideFromLists?: boolean;
-  product: ProductReference;
-  marketingCopy?: RichText;
-  coverImage?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  };
-};
-
-export type Product = {
-  _id: string;
-  _type: "product";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title: string;
-  slug: Slug;
-  workspace?: string;
-  category:
-    | "terrace-awning"
-    | "pergola"
-    | "zip-screen"
-    | "slat-curtain"
-    | "shutter"
-    | "efoil-board"
-    | "efoil-motor"
-    | "accessory";
-  description?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
-    listItem?: "bullet" | "number";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
-  images?: Array<{
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-    _key: string;
-  }>;
-  specifications?: Array<{
-    label?: string;
-    value?: string;
-    _key: string;
-  }>;
-};
-
-export type CatalogRoot = {
-  _id: string;
-  _type: "catalogRoot";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title: string;
-  description?: string;
-  site: SiteReference;
-  slug: Slug;
-  parent?: PageReference;
-  sortOrder?: number;
-  focusKeyphrase?: string;
-  metaTitle: string;
-  metaDescription: string;
-  canonicalUrl?: string;
-  ogTitle?: string;
-  ogDescription?: string;
-  ogImage?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  };
-  socialPreview?: string;
-  structuredData?: {
-    enabled?: boolean;
-    type?: string;
-    article?: {
-      headline?: string;
-      datePublished?: string;
-      dateModified?: string;
-      authorName?: string;
-      authorUrl?: string;
-      publisherName?: string;
-    };
-    product?: {
-      name?: string;
-      description?: string;
-      sku?: string;
-      brand?: string;
-      price?: number;
-      priceCurrency?: string;
-      availability?:
-        | "https://schema.org/InStock"
-        | "https://schema.org/OutOfStock"
-        | "https://schema.org/PreOrder"
-        | "https://schema.org/Discontinued";
-      additionalProperties?: Array<{
-        name?: string;
-        value?: string;
-        _key: string;
-      }>;
-      ratingValue?: number;
-      reviewCount?: number;
-    };
-    faq?: Array<{
-      question: string;
-      answer: string;
-      _key: string;
-    }>;
-    event?: {
-      name?: string;
-      startDate?: string;
-      endDate?: string;
-      locationName?: string;
-      locationAddress?: string;
-      eventAttendanceMode?:
-        | "https://schema.org/OfflineEventAttendanceMode"
-        | "https://schema.org/OnlineEventAttendanceMode"
-        | "https://schema.org/MixedEventAttendanceMode";
-      eventStatus?:
-        | "https://schema.org/EventScheduled"
-        | "https://schema.org/EventCancelled"
-        | "https://schema.org/EventPostponed"
-        | "https://schema.org/EventMovedOnline";
-      organizerName?: string;
-      offerPrice?: number;
-      offerCurrency?: string;
-      offerUrl?: string;
-    };
-    localBusiness?: {
-      name?: string;
-      description?: string;
-      telephone?: string;
-      email?: string;
-      streetAddress?: string;
-      postalCode?: string;
-      addressLocality?: string;
-      addressCountry?: string;
-      geo?: {
-        latitude?: number;
-        longitude?: number;
-      };
-      priceRange?: string;
-      openingHours?: Array<string>;
-    };
-    video?: {
-      name?: string;
-      description?: string;
-      uploadDate?: string;
-      duration?: string;
-      contentUrl?: string;
-      embedUrl?: string;
-      thumbnailUrl?: string;
-    };
-    howTo?: {
-      name?: string;
-      description?: string;
-      totalTime?: string;
-      steps?: Array<{
-        name?: string;
-        text?: string;
-        _key: string;
-      }>;
-    };
-    customJsonLd?: string;
-  };
-  robots?: {
-    noIndex?: boolean;
-    noFollow?: boolean;
-    noArchive?: boolean;
-    noImageIndex?: boolean;
-    maxSnippet?: number;
-    maxImagePreview?: "none" | "standard" | "large";
-    maxVideoPreview?: number;
-  };
-  hideFromLists?: boolean;
-  pagebuilder?: CatalogRootPageBuilder;
-  filterCategories?: Array<string>;
-};
-
-export type ArticlePage = {
-  _id: string;
-  _type: "articlePage";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title: string;
-  description?: string;
-  site: SiteReference;
-  slug: Slug;
-  parent?: ArticleRootReference;
-  sortOrder?: number;
-  focusKeyphrase?: string;
-  metaTitle: string;
-  metaDescription: string;
-  canonicalUrl?: string;
-  ogTitle?: string;
-  ogDescription?: string;
-  ogImage?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  };
-  socialPreview?: string;
-  structuredData?: {
-    enabled?: boolean;
-    type?: string;
-    article?: {
-      headline?: string;
-      datePublished?: string;
-      dateModified?: string;
-      authorName?: string;
-      authorUrl?: string;
-      publisherName?: string;
-    };
-    product?: {
-      name?: string;
-      description?: string;
-      sku?: string;
-      brand?: string;
-      price?: number;
-      priceCurrency?: string;
-      availability?:
-        | "https://schema.org/InStock"
-        | "https://schema.org/OutOfStock"
-        | "https://schema.org/PreOrder"
-        | "https://schema.org/Discontinued";
-      additionalProperties?: Array<{
-        name?: string;
-        value?: string;
-        _key: string;
-      }>;
-      ratingValue?: number;
-      reviewCount?: number;
-    };
-    faq?: Array<{
-      question: string;
-      answer: string;
-      _key: string;
-    }>;
-    event?: {
-      name?: string;
-      startDate?: string;
-      endDate?: string;
-      locationName?: string;
-      locationAddress?: string;
-      eventAttendanceMode?:
-        | "https://schema.org/OfflineEventAttendanceMode"
-        | "https://schema.org/OnlineEventAttendanceMode"
-        | "https://schema.org/MixedEventAttendanceMode";
-      eventStatus?:
-        | "https://schema.org/EventScheduled"
-        | "https://schema.org/EventCancelled"
-        | "https://schema.org/EventPostponed"
-        | "https://schema.org/EventMovedOnline";
-      organizerName?: string;
-      offerPrice?: number;
-      offerCurrency?: string;
-      offerUrl?: string;
-    };
-    localBusiness?: {
-      name?: string;
-      description?: string;
-      telephone?: string;
-      email?: string;
-      streetAddress?: string;
-      postalCode?: string;
-      addressLocality?: string;
-      addressCountry?: string;
-      geo?: {
-        latitude?: number;
-        longitude?: number;
-      };
-      priceRange?: string;
-      openingHours?: Array<string>;
-    };
-    video?: {
-      name?: string;
-      description?: string;
-      uploadDate?: string;
-      duration?: string;
-      contentUrl?: string;
-      embedUrl?: string;
-      thumbnailUrl?: string;
-    };
-    howTo?: {
-      name?: string;
-      description?: string;
-      totalTime?: string;
-      steps?: Array<{
-        name?: string;
-        text?: string;
-        _key: string;
-      }>;
-    };
-    customJsonLd?: string;
-  };
-  robots?: {
-    noIndex?: boolean;
-    noFollow?: boolean;
-    noArchive?: boolean;
-    noImageIndex?: boolean;
-    maxSnippet?: number;
-    maxImagePreview?: "none" | "standard" | "large";
-    maxVideoPreview?: number;
-  };
-  hideFromLists?: boolean;
-  excerpt?: string;
-  coverImage?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  };
-  authors: Array<
-    {
-      _key: string;
-    } & AuthorReference
-  >;
-  category?: string;
-  publishedAt?: string;
-  body?: RichText;
-};
-
-export type ArticleRoot = {
-  _id: string;
-  _type: "articleRoot";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title: string;
-  description?: string;
-  site: SiteReference;
-  slug: Slug;
-  parent?: PageReference;
-  sortOrder?: number;
-  focusKeyphrase?: string;
-  metaTitle: string;
-  metaDescription: string;
-  canonicalUrl?: string;
-  ogTitle?: string;
-  ogDescription?: string;
-  ogImage?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  };
-  socialPreview?: string;
-  structuredData?: {
-    enabled?: boolean;
-    type?: string;
-    article?: {
-      headline?: string;
-      datePublished?: string;
-      dateModified?: string;
-      authorName?: string;
-      authorUrl?: string;
-      publisherName?: string;
-    };
-    product?: {
-      name?: string;
-      description?: string;
-      sku?: string;
-      brand?: string;
-      price?: number;
-      priceCurrency?: string;
-      availability?:
-        | "https://schema.org/InStock"
-        | "https://schema.org/OutOfStock"
-        | "https://schema.org/PreOrder"
-        | "https://schema.org/Discontinued";
-      additionalProperties?: Array<{
-        name?: string;
-        value?: string;
-        _key: string;
-      }>;
-      ratingValue?: number;
-      reviewCount?: number;
-    };
-    faq?: Array<{
-      question: string;
-      answer: string;
-      _key: string;
-    }>;
-    event?: {
-      name?: string;
-      startDate?: string;
-      endDate?: string;
-      locationName?: string;
-      locationAddress?: string;
-      eventAttendanceMode?:
-        | "https://schema.org/OfflineEventAttendanceMode"
-        | "https://schema.org/OnlineEventAttendanceMode"
-        | "https://schema.org/MixedEventAttendanceMode";
-      eventStatus?:
-        | "https://schema.org/EventScheduled"
-        | "https://schema.org/EventCancelled"
-        | "https://schema.org/EventPostponed"
-        | "https://schema.org/EventMovedOnline";
-      organizerName?: string;
-      offerPrice?: number;
-      offerCurrency?: string;
-      offerUrl?: string;
-    };
-    localBusiness?: {
-      name?: string;
-      description?: string;
-      telephone?: string;
-      email?: string;
-      streetAddress?: string;
-      postalCode?: string;
-      addressLocality?: string;
-      addressCountry?: string;
-      geo?: {
-        latitude?: number;
-        longitude?: number;
-      };
-      priceRange?: string;
-      openingHours?: Array<string>;
-    };
-    video?: {
-      name?: string;
-      description?: string;
-      uploadDate?: string;
-      duration?: string;
-      contentUrl?: string;
-      embedUrl?: string;
-      thumbnailUrl?: string;
-    };
-    howTo?: {
-      name?: string;
-      description?: string;
-      totalTime?: string;
-      steps?: Array<{
-        name?: string;
-        text?: string;
-        _key: string;
-      }>;
-    };
-    customJsonLd?: string;
-  };
-  robots?: {
-    noIndex?: boolean;
-    noFollow?: boolean;
-    noArchive?: boolean;
-    noImageIndex?: boolean;
-    maxSnippet?: number;
-    maxImagePreview?: "none" | "standard" | "large";
-    maxVideoPreview?: number;
-  };
-  hideFromLists?: boolean;
-  pagebuilder?: ArticleRootPageBuilder;
-  postsPerPage?: number;
-  displayFeaturedArticles?: "yes" | "no";
-  featuredArticlesCount?: "1" | "2" | "3";
-  categories?: Array<string>;
-};
-
 export type Page = {
   _id: string;
   _type: "page";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
+  internalRole?: string;
+  blueprintKey?: string;
   title: string;
   description?: string;
   site: SiteReference;
@@ -1481,16 +1052,85 @@ export type Page = {
   };
   hideFromLists?: boolean;
   pagebuilder?: PageBuilder;
+  dataRefs?: {
+    product?: ProductReference;
+    author?: AuthorReference;
+  };
+  filterCategories?: Array<string>;
+  publishedAt?: string;
+};
+
+export type Author = {
+  _id: string;
+  _type: "author";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name: string;
+  position?: string;
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  bio?: string;
+};
+
+export type Product = {
+  _id: string;
+  _type: "product";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title: string;
+  slug: Slug;
+  workspace?: string;
+  category:
+    | "terrace-awning"
+    | "pergola"
+    | "zip-screen"
+    | "slat-curtain"
+    | "shutter"
+    | "efoil-board"
+    | "efoil-motor"
+    | "accessory";
+  description?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  images?: Array<{
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }>;
+  specifications?: Array<{
+    label?: string;
+    value?: string;
+    _key: string;
+  }>;
 };
 
 export type LucideIcon = string;
-
-export type DocumentationReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "documentation";
-};
 
 export type Site = {
   _id: string;
@@ -1922,35 +1562,35 @@ export type AllSanitySchemaTypes =
   | DeploymentMeta
   | Button
   | RichText
-  | ArticlePageReference
-  | ArticleRootReference
   | PageReference
   | ProductReference
   | VideoReference
   | CustomUrl
+  | StudioSettings
+  | GlobalRobots
+  | GlobalStructuredData
+  | SanityImageCrop
+  | SanityImageHotspot
+  | DocumentationReference
+  | GlobalCompliance
+  | Slug
+  | GlobalOrganization
+  | GlobalIntegrations
+  | GlobalSeo
+  | GlobalTheme
   | AuthorReference
   | SiteReference
   | Article
-  | SanityImageCrop
-  | SanityImageHotspot
-  | Author
   | Faq
   | Video
-  | Slug
   | Documentation
   | Navbar
   | Footer
   | Redirect
-  | CatalogRootReference
-  | ProductPageReference
-  | ProductPage
-  | Product
-  | CatalogRoot
-  | ArticlePage
-  | ArticleRoot
   | Page
+  | Author
+  | Product
   | LucideIcon
-  | DocumentationReference
   | Site
   | SanityAssistInstructionTask
   | SanityAssistTaskStatus
@@ -1978,30 +1618,6 @@ export type AllSanitySchemaTypes =
 // Variable: queryGenericPageOGData
 // Query: *[defined(slug.current) && _id == $id][0]{      _id,  _type,  "title": select(    defined(ogTitle) => ogTitle,    defined(seoTitle) => seoTitle,    title  ),  "description": select(    defined(ogDescription) => ogDescription,    defined(seoDescription) => seoDescription,    description  ),  "ogImage": ogImage.asset->url + "?w=1200&h=630&dpr=2&fit=max",  "seoImage": seoImage.asset->url + "?w=1200&h=630&dpr=2&fit=max"  }
 export type QueryGenericPageOGDataResult =
-  | {
-      _id: string;
-      _type: "articlePage";
-      title: string;
-      description: string | null;
-      ogImage: string | null;
-      seoImage: null;
-    }
-  | {
-      _id: string;
-      _type: "articleRoot";
-      title: string;
-      description: string | null;
-      ogImage: string | null;
-      seoImage: null;
-    }
-  | {
-      _id: string;
-      _type: "catalogRoot";
-      title: string;
-      description: string | null;
-      ogImage: string | null;
-      seoImage: null;
-    }
   | {
       _id: string;
       _type: "page";
@@ -2041,14 +1657,6 @@ export type QueryGenericPageOGDataResult =
         _key: string;
       }> | null;
       ogImage: null;
-      seoImage: null;
-    }
-  | {
-      _id: string;
-      _type: "productPage";
-      title: string;
-      description: string | null;
-      ogImage: string | null;
       seoImage: null;
     }
   | {
@@ -2496,62 +2104,75 @@ export type QuerySiteDomainsResult = Array<{
 // Source: ../../packages/sanity/src/query.ts
 // Variable: queryPageBySlug
 // Query: *[    _type in ["page","articleRoot","articlePage","catalogRoot","productPage"]    && site._ref == $siteId    && slug.current == $slug  ][0]{    _id,    _type,    "slug": slug.current,    title,    description,    seoTitle,    seoDescription,    seoNoIndex,      pagebuilder[]{    ...,    _type,      _type == "cta" => {    ...,      richText[]{    ...,    _type == "block" => {      ...,        markDefs[]{    ...,      ...customLink{    openInNewTab,    "href": select(      type == "internal" => internal->slug.current,      type == "external" => external,      "#"    ),  }  }    },    _type == "image" => {        "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  },      "caption": caption    }  },      buttons[]{    text,    variant,    _key,    _type,    "openInNewTab": url.openInNewTab,    "href": select(      url.type == "internal" => url.internal->slug.current,      url.type == "external" => url.external,      url.href    ),  },  },      _type == "articleFeed" => {    ...,    "articles": articles[]->{        _type,  _id,  title,  description,  "slug":slug.current,  orderRank,    image {      "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  }  },  publishedAt,    authors[0]->{    _id,    name,    position,      image {      "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  }  }  }    },    "filteredArticles": *[      _type == "articlePage"      && site._ref == ^.^.site._ref      && !(_id in path("drafts.**"))    ] | order(publishedAt desc) [0...12] {        _type,  _id,  title,  description,  "slug":slug.current,  orderRank,    image {      "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  }  },  publishedAt,    authors[0]->{    _id,    name,    position,      image {      "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  }  }  }    }  },      _type == "hero" => {    ...,      image {      "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  }  },      buttons[]{    text,    variant,    _key,    _type,    "openInNewTab": url.openInNewTab,    "href": select(      url.type == "internal" => url.internal->slug.current,      url.type == "external" => url.external,      url.href    ),  },      richText[]{    ...,    _type == "block" => {      ...,        markDefs[]{    ...,      ...customLink{    openInNewTab,    "href": select(      type == "internal" => internal->slug.current,      type == "external" => external,      "#"    ),  }  }    },    _type == "image" => {        "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  },      "caption": caption    }  }  },      _type == "faqAccordion" => {    ...,      "faqs": array::compact(faqs[]->{    title,    _id,    _type,      richText[]{    ...,    _type == "block" => {      ...,        markDefs[]{    ...,      ...customLink{    openInNewTab,    "href": select(      type == "internal" => internal->slug.current,      type == "external" => external,      "#"    ),  }  }    },    _type == "image" => {        "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  },      "caption": caption    }  }  }),    link{      ...,      "openInNewTab": url.openInNewTab,      "href": select(        url.type == "internal" => url.internal->slug.current,        url.type == "external" => url.external,        url.href      )    }  },      _type == "featureCardsIcon" => {    ...,      richText[]{    ...,    _type == "block" => {      ...,        markDefs[]{    ...,      ...customLink{    openInNewTab,    "href": select(      type == "internal" => internal->slug.current,      type == "external" => external,      "#"    ),  }  }    },    _type == "image" => {        "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  },      "caption": caption    }  },    "cards": array::compact(cards[]{      ...,        richText[]{    ...,    _type == "block" => {      ...,        markDefs[]{    ...,      ...customLink{    openInNewTab,    "href": select(      type == "internal" => internal->slug.current,      type == "external" => external,      "#"    ),  }  }    },    _type == "image" => {        "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  },      "caption": caption    }  },    })  },      _type == "subscribeNewsletter" => {    ...,    "subTitle": subTitle[]{      ...,        markDefs[]{    ...,      ...customLink{    openInNewTab,    "href": select(      type == "internal" => internal->slug.current,      type == "external" => external,      "#"    ),  }  }    },    "helperText": helperText[]{      ...,        markDefs[]{    ...,      ...customLink{    openInNewTab,    "href": select(      type == "internal" => internal->slug.current,      type == "external" => external,      "#"    ),  }  }    }  },      _type == "imageLinkCards" => {    ...,      richText[]{    ...,    _type == "block" => {      ...,        markDefs[]{    ...,      ...customLink{    openInNewTab,    "href": select(      type == "internal" => internal->slug.current,      type == "external" => external,      "#"    ),  }  }    },    _type == "image" => {        "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  },      "caption": caption    }  },      buttons[]{    text,    variant,    _key,    _type,    "openInNewTab": url.openInNewTab,    "href": select(      url.type == "internal" => url.internal->slug.current,      url.type == "external" => url.external,      url.href    ),  },    "cards": array::compact(cards[]{      ...,      "openInNewTab": url.openInNewTab,      "href": select(        url.type == "internal" => url.internal->slug.current,        url.type == "external" => url.external,        url.href      ),        image {      "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  }  },    })  },      _type == "richTextBlock" => {    ...,      richText[]{    ...,    _type == "block" => {      ...,        markDefs[]{    ...,      ...customLink{    openInNewTab,    "href": select(      type == "internal" => internal->slug.current,      type == "external" => external,      "#"    ),  }  }    },    _type == "image" => {        "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  },      "caption": caption    }  }  },      _type == "productGrid" => {    ...,      richText[]{    ...,    _type == "block" => {      ...,        markDefs[]{    ...,      ...customLink{    openInNewTab,    "href": select(      type == "internal" => internal->slug.current,      type == "external" => external,      "#"    ),  }  }    },    _type == "image" => {        "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  },      "caption": caption    }  },      buttons[]{    text,    variant,    _key,    _type,    "openInNewTab": url.openInNewTab,    "href": select(      url.type == "internal" => url.internal->slug.current,      url.type == "external" => url.external,      url.href    ),  }  }  },    // ── articleRoot config ───────────────────────────────────    postsPerPage,    "displayFeaturedArticles": displayFeaturedArticles == "yes",    featuredArticlesCount,    categories,    // ── catalogRoot config ──────────────────────────────────    filterCategories,    // ── articlePage fields ──────────────────────────────────    excerpt,    publishedAt,    category,      authors[0]->{    _id,    name,    position,      image {      "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  }  }  },    "coverImage": coverImage {   "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  } },      "richText": body[]{    ...,    _type == "block" => {      ...,        markDefs[]{    ...,      ...customLink{    openInNewTab,    "href": select(      type == "internal" => internal->slug.current,      type == "external" => external,      "#"    ),  }  }    },    _type == "image" => {        "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  },      "caption": caption    }  },    // ── productPage fields ─────────────────────────────────    marketingCopy,    product->{      _id,      title,      "slug": slug.current,      description,      category,      "images": images[]{   "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  } },      specifications[]{ label, value }    },  }
-export type QueryPageBySlugResult =
-  | {
-      _id: string;
-      _type: "articlePage";
-      slug: string;
-      title: string;
-      description: string | null;
-      seoTitle: null;
-      seoDescription: null;
-      seoNoIndex: null;
-      pagebuilder: null;
-      postsPerPage: null;
-      displayFeaturedArticles: false;
-      featuredArticlesCount: null;
-      categories: null;
-      filterCategories: null;
-      excerpt: string | null;
-      publishedAt: string | null;
-      category: string | null;
-      authors: {
-        _id: string;
-        name: string;
-        position: string | null;
-        image: {
-          id: string | null;
-          preview: string | null;
-          alt: string | "untitled";
-          hotspot: {
-            x: number;
-            y: number;
-          } | null;
-          crop: {
-            bottom: number;
-            left: number;
-            right: number;
-            top: number;
-          } | null;
+export type QueryPageBySlugResult = {
+  _id: string;
+  _type: "page";
+  slug: string;
+  title: string;
+  description: string | null;
+  seoTitle: null;
+  seoDescription: null;
+  seoNoIndex: null;
+  pagebuilder: Array<
+    | {
+        _key: string;
+        _type: "cta";
+        eyebrow?: string;
+        title?: string;
+        richText: Array<{
+          children?: Array<{
+            marks?: Array<string>;
+            text?: string;
+            _type: "span";
+            _key: string;
+          }>;
+          style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
+          listItem?: "bullet" | "number";
+          markDefs: Array<
+            | {
+                customLink?: CustomUrl;
+                _type: "customLink";
+                _key: string;
+                openInNewTab: boolean | null;
+                href: string | "#" | null;
+              }
+            | {
+                customLink?: CustomUrl;
+                _type: "customLink";
+                _key: string;
+              }
+          > | null;
+          level?: number;
+          _type: "block";
+          _key: string;
+        }> | null;
+        buttons: Array<{
+          text: string | null;
+          variant: "default" | "link" | "outline" | "secondary" | null;
+          _key: string;
+          _type: "button";
+          openInNewTab: boolean | null;
+          href: string | null;
+        }> | null;
+      }
+    | {
+        _key: string;
+        _type: "faqAccordion";
+        eyebrow?: string;
+        title: string;
+        subtitle?: string;
+        link: {
+          title?: string;
+          description?: string;
+          url?: CustomUrl;
+          openInNewTab: boolean | null;
+          href: string | null;
         } | null;
-      } | null;
-      coverImage: {
-        id: string | null;
-        preview: string | null;
-        alt: string | "untitled";
-        hotspot: {
-          x: number;
-          y: number;
-        } | null;
-        crop: {
-          bottom: number;
-          left: number;
-          right: number;
-          top: number;
-        } | null;
-      } | null;
-      richText: Array<
-        | {
+        faqs: Array<{
+          title: string;
+          _id: string;
+          _type: "faq";
+          richText: Array<{
             children?: Array<{
               marks?: Array<string>;
               text?: string;
@@ -2577,1189 +2198,108 @@ export type QueryPageBySlugResult =
             level?: number;
             _type: "block";
             _key: string;
-          }
-        | {
-            asset?: SanityImageAssetReference;
-            media?: unknown;
-            hotspot: {
-              x: number;
-              y: number;
-            } | null;
-            crop: {
-              bottom: number;
-              left: number;
-              right: number;
-              top: number;
-            } | null;
-            caption: string | null;
-            _type: "image";
-            _key: string;
-            id: string | null;
-            preview: string | null;
-            alt: string | "untitled";
-          }
-      > | null;
-      marketingCopy: null;
-      product: null;
-    }
-  | {
-      _id: string;
-      _type: "articleRoot";
-      slug: string;
-      title: string;
-      description: string | null;
-      seoTitle: null;
-      seoDescription: null;
-      seoNoIndex: null;
-      pagebuilder: Array<
-        | {
-            _key: string;
-            _type: "articleFeed";
-            eyebrow?: string;
-            title?: string;
-            layout?: "grid" | "list" | "magazine";
-            columns?: "2" | "3" | "4";
-            sortOrder?: "publishedAt_asc" | "publishedAt_desc";
-            showCategories?: boolean;
-            showDate?: boolean;
-            showAuthor?: boolean;
-            showExcerpt?: boolean;
-            articles: null;
-            filteredArticles: Array<{
-              _type: "articlePage";
-              _id: string;
-              title: string;
-              description: string | null;
-              slug: string;
-              orderRank: null;
-              image: null;
-              publishedAt: string | null;
-              authors: {
-                _id: string;
-                name: string;
-                position: string | null;
-                image: {
-                  id: string | null;
-                  preview: string | null;
-                  alt: string | "untitled";
-                  hotspot: {
-                    x: number;
-                    y: number;
-                  } | null;
-                  crop: {
-                    bottom: number;
-                    left: number;
-                    right: number;
-                    top: number;
-                  } | null;
-                } | null;
-              } | null;
-            }>;
-          }
-        | {
-            _key: string;
-            _type: "cta";
-            eyebrow?: string;
-            title?: string;
-            richText: Array<{
-              children?: Array<{
-                marks?: Array<string>;
-                text?: string;
-                _type: "span";
-                _key: string;
-              }>;
-              style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
-              listItem?: "bullet" | "number";
-              markDefs: Array<
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                    openInNewTab: boolean | null;
-                    href: string | "#" | null;
-                  }
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                  }
-              > | null;
-              level?: number;
-              _type: "block";
-              _key: string;
-            }> | null;
-            buttons: Array<{
-              text: string | null;
-              variant: "default" | "link" | "outline" | "secondary" | null;
-              _key: string;
-              _type: "button";
-              openInNewTab: boolean | null;
-              href: string | null;
-            }> | null;
-          }
-        | {
-            _key: string;
-            _type: "faqAccordion";
-            eyebrow?: string;
-            title: string;
-            subtitle?: string;
-            link: {
-              title?: string;
-              description?: string;
-              url?: CustomUrl;
-              openInNewTab: boolean | null;
-              href: string | null;
-            } | null;
-            faqs: Array<{
-              title: string;
-              _id: string;
-              _type: "faq";
-              richText: Array<{
-                children?: Array<{
-                  marks?: Array<string>;
-                  text?: string;
-                  _type: "span";
-                  _key: string;
-                }>;
-                style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
-                listItem?: "bullet" | "number";
-                markDefs: Array<
-                  | {
-                      customLink?: CustomUrl;
-                      _type: "customLink";
-                      _key: string;
-                      openInNewTab: boolean | null;
-                      href: string | "#" | null;
-                    }
-                  | {
-                      customLink?: CustomUrl;
-                      _type: "customLink";
-                      _key: string;
-                    }
-                > | null;
-                level?: number;
-                _type: "block";
-                _key: string;
-              }> | null;
-            }>;
-          }
-        | {
-            _key: string;
-            _type: "hero";
-            badge?: string;
-            title?: string;
-            richText: Array<{
-              children?: Array<{
-                marks?: Array<string>;
-                text?: string;
-                _type: "span";
-                _key: string;
-              }>;
-              style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
-              listItem?: "bullet" | "number";
-              markDefs: Array<
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                    openInNewTab: boolean | null;
-                    href: string | "#" | null;
-                  }
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                  }
-              > | null;
-              level?: number;
-              _type: "block";
-              _key: string;
-            }> | null;
-            image: {
-              id: string | null;
-              preview: string | null;
-              alt: string | "untitled";
-              hotspot: {
-                x: number;
-                y: number;
-              } | null;
-              crop: {
-                bottom: number;
-                left: number;
-                right: number;
-                top: number;
-              } | null;
-            } | null;
-            buttons: Array<{
-              text: string | null;
-              variant: "default" | "link" | "outline" | "secondary" | null;
-              _key: string;
-              _type: "button";
-              openInNewTab: boolean | null;
-              href: string | null;
-            }> | null;
-          }
-        | {
-            _key: string;
-            _type: "richTextBlock";
-            eyebrow?: string;
-            title?: string;
-            richText: Array<
-              | {
-                  children?: Array<{
-                    marks?: Array<string>;
-                    text?: string;
-                    _type: "span";
-                    _key: string;
-                  }>;
-                  style?:
-                    | "h2"
-                    | "h3"
-                    | "h4"
-                    | "h5"
-                    | "h6"
-                    | "inline"
-                    | "normal";
-                  listItem?: "bullet" | "number";
-                  markDefs: Array<
-                    | {
-                        customLink?: CustomUrl;
-                        _type: "customLink";
-                        _key: string;
-                        openInNewTab: boolean | null;
-                        href: string | "#" | null;
-                      }
-                    | {
-                        customLink?: CustomUrl;
-                        _type: "customLink";
-                        _key: string;
-                      }
-                  > | null;
-                  level?: number;
-                  _type: "block";
-                  _key: string;
-                }
-              | {
-                  asset?: SanityImageAssetReference;
-                  media?: unknown;
-                  hotspot: {
-                    x: number;
-                    y: number;
-                  } | null;
-                  crop: {
-                    bottom: number;
-                    left: number;
-                    right: number;
-                    top: number;
-                  } | null;
-                  caption: string | null;
-                  _type: "image";
-                  _key: string;
-                  id: string | null;
-                  preview: string | null;
-                  alt: string | "untitled";
-                }
-            > | null;
-          }
-        | {
-            _key: string;
-            _type: "subscribeNewsletter";
-            title?: string;
-            subTitle: Array<{
-              children?: Array<{
-                marks?: Array<string>;
-                text?: string;
-                _type: "span";
-                _key: string;
-              }>;
-              style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
-              listItem?: "bullet" | "number";
-              markDefs: Array<
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                    openInNewTab: boolean | null;
-                    href: string | "#" | null;
-                  }
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                  }
-              > | null;
-              level?: number;
-              _type: "block";
-              _key: string;
-            }> | null;
-            helperText: Array<{
-              children?: Array<{
-                marks?: Array<string>;
-                text?: string;
-                _type: "span";
-                _key: string;
-              }>;
-              style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
-              listItem?: "bullet" | "number";
-              markDefs: Array<
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                    openInNewTab: boolean | null;
-                    href: string | "#" | null;
-                  }
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                  }
-              > | null;
-              level?: number;
-              _type: "block";
-              _key: string;
-            }> | null;
-          }
-      > | null;
-      postsPerPage: number | null;
-      displayFeaturedArticles: false | true;
-      featuredArticlesCount: "1" | "2" | "3" | null;
-      categories: Array<string> | null;
-      filterCategories: null;
-      excerpt: null;
-      publishedAt: null;
-      category: null;
-      authors: null;
-      coverImage: null;
-      richText: null;
-      marketingCopy: null;
-      product: null;
-    }
-  | {
-      _id: string;
-      _type: "catalogRoot";
-      slug: string;
-      title: string;
-      description: string | null;
-      seoTitle: null;
-      seoDescription: null;
-      seoNoIndex: null;
-      pagebuilder: Array<
-        | {
-            _key: string;
-            _type: "cta";
-            eyebrow?: string;
-            title?: string;
-            richText: Array<{
-              children?: Array<{
-                marks?: Array<string>;
-                text?: string;
-                _type: "span";
-                _key: string;
-              }>;
-              style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
-              listItem?: "bullet" | "number";
-              markDefs: Array<
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                    openInNewTab: boolean | null;
-                    href: string | "#" | null;
-                  }
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                  }
-              > | null;
-              level?: number;
-              _type: "block";
-              _key: string;
-            }> | null;
-            buttons: Array<{
-              text: string | null;
-              variant: "default" | "link" | "outline" | "secondary" | null;
-              _key: string;
-              _type: "button";
-              openInNewTab: boolean | null;
-              href: string | null;
-            }> | null;
-          }
-        | {
-            _key: string;
-            _type: "featureCardsIcon";
-            eyebrow?: string;
-            title?: string;
-            richText: Array<{
-              children?: Array<{
-                marks?: Array<string>;
-                text?: string;
-                _type: "span";
-                _key: string;
-              }>;
-              style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
-              listItem?: "bullet" | "number";
-              markDefs: Array<
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                    openInNewTab: boolean | null;
-                    href: string | "#" | null;
-                  }
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                  }
-              > | null;
-              level?: number;
-              _type: "block";
-              _key: string;
-            }> | null;
-            cards: Array<{
-              icon?: LucideIcon;
-              title?: string;
-              richText: Array<{
-                children?: Array<{
-                  marks?: Array<string>;
-                  text?: string;
-                  _type: "span";
-                  _key: string;
-                }>;
-                style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
-                listItem?: "bullet" | "number";
-                markDefs: Array<
-                  | {
-                      customLink?: CustomUrl;
-                      _type: "customLink";
-                      _key: string;
-                      openInNewTab: boolean | null;
-                      href: string | "#" | null;
-                    }
-                  | {
-                      customLink?: CustomUrl;
-                      _type: "customLink";
-                      _key: string;
-                    }
-                > | null;
-                level?: number;
-                _type: "block";
-                _key: string;
-              }> | null;
-              _type: "featureCardIcon";
-              _key: string;
-            }> | null;
-          }
-        | {
-            _key: string;
-            _type: "hero";
-            badge?: string;
-            title?: string;
-            richText: Array<{
-              children?: Array<{
-                marks?: Array<string>;
-                text?: string;
-                _type: "span";
-                _key: string;
-              }>;
-              style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
-              listItem?: "bullet" | "number";
-              markDefs: Array<
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                    openInNewTab: boolean | null;
-                    href: string | "#" | null;
-                  }
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                  }
-              > | null;
-              level?: number;
-              _type: "block";
-              _key: string;
-            }> | null;
-            image: {
-              id: string | null;
-              preview: string | null;
-              alt: string | "untitled";
-              hotspot: {
-                x: number;
-                y: number;
-              } | null;
-              crop: {
-                bottom: number;
-                left: number;
-                right: number;
-                top: number;
-              } | null;
-            } | null;
-            buttons: Array<{
-              text: string | null;
-              variant: "default" | "link" | "outline" | "secondary" | null;
-              _key: string;
-              _type: "button";
-              openInNewTab: boolean | null;
-              href: string | null;
-            }> | null;
-          }
-        | {
-            _key: string;
-            _type: "imageLinkCards";
-            eyebrow?: string;
-            title: string;
-            richText: Array<{
-              children?: Array<{
-                marks?: Array<string>;
-                text?: string;
-                _type: "span";
-                _key: string;
-              }>;
-              style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
-              listItem?: "bullet" | "number";
-              markDefs: Array<
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                    openInNewTab: boolean | null;
-                    href: string | "#" | null;
-                  }
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                  }
-              > | null;
-              level?: number;
-              _type: "block";
-              _key: string;
-            }> | null;
-            buttons: Array<{
-              text: string | null;
-              variant: "default" | "link" | "outline" | "secondary" | null;
-              _key: string;
-              _type: "button";
-              openInNewTab: boolean | null;
-              href: string | null;
-            }> | null;
-            cards: Array<{
-              title: string;
-              description: string;
-              image: {
-                id: string | null;
-                preview: string | null;
-                alt: string | "untitled";
-                hotspot: {
-                  x: number;
-                  y: number;
-                } | null;
-                crop: {
-                  bottom: number;
-                  left: number;
-                  right: number;
-                  top: number;
-                } | null;
-              } | null;
-              url?: CustomUrl;
-              _type: "imageLinkCard";
-              _key: string;
-              openInNewTab: boolean | null;
-              href: string | null;
-            }> | null;
-          }
-        | {
-            _key: string;
-            _type: "productGrid";
-            eyebrow?: string;
-            title?: string;
-            columns?: "2" | "3" | "4";
-            sortOrder?: "default" | "title_asc" | "title_desc";
-            showFilters?: boolean;
-            showCategoryTabs?: boolean;
-            showProductCount?: boolean;
-            showPrice?: boolean;
-            richText: null;
-            buttons: null;
-          }
-        | {
-            _key: string;
-            _type: "richTextBlock";
-            eyebrow?: string;
-            title?: string;
-            richText: Array<
-              | {
-                  children?: Array<{
-                    marks?: Array<string>;
-                    text?: string;
-                    _type: "span";
-                    _key: string;
-                  }>;
-                  style?:
-                    | "h2"
-                    | "h3"
-                    | "h4"
-                    | "h5"
-                    | "h6"
-                    | "inline"
-                    | "normal";
-                  listItem?: "bullet" | "number";
-                  markDefs: Array<
-                    | {
-                        customLink?: CustomUrl;
-                        _type: "customLink";
-                        _key: string;
-                        openInNewTab: boolean | null;
-                        href: string | "#" | null;
-                      }
-                    | {
-                        customLink?: CustomUrl;
-                        _type: "customLink";
-                        _key: string;
-                      }
-                  > | null;
-                  level?: number;
-                  _type: "block";
-                  _key: string;
-                }
-              | {
-                  asset?: SanityImageAssetReference;
-                  media?: unknown;
-                  hotspot: {
-                    x: number;
-                    y: number;
-                  } | null;
-                  crop: {
-                    bottom: number;
-                    left: number;
-                    right: number;
-                    top: number;
-                  } | null;
-                  caption: string | null;
-                  _type: "image";
-                  _key: string;
-                  id: string | null;
-                  preview: string | null;
-                  alt: string | "untitled";
-                }
-            > | null;
-          }
-      > | null;
-      postsPerPage: null;
-      displayFeaturedArticles: false;
-      featuredArticlesCount: null;
-      categories: null;
-      filterCategories: Array<string> | null;
-      excerpt: null;
-      publishedAt: null;
-      category: null;
-      authors: null;
-      coverImage: null;
-      richText: null;
-      marketingCopy: null;
-      product: null;
-    }
-  | {
-      _id: string;
-      _type: "page";
-      slug: string;
-      title: string;
-      description: string | null;
-      seoTitle: null;
-      seoDescription: null;
-      seoNoIndex: null;
-      pagebuilder: Array<
-        | {
-            _key: string;
-            _type: "cta";
-            eyebrow?: string;
-            title?: string;
-            richText: Array<{
-              children?: Array<{
-                marks?: Array<string>;
-                text?: string;
-                _type: "span";
-                _key: string;
-              }>;
-              style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
-              listItem?: "bullet" | "number";
-              markDefs: Array<
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                    openInNewTab: boolean | null;
-                    href: string | "#" | null;
-                  }
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                  }
-              > | null;
-              level?: number;
-              _type: "block";
-              _key: string;
-            }> | null;
-            buttons: Array<{
-              text: string | null;
-              variant: "default" | "link" | "outline" | "secondary" | null;
-              _key: string;
-              _type: "button";
-              openInNewTab: boolean | null;
-              href: string | null;
-            }> | null;
-          }
-        | {
-            _key: string;
-            _type: "faqAccordion";
-            eyebrow?: string;
-            title: string;
-            subtitle?: string;
-            link: {
-              title?: string;
-              description?: string;
-              url?: CustomUrl;
-              openInNewTab: boolean | null;
-              href: string | null;
-            } | null;
-            faqs: Array<{
-              title: string;
-              _id: string;
-              _type: "faq";
-              richText: Array<{
-                children?: Array<{
-                  marks?: Array<string>;
-                  text?: string;
-                  _type: "span";
-                  _key: string;
-                }>;
-                style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
-                listItem?: "bullet" | "number";
-                markDefs: Array<
-                  | {
-                      customLink?: CustomUrl;
-                      _type: "customLink";
-                      _key: string;
-                      openInNewTab: boolean | null;
-                      href: string | "#" | null;
-                    }
-                  | {
-                      customLink?: CustomUrl;
-                      _type: "customLink";
-                      _key: string;
-                    }
-                > | null;
-                level?: number;
-                _type: "block";
-                _key: string;
-              }> | null;
-            }>;
-          }
-        | {
-            _key: string;
-            _type: "featureCardsIcon";
-            eyebrow?: string;
-            title?: string;
-            richText: Array<{
-              children?: Array<{
-                marks?: Array<string>;
-                text?: string;
-                _type: "span";
-                _key: string;
-              }>;
-              style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
-              listItem?: "bullet" | "number";
-              markDefs: Array<
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                    openInNewTab: boolean | null;
-                    href: string | "#" | null;
-                  }
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                  }
-              > | null;
-              level?: number;
-              _type: "block";
-              _key: string;
-            }> | null;
-            cards: Array<{
-              icon?: LucideIcon;
-              title?: string;
-              richText: Array<{
-                children?: Array<{
-                  marks?: Array<string>;
-                  text?: string;
-                  _type: "span";
-                  _key: string;
-                }>;
-                style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
-                listItem?: "bullet" | "number";
-                markDefs: Array<
-                  | {
-                      customLink?: CustomUrl;
-                      _type: "customLink";
-                      _key: string;
-                      openInNewTab: boolean | null;
-                      href: string | "#" | null;
-                    }
-                  | {
-                      customLink?: CustomUrl;
-                      _type: "customLink";
-                      _key: string;
-                    }
-                > | null;
-                level?: number;
-                _type: "block";
-                _key: string;
-              }> | null;
-              _type: "featureCardIcon";
-              _key: string;
-            }> | null;
-          }
-        | {
-            _key: string;
-            _type: "hero";
-            badge?: string;
-            title?: string;
-            richText: Array<{
-              children?: Array<{
-                marks?: Array<string>;
-                text?: string;
-                _type: "span";
-                _key: string;
-              }>;
-              style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
-              listItem?: "bullet" | "number";
-              markDefs: Array<
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                    openInNewTab: boolean | null;
-                    href: string | "#" | null;
-                  }
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                  }
-              > | null;
-              level?: number;
-              _type: "block";
-              _key: string;
-            }> | null;
-            image: {
-              id: string | null;
-              preview: string | null;
-              alt: string | "untitled";
-              hotspot: {
-                x: number;
-                y: number;
-              } | null;
-              crop: {
-                bottom: number;
-                left: number;
-                right: number;
-                top: number;
-              } | null;
-            } | null;
-            buttons: Array<{
-              text: string | null;
-              variant: "default" | "link" | "outline" | "secondary" | null;
-              _key: string;
-              _type: "button";
-              openInNewTab: boolean | null;
-              href: string | null;
-            }> | null;
-          }
-        | {
-            _key: string;
-            _type: "imageLinkCards";
-            eyebrow?: string;
-            title: string;
-            richText: Array<{
-              children?: Array<{
-                marks?: Array<string>;
-                text?: string;
-                _type: "span";
-                _key: string;
-              }>;
-              style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
-              listItem?: "bullet" | "number";
-              markDefs: Array<
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                    openInNewTab: boolean | null;
-                    href: string | "#" | null;
-                  }
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                  }
-              > | null;
-              level?: number;
-              _type: "block";
-              _key: string;
-            }> | null;
-            buttons: Array<{
-              text: string | null;
-              variant: "default" | "link" | "outline" | "secondary" | null;
-              _key: string;
-              _type: "button";
-              openInNewTab: boolean | null;
-              href: string | null;
-            }> | null;
-            cards: Array<{
-              title: string;
-              description: string;
-              image: {
-                id: string | null;
-                preview: string | null;
-                alt: string | "untitled";
-                hotspot: {
-                  x: number;
-                  y: number;
-                } | null;
-                crop: {
-                  bottom: number;
-                  left: number;
-                  right: number;
-                  top: number;
-                } | null;
-              } | null;
-              url?: CustomUrl;
-              _type: "imageLinkCard";
-              _key: string;
-              openInNewTab: boolean | null;
-              href: string | null;
-            }> | null;
-          }
-        | {
-            _key: string;
-            _type: "richTextBlock";
-            eyebrow?: string;
-            title?: string;
-            richText: Array<
-              | {
-                  children?: Array<{
-                    marks?: Array<string>;
-                    text?: string;
-                    _type: "span";
-                    _key: string;
-                  }>;
-                  style?:
-                    | "h2"
-                    | "h3"
-                    | "h4"
-                    | "h5"
-                    | "h6"
-                    | "inline"
-                    | "normal";
-                  listItem?: "bullet" | "number";
-                  markDefs: Array<
-                    | {
-                        customLink?: CustomUrl;
-                        _type: "customLink";
-                        _key: string;
-                        openInNewTab: boolean | null;
-                        href: string | "#" | null;
-                      }
-                    | {
-                        customLink?: CustomUrl;
-                        _type: "customLink";
-                        _key: string;
-                      }
-                  > | null;
-                  level?: number;
-                  _type: "block";
-                  _key: string;
-                }
-              | {
-                  asset?: SanityImageAssetReference;
-                  media?: unknown;
-                  hotspot: {
-                    x: number;
-                    y: number;
-                  } | null;
-                  crop: {
-                    bottom: number;
-                    left: number;
-                    right: number;
-                    top: number;
-                  } | null;
-                  caption: string | null;
-                  _type: "image";
-                  _key: string;
-                  id: string | null;
-                  preview: string | null;
-                  alt: string | "untitled";
-                }
-            > | null;
-          }
-        | {
-            _key: string;
-            _type: "subscribeNewsletter";
-            title?: string;
-            subTitle: Array<{
-              children?: Array<{
-                marks?: Array<string>;
-                text?: string;
-                _type: "span";
-                _key: string;
-              }>;
-              style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
-              listItem?: "bullet" | "number";
-              markDefs: Array<
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                    openInNewTab: boolean | null;
-                    href: string | "#" | null;
-                  }
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                  }
-              > | null;
-              level?: number;
-              _type: "block";
-              _key: string;
-            }> | null;
-            helperText: Array<{
-              children?: Array<{
-                marks?: Array<string>;
-                text?: string;
-                _type: "span";
-                _key: string;
-              }>;
-              style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
-              listItem?: "bullet" | "number";
-              markDefs: Array<
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                    openInNewTab: boolean | null;
-                    href: string | "#" | null;
-                  }
-                | {
-                    customLink?: CustomUrl;
-                    _type: "customLink";
-                    _key: string;
-                  }
-              > | null;
-              level?: number;
-              _type: "block";
-              _key: string;
-            }> | null;
-          }
-      > | null;
-      postsPerPage: null;
-      displayFeaturedArticles: false;
-      featuredArticlesCount: null;
-      categories: null;
-      filterCategories: null;
-      excerpt: null;
-      publishedAt: null;
-      category: null;
-      authors: null;
-      coverImage: null;
-      richText: null;
-      marketingCopy: null;
-      product: null;
-    }
-  | {
-      _id: string;
-      _type: "productPage";
-      slug: string;
-      title: string;
-      description: string | null;
-      seoTitle: null;
-      seoDescription: null;
-      seoNoIndex: null;
-      pagebuilder: null;
-      postsPerPage: null;
-      displayFeaturedArticles: false;
-      featuredArticlesCount: null;
-      categories: null;
-      filterCategories: null;
-      excerpt: null;
-      publishedAt: null;
-      category: null;
-      authors: null;
-      coverImage: {
-        id: string | null;
-        preview: string | null;
-        alt: string | "untitled";
-        hotspot: {
-          x: number;
-          y: number;
-        } | null;
-        crop: {
-          bottom: number;
-          left: number;
-          right: number;
-          top: number;
-        } | null;
-      } | null;
-      richText: null;
-      marketingCopy: RichText | null;
-      product: {
-        _id: string;
-        title: string;
-        slug: string;
-        description: Array<{
+          }> | null;
+        }>;
+      }
+    | {
+        _key: string;
+        _type: "featureCardsIcon";
+        eyebrow?: string;
+        title?: string;
+        richText: Array<{
           children?: Array<{
             marks?: Array<string>;
             text?: string;
             _type: "span";
             _key: string;
           }>;
-          style?:
-            | "blockquote"
-            | "h1"
-            | "h2"
-            | "h3"
-            | "h4"
-            | "h5"
-            | "h6"
-            | "normal";
+          style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
           listItem?: "bullet" | "number";
-          markDefs?: Array<{
-            href?: string;
-            _type: "link";
-            _key: string;
-          }>;
+          markDefs: Array<
+            | {
+                customLink?: CustomUrl;
+                _type: "customLink";
+                _key: string;
+                openInNewTab: boolean | null;
+                href: string | "#" | null;
+              }
+            | {
+                customLink?: CustomUrl;
+                _type: "customLink";
+                _key: string;
+              }
+          > | null;
           level?: number;
           _type: "block";
           _key: string;
         }> | null;
-        category:
-          | "accessory"
-          | "efoil-board"
-          | "efoil-motor"
-          | "pergola"
-          | "shutter"
-          | "slat-curtain"
-          | "terrace-awning"
-          | "zip-screen";
-        images: Array<{
+        cards: Array<{
+          icon?: LucideIcon;
+          title?: string;
+          richText: Array<{
+            children?: Array<{
+              marks?: Array<string>;
+              text?: string;
+              _type: "span";
+              _key: string;
+            }>;
+            style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
+            listItem?: "bullet" | "number";
+            markDefs: Array<
+              | {
+                  customLink?: CustomUrl;
+                  _type: "customLink";
+                  _key: string;
+                  openInNewTab: boolean | null;
+                  href: string | "#" | null;
+                }
+              | {
+                  customLink?: CustomUrl;
+                  _type: "customLink";
+                  _key: string;
+                }
+            > | null;
+            level?: number;
+            _type: "block";
+            _key: string;
+          }> | null;
+          _type: "featureCardIcon";
+          _key: string;
+        }> | null;
+      }
+    | {
+        _key: string;
+        _type: "hero";
+        badge?: string;
+        title?: string;
+        richText: Array<{
+          children?: Array<{
+            marks?: Array<string>;
+            text?: string;
+            _type: "span";
+            _key: string;
+          }>;
+          style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
+          listItem?: "bullet" | "number";
+          markDefs: Array<
+            | {
+                customLink?: CustomUrl;
+                _type: "customLink";
+                _key: string;
+                openInNewTab: boolean | null;
+                href: string | "#" | null;
+              }
+            | {
+                customLink?: CustomUrl;
+                _type: "customLink";
+                _key: string;
+              }
+          > | null;
+          level?: number;
+          _type: "block";
+          _key: string;
+        }> | null;
+        image: {
           id: string | null;
           preview: string | null;
           alt: string | "untitled";
@@ -3773,14 +2313,210 @@ export type QueryPageBySlugResult =
             right: number;
             top: number;
           } | null;
+        } | null;
+        buttons: Array<{
+          text: string | null;
+          variant: "default" | "link" | "outline" | "secondary" | null;
+          _key: string;
+          _type: "button";
+          openInNewTab: boolean | null;
+          href: string | null;
         }> | null;
-        specifications: Array<{
-          label: string | null;
-          value: string | null;
+      }
+    | {
+        _key: string;
+        _type: "imageLinkCards";
+        eyebrow?: string;
+        title: string;
+        richText: Array<{
+          children?: Array<{
+            marks?: Array<string>;
+            text?: string;
+            _type: "span";
+            _key: string;
+          }>;
+          style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
+          listItem?: "bullet" | "number";
+          markDefs: Array<
+            | {
+                customLink?: CustomUrl;
+                _type: "customLink";
+                _key: string;
+                openInNewTab: boolean | null;
+                href: string | "#" | null;
+              }
+            | {
+                customLink?: CustomUrl;
+                _type: "customLink";
+                _key: string;
+              }
+          > | null;
+          level?: number;
+          _type: "block";
+          _key: string;
         }> | null;
-      };
-    }
-  | null;
+        buttons: Array<{
+          text: string | null;
+          variant: "default" | "link" | "outline" | "secondary" | null;
+          _key: string;
+          _type: "button";
+          openInNewTab: boolean | null;
+          href: string | null;
+        }> | null;
+        cards: Array<{
+          title: string;
+          description: string;
+          image: {
+            id: string | null;
+            preview: string | null;
+            alt: string | "untitled";
+            hotspot: {
+              x: number;
+              y: number;
+            } | null;
+            crop: {
+              bottom: number;
+              left: number;
+              right: number;
+              top: number;
+            } | null;
+          } | null;
+          url?: CustomUrl;
+          _type: "imageLinkCard";
+          _key: string;
+          openInNewTab: boolean | null;
+          href: string | null;
+        }> | null;
+      }
+    | {
+        _key: string;
+        _type: "richTextBlock";
+        eyebrow?: string;
+        title?: string;
+        richText: Array<
+          | {
+              children?: Array<{
+                marks?: Array<string>;
+                text?: string;
+                _type: "span";
+                _key: string;
+              }>;
+              style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
+              listItem?: "bullet" | "number";
+              markDefs: Array<
+                | {
+                    customLink?: CustomUrl;
+                    _type: "customLink";
+                    _key: string;
+                    openInNewTab: boolean | null;
+                    href: string | "#" | null;
+                  }
+                | {
+                    customLink?: CustomUrl;
+                    _type: "customLink";
+                    _key: string;
+                  }
+              > | null;
+              level?: number;
+              _type: "block";
+              _key: string;
+            }
+          | {
+              asset?: SanityImageAssetReference;
+              media?: unknown;
+              hotspot: {
+                x: number;
+                y: number;
+              } | null;
+              crop: {
+                bottom: number;
+                left: number;
+                right: number;
+                top: number;
+              } | null;
+              caption: string | null;
+              _type: "image";
+              _key: string;
+              id: string | null;
+              preview: string | null;
+              alt: string | "untitled";
+            }
+        > | null;
+      }
+    | {
+        _key: string;
+        _type: "subscribeNewsletter";
+        title?: string;
+        subTitle: Array<{
+          children?: Array<{
+            marks?: Array<string>;
+            text?: string;
+            _type: "span";
+            _key: string;
+          }>;
+          style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
+          listItem?: "bullet" | "number";
+          markDefs: Array<
+            | {
+                customLink?: CustomUrl;
+                _type: "customLink";
+                _key: string;
+                openInNewTab: boolean | null;
+                href: string | "#" | null;
+              }
+            | {
+                customLink?: CustomUrl;
+                _type: "customLink";
+                _key: string;
+              }
+          > | null;
+          level?: number;
+          _type: "block";
+          _key: string;
+        }> | null;
+        helperText: Array<{
+          children?: Array<{
+            marks?: Array<string>;
+            text?: string;
+            _type: "span";
+            _key: string;
+          }>;
+          style?: "h2" | "h3" | "h4" | "h5" | "h6" | "inline" | "normal";
+          listItem?: "bullet" | "number";
+          markDefs: Array<
+            | {
+                customLink?: CustomUrl;
+                _type: "customLink";
+                _key: string;
+                openInNewTab: boolean | null;
+                href: string | "#" | null;
+              }
+            | {
+                customLink?: CustomUrl;
+                _type: "customLink";
+                _key: string;
+              }
+          > | null;
+          level?: number;
+          _type: "block";
+          _key: string;
+        }> | null;
+      }
+  > | null;
+  postsPerPage: null;
+  displayFeaturedArticles: false;
+  featuredArticlesCount: null;
+  categories: null;
+  filterCategories: Array<string> | null;
+  excerpt: null;
+  publishedAt: string | null;
+  category: null;
+  authors: null;
+  coverImage: null;
+  richText: null;
+  marketingCopy: null;
+  product: null;
+} | null;
 
 // Source: ../../packages/sanity/src/query.ts
 // Variable: queryAllPageSlugsForBuild
@@ -3792,55 +2528,21 @@ export type QueryAllPageSlugsForBuildResult = Array<{
 // Source: ../../packages/sanity/src/query.ts
 // Variable: queryAllPageSlugs
 // Query: *[    _type in ["page","articleRoot","articlePage","catalogRoot","productPage"]    && site._ref == $siteId    && defined(slug.current)  ]{    _type,    "slug": slug.current  }
-export type QueryAllPageSlugsResult = Array<
-  | {
-      _type: "articlePage";
-      slug: string;
-    }
-  | {
-      _type: "articleRoot";
-      slug: string;
-    }
-  | {
-      _type: "catalogRoot";
-      slug: string;
-    }
-  | {
-      _type: "page";
-      slug: string;
-    }
-  | {
-      _type: "productPage";
-      slug: string;
-    }
->;
+export type QueryAllPageSlugsResult = Array<{
+  _type: "page";
+  slug: string;
+}>;
 
 // Source: ../../packages/sanity/src/query.ts
 // Variable: queryAllRoutableDocumentSlugs
 // Query: *[    site._ref == $siteId &&     defined(slug.current)  ]{    _type,    "slug": slug.current  }
 export type QueryAllRoutableDocumentSlugsResult = Array<
   | {
-      _type: "articlePage";
-      slug: string;
-    }
-  | {
-      _type: "articleRoot";
-      slug: string;
-    }
-  | {
-      _type: "catalogRoot";
-      slug: string;
-    }
-  | {
       _type: "page";
       slug: string;
     }
   | {
       _type: "product";
-      slug: string;
-    }
-  | {
-      _type: "productPage";
       slug: string;
     }
   | {
@@ -3852,36 +2554,7 @@ export type QueryAllRoutableDocumentSlugsResult = Array<
 // Source: ../../packages/sanity/src/query.ts
 // Variable: queryArticleListByParent
 // Query: *[    _type == "articlePage"    && site._ref == $siteId    && parent._ref == $parentId    && defined(slug.current)  ] | order(publishedAt desc) [$start...$end] {      _type,  _id,  title,  description,  "slug":slug.current,  orderRank,    image {      "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  }  },  publishedAt,    authors[0]->{    _id,    name,    position,      image {      "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  }  }  }  }
-export type QueryArticleListByParentResult = Array<{
-  _type: "articlePage";
-  _id: string;
-  title: string;
-  description: string | null;
-  slug: string;
-  orderRank: null;
-  image: null;
-  publishedAt: string | null;
-  authors: {
-    _id: string;
-    name: string;
-    position: string | null;
-    image: {
-      id: string | null;
-      preview: string | null;
-      alt: string | "untitled";
-      hotspot: {
-        x: number;
-        y: number;
-      } | null;
-      crop: {
-        bottom: number;
-        left: number;
-        right: number;
-        top: number;
-      } | null;
-    } | null;
-  } | null;
-}>;
+export type QueryArticleListByParentResult = Array<never>;
 
 // Source: ../../packages/sanity/src/query.ts
 // Variable: queryArticleCountByParent
@@ -3891,55 +2564,7 @@ export type QueryArticleCountByParentResult = number;
 // Source: ../../packages/sanity/src/query.ts
 // Variable: queryProductListByParent
 // Query: *[    _type == "productPage"    && site._ref == $siteId    && parent._ref == $parentId    && defined(slug.current)    && ($category == "" || product->category == $category)  ] | order(sortOrder asc) {      _id,  _type,  title,  "slug": slug.current,  "coverImage": coverImage {   "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  } },  product->{    _id,    title,    category,    "images": images[]{   "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  } }  }  }
-export type QueryProductListByParentResult = Array<{
-  _id: string;
-  _type: "productPage";
-  title: string;
-  slug: string;
-  coverImage: {
-    id: string | null;
-    preview: string | null;
-    alt: string | "untitled";
-    hotspot: {
-      x: number;
-      y: number;
-    } | null;
-    crop: {
-      bottom: number;
-      left: number;
-      right: number;
-      top: number;
-    } | null;
-  } | null;
-  product: {
-    _id: string;
-    title: string;
-    category:
-      | "accessory"
-      | "efoil-board"
-      | "efoil-motor"
-      | "pergola"
-      | "shutter"
-      | "slat-curtain"
-      | "terrace-awning"
-      | "zip-screen";
-    images: Array<{
-      id: string | null;
-      preview: string | null;
-      alt: string | "untitled";
-      hotspot: {
-        x: number;
-        y: number;
-      } | null;
-      crop: {
-        bottom: number;
-        left: number;
-        right: number;
-        top: number;
-      } | null;
-    }> | null;
-  };
-}>;
+export type QueryProductListByParentResult = Array<never>;
 
 // Source: ../../packages/sanity/src/query.ts
 // Variable: queryFooterData
@@ -4357,12 +2982,50 @@ export type QuerySiteMetadataResult = {
 // Source: ../../packages/sanity/src/query.ts
 // Variable: queryGlobalSeo
 // Query: *[_type == "globalSeo"][0]{    metaTitle,    metaDescription,    "ogImage": ogImage {   "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  } }  }
-export type QueryGlobalSeoResult = null;
+export type QueryGlobalSeoResult = {
+  metaTitle: string;
+  metaDescription: string;
+  ogImage: {
+    id: string | null;
+    preview: string | null;
+    alt: string | "untitled";
+    hotspot: {
+      x: number;
+      y: number;
+    } | null;
+    crop: {
+      bottom: number;
+      left: number;
+      right: number;
+      top: number;
+    } | null;
+  } | null;
+} | null;
 
 // Source: ../../packages/sanity/src/query.ts
 // Variable: queryGlobalOrganization
 // Query: *[_type == "globalOrganization"][0]{    name,    email,    phone,    address,    "logo": logo {   "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  } }  }
-export type QueryGlobalOrganizationResult = null;
+export type QueryGlobalOrganizationResult = {
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+  address: Address | null;
+  logo: {
+    id: string | null;
+    preview: string | null;
+    alt: string | "untitled";
+    hotspot: {
+      x: number;
+      y: number;
+    } | null;
+    crop: {
+      bottom: number;
+      left: number;
+      right: number;
+      top: number;
+    } | null;
+  } | null;
+} | null;
 
 // Source: ../../packages/sanity/src/query.ts
 // Variable: querySitemapData

@@ -34,15 +34,18 @@ export const site = defineType({
       name: "homePage",
       title: "Forside",
       type: "reference",
-      to: [{ type: "page" }],
+      to: [{ type: DOCUMENT_NAMES.page }],
       group: GROUP.IDENTITY,
       description:
         "Siden som vises på rotnivå (/). Må settes for at nettstedet skal fungere korrekt.",
       options: {
-        filter: ({ document }) => ({
-          filter: "site._ref == $siteId",
-          params: { siteId: document._id },
-        }),
+        filter: ({ document }) => {
+         
+          const siteId = document._id.replace("drafts.", "");
+         
+          return { filter: "site._ref == $siteId",
+          params: { siteId },}
+        },
       },
       validation: (Rule) =>
         Rule.required().error(

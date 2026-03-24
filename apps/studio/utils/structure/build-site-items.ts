@@ -1,9 +1,11 @@
 import { StructureBuilder, StructureResolverContext } from "sanity/structure";
-import { capitalize } from "../helper";
 import { createSingleton } from "./helpers";
-import { buildPageTree } from "./build-page-tree";
 import { PanelBottom, PanelTop, Settings } from "lucide-react";
 import { WorkspaceKey } from "../constant";
+import { Site } from "@workspace/sanity/types";
+import { buildPageTree } from "./build-page-tree";
+
+// import { buildPageTree } from "./build-page-tree";
 
 // ─────────────────────────────────────────────────────────────
 // Site content
@@ -11,10 +13,11 @@ import { WorkspaceKey } from "../constant";
 
 export function buildSiteItems(
   S: StructureBuilder,
-  site: { _id: string; title: string; enabledPackages?: string[] },
+  site: Site,
   workspace: WorkspaceKey,
   context: StructureResolverContext,
 ) {
+  
   return [
     createSingleton(S, {
       type: "navbar",
@@ -24,7 +27,7 @@ export function buildSiteItems(
       workspace,
     }),
 
-    buildPageTree(S, site._id, site.enabledPackages ?? [], context),
+    buildPageTree(S, site._id, site.enabledPackages ?? []),
 
     createSingleton(S, {
       type: "footer",

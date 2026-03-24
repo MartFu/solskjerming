@@ -1,7 +1,7 @@
 import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
 import { customRichText } from "@/schemaTypes/definitions/rich-text";
 import { DocumentTextIcon } from "@sanity/icons";
-import { defineField, defineType } from "sanity";
+import { defineField } from "sanity";
 import { defineGlobal } from "./define-global";
 
 export const documentation = defineGlobal({
@@ -9,6 +9,7 @@ export const documentation = defineGlobal({
   title: "Dokument",
   type: "document",
   sortFields: ["title"],
+  alwaysAvailable: true,
   icon: DocumentTextIcon,
   fields: [
     defineField({

@@ -307,7 +307,7 @@ export const ProjectStats = () => {
 
       <Grid
         columns={[1, 1, 3, 5]}
-        gap={3}
+        gap={[4, 4, 3]}
       >
         <StatCard
           label="Dokumenter"

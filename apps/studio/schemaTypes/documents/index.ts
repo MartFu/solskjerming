@@ -1,28 +1,26 @@
 // schemaTypes/documents/index.ts
 
 // ─── Workspace-scoped defaults ─────────────────────────────────────────────────────────────
-import { globalSettings } from "./global-settings";
+import { globalSettings } from "@/schemaTypes/documents/global-settings";
 
 // ─── Workspace-scoped shared assets ─────────────────────────────────────
-import { globalSchemaTypes, GlobalType } from "./globals";
+import { globalSchemaTypes, GlobalType } from "@/schemaTypes/documents/globals";
 
 // ─── Site config ─────────────────────────────────────────────────────────────
 import { site } from "@/schemaTypes/documents/site";
 import { redirect } from "@/schemaTypes/documents/redirect";
 
 // ─── Site-scoped, routable documents ─────────────────────────────────────────
-import { page } from "./page";
-import { packageRegistry } from "./packages";
-
+// import { page } from "@/schemaTypes/documents/page";
+import { page, packageRegistry } from "./page";
+import { packageRegistry as _packageRegistry } from "./packages";
 
 // ─── Site-scoped, non-routable documents ─────────────────────────────────────
 import { footer } from "@/schemaTypes/documents/footer";
 import { navbar } from "@/schemaTypes/documents/navbar";
+import { studioSettings } from "@/schemaTypes/documents/studio";
 
-export const pageDocuments = [
-  page,
-  ...packageRegistry.allSchemas
-] as const
+export const pageDocuments = [page, ..._packageRegistry.allSchemas] as const;
 
 export const PAGE_TYPES = pageDocuments.map((d) => d.name);
 export type PageType = (typeof pageDocuments)[number]["name"];
@@ -42,7 +40,8 @@ export function isPageType(type: string): type is PageType {
  *     their parent site is archived — they will never be cleaned up.
  */
 export const siteOwnedDocuments = [
-  ...pageDocuments,
+  // ...pageDocuments,
+  page,
   site,
   redirect,
   footer,
@@ -55,16 +54,13 @@ export function isSiteOwnedType(type: string): type is SiteOwnedType {
   return SITE_OWNED_TYPES.includes(type as SiteOwnedType);
 }
 
-
-
 /**
  * PackageType includes any document that is part of a feature module.
  * We exclude the "Core" site documents and "General" shared assets.
  */
-export type PackageType = 
-  | Exclude<SiteOwnedType, "page" | "redirect" | "site" | "navbar" | "footer"> 
+export type PackageType =
+  | Exclude<SiteOwnedType, "page" | "redirect" | "site" | "navbar" | "footer">
   | Exclude<GlobalType, "documentation" | "video" | "faq">;
-
 
 /**
  * Maps document types to their respective package keys.
@@ -92,9 +88,9 @@ export const DOCUMENT_PACKAGE_MAPPING: Record<string, string> = {
 
 /**
  * All singleton documents — things that should only ever have one instance.
- * Used to suppress the "create new" button in the Studio for these types.
+ * The "create new" button in the Studio is suppressed for these types.
  */
-export const singletons = [...globalSettings];
+export const singletons = [...globalSettings, studioSettings];
 
 /**
  * The full set of document types registered with Sanity.
@@ -103,11 +99,16 @@ export const singletons = [...globalSettings];
 export const documents = [
   ...siteOwnedDocuments,
   ...globalSchemaTypes,
+  ...singletons,
 ];
 
-
-export const ALL_DOCUMENT_TYPES = [...documents.map((d) => d.name), ...singletons.map((d) => d.name)];
-export type DocumentType = typeof documents[number]["name"] | typeof singletons[number]["name"];
+export const ALL_DOCUMENT_TYPES = [
+  ...documents.map((d) => d.name),
+  ...singletons.map((d) => d.name),
+];
+export type DocumentType =
+  | (typeof documents)[number]["name"]
+  | (typeof singletons)[number]["name"];
 export function isDocumentType(type: string): type is DocumentType {
   return ALL_DOCUMENT_TYPES.includes(type as DocumentType);
 }

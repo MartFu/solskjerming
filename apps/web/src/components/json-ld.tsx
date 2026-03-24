@@ -127,6 +127,7 @@ export function JsonLdScript<T>({ data, id }: { data: T; id: string }) {
   return (
     <script
       id={id}
+      key={id}
       type="application/ld+json"
     >
       {JSON.stringify(data, null, 0)}

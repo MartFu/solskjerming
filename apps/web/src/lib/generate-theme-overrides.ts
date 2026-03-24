@@ -1,5 +1,6 @@
 import { QuerySiteConfigResult } from "@workspace/sanity/types";
-
+const toKebab = (str: string) =>
+  str.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
 
 /**
  * Utility to transform Sanity theme object into a CSS string
@@ -11,23 +12,34 @@ export const generateThemeOverrides = (
 ) => {
   if (!theme?.light) return "";
 
-  const lightVars = Object.entries(theme.light)
-    .map(([key, value]) => `--${key}: ${value};`)
-    .join("\n");
+  const mapVariables = (obj: Record<string, any>) => {
+    return Object.entries(obj)
+      .map(([key, value]) => {
+        const name = toKebab(key);
+        // If it's radius, don't add the color prefix
+        const variableName =
+          name === "radius" ? `--${name}` : `--color-${name}`;
+        return `${variableName}: ${value};`;
+      })
+      .join("\n");
+  };
 
-  const darkVars = theme.dark
-    ? Object.entries(theme.dark)
-        .map(([key, value]) => `--${key}: ${value};`)
-        .join("\n")
-    : "";
+  const lightVars = mapVariables(theme.light);
+  const darkVars = theme.dark ? mapVariables(theme.dark) : "";
 
   return `
-    :root { ${lightVars} }
+    html:root { 
+      ${lightVars} 
+    }
     
-    .dark { ${darkVars} } 
+    html.dark { 
+      ${darkVars} 
+    } 
     
     @media (prefers-color-scheme: dark) {
-      :root { ${darkVars} }
+      html:root:not(.light) { 
+        ${darkVars} 
+      }
     }
   `;
 };

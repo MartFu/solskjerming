@@ -1,6 +1,27 @@
-import { CreatePageModal } from "@/components/structure/page-tree-pane/CreatePageModal";
-import { ModalState } from "@/components/structure/page-tree-pane/types";
-import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from "react";
+import { CreatePageModal } from "@/components/modals/create-page";
+import type { ModuleCreationOptions } from "@/utils/modules";
+import type { TreeNode } from "@/utils/page-tree";
+import {
+  createContext,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
+
+// ─────────────────────────────────────────────────────────────
+// Types
+// ─────────────────────────────────────────────────────────────
+
+export interface ModalState {
+  /** Available page kinds for this creation context */
+  options: ModuleCreationOptions[];
+  /** The parent node, or null for root-level creation */
+  parentNode: TreeNode | null;
+  /** Ancestor chain for the breadcrumb */
+  ancestors: TreeNode[];
+}
 
 export interface PageCreationContextValue {
   openCreationModal: (state: ModalState) => void;
@@ -11,18 +32,24 @@ export interface PageCreationProviderProps {
   children: ReactNode;
   siteId: string;
   onCreate: (
-    type: string,
-    templateId: string,
+    option: ModuleCreationOptions,
     parentId: string | null,
     title?: string,
   ) => void;
 }
 
+// ─────────────────────────────────────────────────────────────
+// Context
+// ─────────────────────────────────────────────────────────────
 
+const PageCreationContext = createContext<PageCreationContextValue | undefined>(
+  undefined,
+);
 
-const PageCreationContext = createContext<PageCreationContextValue | undefined>(undefined);
-
-export function PageCreationProvider({ children, onCreate }: PageCreationProviderProps) {
+export function PageCreationProvider({
+  children,
+  onCreate,
+}: PageCreationProviderProps) {
   const [modalState, setModalState] = useState<ModalState | null>(null);
 
   const openCreationModal = useCallback((state: ModalState) => {
@@ -33,24 +60,27 @@ export function PageCreationProvider({ children, onCreate }: PageCreationProvide
     setModalState(null);
   }, []);
 
-  const handleConfirm = useCallback((type: string, templateId: string, title?: string) => {
-    // Always use the published ID as parent reference
-    const parentId = modalState?.parentNode?.doc._id.replace(/^drafts\./, "") ?? null;
-    onCreate(type, templateId, parentId, title);
-    setModalState(null);
-  }, [modalState, onCreate]);
+  const handleConfirm = useCallback(
+    (option: ModuleCreationOptions, title?: string) => {
+      const parentId =
+        modalState?.parentNode?.doc._id.replace(/^drafts\./, "") ?? null;
+      onCreate(option, parentId, title);
+      setModalState(null); 
+    },
+    [modalState, onCreate],
+  );
 
-  const value = useMemo(() => ({
-    openCreationModal,
-    closeCreationModal
-  }), [openCreationModal, closeCreationModal]);
+  const value = useMemo(
+    () => ({ openCreationModal, closeCreationModal }),
+    [openCreationModal, closeCreationModal],
+  );
 
   return (
     <PageCreationContext.Provider value={value}>
       {children}
       {modalState && (
         <CreatePageModal
-          types={modalState.types}
+          options={modalState.options}
           parentNode={modalState.parentNode}
           ancestors={modalState.ancestors}
           onConfirm={handleConfirm}
@@ -64,7 +94,9 @@ export function PageCreationProvider({ children, onCreate }: PageCreationProvide
 export function usePageCreation() {
   const context = useContext(PageCreationContext);
   if (!context) {
-    throw new Error("usePageCreation must be used within a PageCreationProvider");
+    throw new Error(
+      "usePageCreation must be used within a PageCreationProvider",
+    );
   }
   return context;
 }

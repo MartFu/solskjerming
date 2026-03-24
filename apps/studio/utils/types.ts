@@ -208,3 +208,19 @@ export interface OklchColor {
   a: number;
   hexInput: string;
 }
+
+
+export interface Tab {
+  id: string;
+  label: string;
+  /** The site this tab was viewing — each tab owns this independently */
+  activeSite: ActiveSite | null;
+  /** Last known browser path for this tab, saved on blur, restored on focus */
+  savedPath: string | null;
+}
+
+export interface TabsState {
+  tabs: Tab[];
+  activeTabId: string;
+}
+ 

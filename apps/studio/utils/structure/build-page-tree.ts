@@ -1,64 +1,40 @@
-import { Globe, SquareMenu } from "lucide-react";
-import type {
-  StructureBuilder,
-  StructureResolverContext,
-} from "sanity/structure";
+import { SquareMenu } from "lucide-react";
+import { StructureBuilder } from "sanity/structure";
+import { asStudioIcon } from "../helper";
+import { API_VERSION } from "../env";
+import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
+import { PageTreePane } from "@/components/panes/page-tree";
 
-import { PageTreePane } from "@/components/structure/page-tree-pane";
-import { getRoutableTypes } from "@/utils/page-tree";
-import { API_VERSION } from '@/utils/env';
-
-/**
- * Builds the "Sider" list item with the custom PageTreePane component.
- *
- * Uses the Object.assign pattern to serialize a documentList (so Sanity's
- * pane router knows how to resolve child document editors) and then override
- * the rendering with our custom React component.
- *
- * This means:
- * - Clicking "edit" inside PageTreePane correctly opens the document
- *   editor in the pane to the right
- * - Intent resolution (global search, deep links) still works
- * - The pane instance is preserved across re-renders (__preserveInstance)
- */
 export function buildPageTree(
   S: StructureBuilder,
   siteId: string,
   enabledPackages: string[],
-  context: StructureResolverContext,
 ) {
-  const routableTypes = getRoutableTypes(enabledPackages);
-  const typeList = routableTypes.map((t) => `"${t}"`).join(", ");
+  // In v2, the only routable Sanity type is "page"
+  const PAGE_TYPE = DOCUMENT_NAMES.page
 
   return S.listItem()
     .title("Sider")
     .id(`${siteId}-pages`)
-    .icon(SquareMenu)
+    .icon(asStudioIcon(SquareMenu))
     .child(
       Object.assign(
         S.documentList()
           .id(`${siteId}-page-tree`)
           .title("Sider")
-          .filter(`_type in [${typeList}] && site._ref == $siteId`)
+          // 2. Simplified filter: only fetch pages belonging to this site
+          .filter(`_type == "${PAGE_TYPE}" && site._ref == $siteId`)
           .apiVersion(API_VERSION)
           .params({ siteId })
           .canHandleIntent((intentName, params) => {
-            // Handle edit + create intents for all routable types
-            if (
-              intentName === "edit" &&
-              params.type &&
-              routableTypes.includes(params.type as string)
-            ) {
-              return true;
-            }
-            if (
-              intentName === "create" &&
-              params.type &&
-              routableTypes.includes(params.type as string)
-            ) {
-              return true;
-            }
-            return false;
+            // 3. The pane now handles ALL "page" document intents.
+            // If the user clicks a search result for a "page" on this site,
+            // this pane will claim the intent and open it in the tree context.
+            const isTargetType = params.type === PAGE_TYPE;
+
+            // Optional: You could further verify if the document belongs to this site
+            // by checking params.id, but usually checking type is enough for the pane router.
+            return ["edit", "create"].includes(intentName) && isTargetType;
           })
           .serialize(),
         {
@@ -66,11 +42,11 @@ export function buildPageTree(
           key: `${siteId}-page-tree`,
           id: `${siteId}-page-tree`,
           type: "component",
-          component: PageTreePane,
-          options: {
+          component: () =>  PageTreePane({
             siteId,
             enabledPackages,
-          },
+          }),
+          
         },
       ),
     );
