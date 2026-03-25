@@ -1,12 +1,11 @@
-import { defineField, defineType } from "sanity";
-
+import { defineField} from "sanity";
 import { customRichText } from "@/schemaTypes/definitions/rich-text";
 import { asStudioIcon, parseRichTextToString } from "@/utils/helper";
 import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
-import { defineGlobal } from "./define-global";
+import { defineGlobal } from "@/utils/globals/define-global";
 import { MessageCircleQuestionMark } from "lucide-react";
 
-export const faq = defineGlobal({
+export const faq = defineGlobal({ 
   name: DOCUMENT_NAMES.faq,
   type: "document",
   icon: asStudioIcon(MessageCircleQuestionMark),

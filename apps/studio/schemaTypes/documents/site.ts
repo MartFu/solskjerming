@@ -1,9 +1,9 @@
 import { GROUP, GROUPS, WORKSPACES } from "@/utils/constant";
-import { createIntegrationFields } from "@/utils/factories/create-integration-fields";
+import { createIntegrationsField } from "@/utils/factories/create-integration-fields";
 import { EarthGlobeIcon } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
 import { SlugDomainInput } from "@/components/inputs/slug-domain-input";
-import { enabledPackagesField } from "../definitions/enabled-packages";
+import { enabledModulesField } from "../definitions/enabled-modules";
 import { DOCUMENT_NAMES } from "../constant";
 
 export const site = defineType({
@@ -47,7 +47,7 @@ export const site = defineType({
                     "Forside er påkrevd for riktig routing. Dersom du ignorerer denne feilen risikerer du at nettsiden ikke fungerer.",
                 ),
         }),
-        { ...enabledPackagesField, group: GROUP.IDENTITY },
+        { ...enabledModulesField, group: GROUP.IDENTITY },
         defineField({
             name: "siteIdentity",
             title: "Nettadresse",
@@ -137,13 +137,7 @@ export const site = defineType({
         }),
 
         // ── INTEGRATIONS ──────────────────────────────────────────
-        ...createIntegrationFields({
-            googleAnalyticsIdDescription:
-                "Måle-ID for Google Analytics 4 (f.eks. G-XXXXXXXXXX).",
-            gtmContainerIdDescription:
-                "Container-ID for Google Tag Manager (f.eks. GTM-XXXXXXX).",
-            facebookPixelIdDescription: "ID for Facebook/Meta Pixel-sporing.",
-        }),
+        createIntegrationsField({ groupsEnabled: true }),
 
         // ── LEGAL ─────────────────────────────────────────────────
         defineField({

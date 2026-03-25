@@ -1,7 +1,7 @@
 import { defineField, FieldDefinition } from "sanity";
 import { GROUP } from "@/utils/constant";
 import { createSiteScopedSlugField } from "@/utils/factories";
-import { PageBuilderType } from "@/schemaTypes/definitions/pagebuilders";
+import { PageBuilderType } from "@/schemaTypes/definitions/pagebuilder";
 
 // ---------------------------------------------------------------------------
 // Field Sets
@@ -67,7 +67,7 @@ export function createIdentityFields(): FieldDefinition[] {
  *
  * @param parentTypes - Array of document type names this can be a child of.
  */
-export function createParentField(parentTypes: string[]): FieldDefinition[] {
+export function createPageParentField(parentTypes: string[]): FieldDefinition[] {
     if (parentTypes.length === 0) return [];
 
     return [

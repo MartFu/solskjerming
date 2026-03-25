@@ -16,44 +16,11 @@ export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
 export type StructuredData = {
-  enabled?: boolean;
-  type?: string;
-  article?: StructuredDataArticle;
-  product?: StructuredDataProduct;
-  faq?: Array<{
-    question: string;
-    answer: string;
-    _key: string;
-  }>;
-  event?: Event;
-  localBusiness?: LocalBusiness;
-  video?: StructuredDataVideo;
-  howTo?: HowTo;
-  customJsonLd?: string;
-};
-
-export type Robots = {
-  noIndex?: boolean;
-  noFollow?: boolean;
-  noArchive?: boolean;
-  noImageIndex?: boolean;
-  maxSnippet?: number;
-  maxImagePreview?: "none" | "standard" | "large";
-  maxVideoPreview?: number;
-};
-
-export type Link = {
-  title?: string;
-  description?: string;
-  url?: CustomUrl;
-};
-
-export type SEOStructuredData = {
   organization?: StructuredDataOrganization;
   website?: Website;
 };
 
-export type SEORobots = {
+export type Robots = {
   maxSnippet?: number;
   maxImagePreview?: "none" | "standard" | "large";
   maxVideoPreview?: number;
@@ -115,6 +82,39 @@ export type Dark = {
   input: string;
   ring: string;
   radius: "0rem" | "0.25rem" | "0.5rem" | "0.75rem" | "1rem";
+};
+
+export type SEOStructuredData = {
+  enabled?: boolean;
+  type?: string;
+  article?: StructuredDataArticle;
+  product?: StructuredDataProduct;
+  faq?: Array<{
+    question: string;
+    answer: string;
+    _key: string;
+  }>;
+  event?: Event;
+  localBusiness?: LocalBusiness;
+  video?: StructuredDataVideo;
+  howTo?: HowTo;
+  customJsonLd?: string;
+};
+
+export type SEORobots = {
+  noIndex?: boolean;
+  noFollow?: boolean;
+  noArchive?: boolean;
+  noImageIndex?: boolean;
+  maxSnippet?: number;
+  maxImagePreview?: "none" | "standard" | "large";
+  maxVideoPreview?: number;
+};
+
+export type Link = {
+  title?: string;
+  description?: string;
+  url?: CustomUrl;
 };
 
 export type StructuredDataArticle = {
@@ -265,6 +265,7 @@ export type ImageLinkCardImage = {
   hotspot?: SanityImageHotspot;
   crop?: SanityImageCrop;
   alt?: string;
+  creditLine?: string;
   _type: "image";
 };
 
@@ -531,6 +532,7 @@ export type Hero = {
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
+    creditLine?: string;
     _type: "image";
   };
   buttons?: Array<
@@ -539,48 +541,6 @@ export type Hero = {
     } & Button
   >;
 };
-
-export type CatalogRootPageBuilder = Array<
-  | ({
-      _key: string;
-    } & Hero)
-  | ({
-      _key: string;
-    } & Cta)
-  | ({
-      _key: string;
-    } & FeatureCardsIcon)
-  | ({
-      _key: string;
-    } & ImageLinkCards)
-  | ({
-      _key: string;
-    } & RichTextBlock)
-  | ({
-      _key: string;
-    } & ProductGrid)
->;
-
-export type ArticleRootPageBuilder = Array<
-  | ({
-      _key: string;
-    } & Hero)
-  | ({
-      _key: string;
-    } & Cta)
-  | ({
-      _key: string;
-    } & FaqAccordion)
-  | ({
-      _key: string;
-    } & RichTextBlock)
-  | ({
-      _key: string;
-    } & SubscribeNewsletter)
-  | ({
-      _key: string;
-    } & ArticleFeed)
->;
 
 export type PageBuilder = Array<
   | ({
@@ -604,6 +564,12 @@ export type PageBuilder = Array<
   | ({
       _key: string;
     } & SubscribeNewsletter)
+  | ({
+      _key: string;
+    } & ArticleFeed)
+  | ({
+      _key: string;
+    } & ProductGrid)
 >;
 
 export type Organization = {
@@ -618,6 +584,8 @@ export type Organization = {
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
+    alt?: string;
+    creditLine?: string;
     _type: "image";
   };
   favicon?: {
@@ -625,6 +593,8 @@ export type Organization = {
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
+    alt?: string;
+    creditLine?: string;
     _type: "image";
   };
 };
@@ -669,8 +639,8 @@ export type SiteSEO = {
   };
   ogSiteName: string;
   socialPreview?: string;
-  structuredData?: SEOStructuredData;
-  robots?: SEORobots;
+  structuredData?: StructuredData;
+  robots?: Robots;
 };
 
 export type PageSEO = {
@@ -689,8 +659,8 @@ export type PageSEO = {
     _type: "image";
   };
   socialPreview?: string;
-  structuredData?: StructuredData;
-  robots?: Robots;
+  structuredData?: SEOStructuredData;
+  robots?: SEORobots;
   hideFromLists?: boolean;
 };
 
@@ -703,7 +673,7 @@ export type DefaultSocials = {
   twitter?: string;
 };
 
-export type EnabledPackages = Array<string>;
+export type EnabledModules = Array<string>;
 
 export type Address = {
   _type: "address";
@@ -711,13 +681,6 @@ export type Address = {
   city?: string;
   postalCode?: string;
   country?: string;
-};
-
-export type Pricing = {
-  _type: "pricing";
-  basePrice?: number;
-  currency?: "NOK" | "EUR" | "USD";
-  priceNote?: string;
 };
 
 export type DeploymentMeta = {
@@ -920,9 +883,13 @@ export type GlobalIntegrations = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  googleAnalyticsId?: string;
-  gtmContainerId?: string;
-  facebookPixelId?: string;
+  integrations?: Array<{
+    title?: string;
+    id?: string;
+    scriptTag?: string;
+    _type: "customIntegration";
+    _key: string;
+  }>;
 };
 
 export type GlobalSeo = {
@@ -991,6 +958,7 @@ export type Article = {
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
+    creditLine?: string;
     _type: "image";
   };
   richText?: RichText;
@@ -1059,6 +1027,25 @@ export type Slug = {
   source?: string;
 };
 
+export type CategoryReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "category";
+};
+
+export type Category = {
+  _id: string;
+  _type: "category";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title: string;
+  slug: Slug;
+  description?: string;
+  parent?: CategoryReference;
+};
+
 export type Documentation = {
   _id: string;
   _type: "documentation";
@@ -1098,8 +1085,7 @@ export type Navbar = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  label: string;
-  site?: SiteReference;
+  site: SiteReference;
   columns?: Array<
     | {
         title?: string;
@@ -1136,7 +1122,7 @@ export type Footer = {
   _rev: string;
   label: string;
   subtitle?: string;
-  site?: SiteReference;
+  site: SiteReference;
   columns?: Array<{
     title?: string;
     links?: Array<{
@@ -1161,6 +1147,39 @@ export type Redirect = {
   destination: Slug;
   permanent?: "true" | "false";
   site?: SiteReference;
+};
+
+export type Site = {
+  _id: string;
+  _type: "site";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title: string;
+  homePage: PageReference;
+  enabledModules?: Array<string>;
+  siteIdentity?: {
+    slug: Slug;
+    domain?: string;
+  };
+  cookieBanner?: Cookies;
+  socialLinks?: DefaultSocials;
+  organization?: Organization;
+  SEO?: SiteSEO;
+  theme?: Theme;
+  integrations?: Array<{
+    title?: string;
+    id?: string;
+    scriptTag?: string;
+    _type: "customIntegration";
+    _key: string;
+  }>;
+  legalDocuments?: Array<
+    {
+      _key: string;
+    } & DocumentationReference
+  >;
+  workspace: "solskjerming" | "vannsport";
 };
 
 export type Page = {
@@ -1201,6 +1220,7 @@ export type Author = {
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
+    creditLine?: string;
     _type: "image";
   };
   bio?: string;
@@ -1258,35 +1278,6 @@ export type Product = {
 };
 
 export type LucideIcon = string;
-
-export type Site = {
-  _id: string;
-  _type: "site";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title: string;
-  homePage: PageReference;
-  enabledPackages?: Array<string>;
-  siteIdentity?: {
-    slug: Slug;
-    domain?: string;
-  };
-  cookieBanner?: Cookies;
-  socialLinks?: DefaultSocials;
-  organization?: Organization;
-  SEO?: SiteSEO;
-  theme?: Theme;
-  googleAnalyticsId?: string;
-  gtmContainerId?: string;
-  facebookPixelId?: string;
-  legalDocuments?: Array<
-    {
-      _key: string;
-    } & DocumentationReference
-  >;
-  workspace: "solskjerming" | "vannsport";
-};
 
 export type SanityImagePaletteSwatch = {
   _type: "sanity.imagePaletteSwatch";
@@ -1388,12 +1379,12 @@ export type Geopoint = {
 export type AllSanitySchemaTypes =
   | StructuredData
   | Robots
-  | Link
-  | SEOStructuredData
-  | SEORobots
   | ThemePreset
   | Light
   | Dark
+  | SEOStructuredData
+  | SEORobots
+  | Link
   | StructuredDataArticle
   | StructuredDataProduct
   | Event
@@ -1418,8 +1409,6 @@ export type AllSanitySchemaTypes =
   | FeatureCardsIcon
   | Cta
   | Hero
-  | CatalogRootPageBuilder
-  | ArticleRootPageBuilder
   | PageBuilder
   | Organization
   | Cookies
@@ -1427,9 +1416,8 @@ export type AllSanitySchemaTypes =
   | SiteSEO
   | PageSEO
   | DefaultSocials
-  | EnabledPackages
+  | EnabledModules
   | Address
-  | Pricing
   | DeploymentMeta
   | Button
   | RichText
@@ -1454,15 +1442,17 @@ export type AllSanitySchemaTypes =
   | Faq
   | Video
   | Slug
+  | CategoryReference
+  | Category
   | Documentation
   | Navbar
   | Footer
   | Redirect
+  | Site
   | Page
   | Author
   | Product
   | LucideIcon
-  | Site
   | SanityImagePaletteSwatch
   | SanityImagePalette
   | SanityImageDimensions
@@ -1476,6 +1466,14 @@ export type AllSanitySchemaTypes =
 // Variable: queryGenericPageOGData
 // Query: *[defined(slug.current) && _id == $id][0]{      _id,  _type,  "title": select(    defined(ogTitle) => ogTitle,    defined(seoTitle) => seoTitle,    title  ),  "description": select(    defined(ogDescription) => ogDescription,    defined(seoDescription) => seoDescription,    description  ),  "ogImage": ogImage.asset->url + "?w=1200&h=630&dpr=2&fit=max",  "seoImage": seoImage.asset->url + "?w=1200&h=630&dpr=2&fit=max"  }
 export type QueryGenericPageOGDataResult =
+  | {
+      _id: string;
+      _type: "category";
+      title: string;
+      description: string | null;
+      ogImage: null;
+      seoImage: null;
+    }
   | {
       _id: string;
       _type: "page";
@@ -1560,6 +1558,32 @@ export type QueryHomePageDataResult = {
   seoDescription: null;
   seoNoIndex: null;
   pagebuilder: Array<
+    | {
+        _key: string;
+        _type: "articleFeed";
+        eyebrow?: string;
+        title?: string;
+        layout?: "grid" | "list" | "magazine";
+        columns?: "2" | "3" | "4";
+        sortOrder?: "publishedAt_asc" | "publishedAt_desc";
+        showCategories?: boolean;
+        showDate?: boolean;
+        showAuthor?: boolean;
+        showExcerpt?: boolean;
+        articles: null;
+        filteredArticles: Array<{
+          _type: "page";
+          _id: string;
+          title: string;
+          description: string | null;
+          internalRole: string | null;
+          slug: string;
+          orderRank: null;
+          image: null;
+          publishedAt: string | null;
+          authors: null;
+        }>;
+      }
     | {
         _key: string;
         _type: "cta";
@@ -1836,6 +1860,20 @@ export type QueryHomePageDataResult = {
       }
     | {
         _key: string;
+        _type: "productGrid";
+        eyebrow?: string;
+        title?: string;
+        columns?: "2" | "3" | "4";
+        sortOrder?: "default" | "title_asc" | "title_desc";
+        showFilters?: boolean;
+        showCategoryTabs?: boolean;
+        showProductCount?: boolean;
+        showPrice?: boolean;
+        richText: null;
+        buttons: null;
+      }
+    | {
+        _key: string;
         _type: "richTextBlock";
         eyebrow?: string;
         title?: string;
@@ -1978,6 +2016,32 @@ export type QueryPageBySlugResult =
       pagebuilder: Array<
         | {
             _key: string;
+            _type: "articleFeed";
+            eyebrow?: string;
+            title?: string;
+            layout?: "grid" | "list" | "magazine";
+            columns?: "2" | "3" | "4";
+            sortOrder?: "publishedAt_asc" | "publishedAt_desc";
+            showCategories?: boolean;
+            showDate?: boolean;
+            showAuthor?: boolean;
+            showExcerpt?: boolean;
+            articles: null;
+            filteredArticles: Array<{
+              _type: "page";
+              _id: string;
+              title: string;
+              description: string | null;
+              internalRole: string | null;
+              slug: string;
+              orderRank: null;
+              image: null;
+              publishedAt: string | null;
+              authors: null;
+            }>;
+          }
+        | {
+            _key: string;
             _type: "cta";
             eyebrow?: string;
             title?: string;
@@ -2249,6 +2313,20 @@ export type QueryPageBySlugResult =
               openInNewTab: boolean | null;
               href: string | null;
             }> | null;
+          }
+        | {
+            _key: string;
+            _type: "productGrid";
+            eyebrow?: string;
+            title?: string;
+            columns?: "2" | "3" | "4";
+            sortOrder?: "default" | "title_asc" | "title_desc";
+            showFilters?: boolean;
+            showCategoryTabs?: boolean;
+            showProductCount?: boolean;
+            showPrice?: boolean;
+            richText: null;
+            buttons: null;
           }
         | {
             _key: string;
@@ -2398,6 +2476,32 @@ export type QueryPageBySlugResult =
       pagebuilder: Array<
         | {
             _key: string;
+            _type: "articleFeed";
+            eyebrow?: string;
+            title?: string;
+            layout?: "grid" | "list" | "magazine";
+            columns?: "2" | "3" | "4";
+            sortOrder?: "publishedAt_asc" | "publishedAt_desc";
+            showCategories?: boolean;
+            showDate?: boolean;
+            showAuthor?: boolean;
+            showExcerpt?: boolean;
+            articles: null;
+            filteredArticles: Array<{
+              _type: "page";
+              _id: string;
+              title: string;
+              description: string | null;
+              internalRole: string | null;
+              slug: string;
+              orderRank: null;
+              image: null;
+              publishedAt: string | null;
+              authors: null;
+            }>;
+          }
+        | {
+            _key: string;
             _type: "cta";
             eyebrow?: string;
             title?: string;
@@ -2669,6 +2773,20 @@ export type QueryPageBySlugResult =
               openInNewTab: boolean | null;
               href: string | null;
             }> | null;
+          }
+        | {
+            _key: string;
+            _type: "productGrid";
+            eyebrow?: string;
+            title?: string;
+            columns?: "2" | "3" | "4";
+            sortOrder?: "default" | "title_asc" | "title_desc";
+            showFilters?: boolean;
+            showCategoryTabs?: boolean;
+            showProductCount?: boolean;
+            showPrice?: boolean;
+            richText: null;
+            buttons: null;
           }
         | {
             _key: string;
@@ -2819,6 +2937,32 @@ export type QueryPageBySlugResult =
       pagebuilder: Array<
         | {
             _key: string;
+            _type: "articleFeed";
+            eyebrow?: string;
+            title?: string;
+            layout?: "grid" | "list" | "magazine";
+            columns?: "2" | "3" | "4";
+            sortOrder?: "publishedAt_asc" | "publishedAt_desc";
+            showCategories?: boolean;
+            showDate?: boolean;
+            showAuthor?: boolean;
+            showExcerpt?: boolean;
+            articles: null;
+            filteredArticles: Array<{
+              _type: "page";
+              _id: string;
+              title: string;
+              description: string | null;
+              internalRole: string | null;
+              slug: string;
+              orderRank: null;
+              image: null;
+              publishedAt: string | null;
+              authors: null;
+            }>;
+          }
+        | {
+            _key: string;
             _type: "cta";
             eyebrow?: string;
             title?: string;
@@ -3090,6 +3234,20 @@ export type QueryPageBySlugResult =
               openInNewTab: boolean | null;
               href: string | null;
             }> | null;
+          }
+        | {
+            _key: string;
+            _type: "productGrid";
+            eyebrow?: string;
+            title?: string;
+            columns?: "2" | "3" | "4";
+            sortOrder?: "default" | "title_asc" | "title_desc";
+            showFilters?: boolean;
+            showCategoryTabs?: boolean;
+            showProductCount?: boolean;
+            showPrice?: boolean;
+            richText: null;
+            buttons: null;
           }
         | {
             _key: string;
@@ -3238,6 +3396,32 @@ export type QueryPageBySlugResult =
       pagebuilder: Array<
         | {
             _key: string;
+            _type: "articleFeed";
+            eyebrow?: string;
+            title?: string;
+            layout?: "grid" | "list" | "magazine";
+            columns?: "2" | "3" | "4";
+            sortOrder?: "publishedAt_asc" | "publishedAt_desc";
+            showCategories?: boolean;
+            showDate?: boolean;
+            showAuthor?: boolean;
+            showExcerpt?: boolean;
+            articles: null;
+            filteredArticles: Array<{
+              _type: "page";
+              _id: string;
+              title: string;
+              description: string | null;
+              internalRole: string | null;
+              slug: string;
+              orderRank: null;
+              image: null;
+              publishedAt: string | null;
+              authors: null;
+            }>;
+          }
+        | {
+            _key: string;
             _type: "cta";
             eyebrow?: string;
             title?: string;
@@ -3509,6 +3693,20 @@ export type QueryPageBySlugResult =
               openInNewTab: boolean | null;
               href: string | null;
             }> | null;
+          }
+        | {
+            _key: string;
+            _type: "productGrid";
+            eyebrow?: string;
+            title?: string;
+            columns?: "2" | "3" | "4";
+            sortOrder?: "default" | "title_asc" | "title_desc";
+            showFilters?: boolean;
+            showCategoryTabs?: boolean;
+            showProductCount?: boolean;
+            showPrice?: boolean;
+            richText: null;
+            buttons: null;
           }
         | {
             _key: string;
@@ -3656,6 +3854,32 @@ export type QueryPageBySlugResult =
       pagebuilder: Array<
         | {
             _key: string;
+            _type: "articleFeed";
+            eyebrow?: string;
+            title?: string;
+            layout?: "grid" | "list" | "magazine";
+            columns?: "2" | "3" | "4";
+            sortOrder?: "publishedAt_asc" | "publishedAt_desc";
+            showCategories?: boolean;
+            showDate?: boolean;
+            showAuthor?: boolean;
+            showExcerpt?: boolean;
+            articles: null;
+            filteredArticles: Array<{
+              _type: "page";
+              _id: string;
+              title: string;
+              description: string | null;
+              internalRole: string | null;
+              slug: string;
+              orderRank: null;
+              image: null;
+              publishedAt: string | null;
+              authors: null;
+            }>;
+          }
+        | {
+            _key: string;
             _type: "cta";
             eyebrow?: string;
             title?: string;
@@ -3927,6 +4151,20 @@ export type QueryPageBySlugResult =
               openInNewTab: boolean | null;
               href: string | null;
             }> | null;
+          }
+        | {
+            _key: string;
+            _type: "productGrid";
+            eyebrow?: string;
+            title?: string;
+            columns?: "2" | "3" | "4";
+            sortOrder?: "default" | "title_asc" | "title_desc";
+            showFilters?: boolean;
+            showCategoryTabs?: boolean;
+            showProductCount?: boolean;
+            showPrice?: boolean;
+            richText: null;
+            buttons: null;
           }
         | {
             _key: string;
@@ -4072,6 +4310,32 @@ export type QueryPageBySlugResult =
       pagebuilder: Array<
         | {
             _key: string;
+            _type: "articleFeed";
+            eyebrow?: string;
+            title?: string;
+            layout?: "grid" | "list" | "magazine";
+            columns?: "2" | "3" | "4";
+            sortOrder?: "publishedAt_asc" | "publishedAt_desc";
+            showCategories?: boolean;
+            showDate?: boolean;
+            showAuthor?: boolean;
+            showExcerpt?: boolean;
+            articles: null;
+            filteredArticles: Array<{
+              _type: "page";
+              _id: string;
+              title: string;
+              description: string | null;
+              internalRole: string | null;
+              slug: string;
+              orderRank: null;
+              image: null;
+              publishedAt: string | null;
+              authors: null;
+            }>;
+          }
+        | {
+            _key: string;
             _type: "cta";
             eyebrow?: string;
             title?: string;
@@ -4343,6 +4607,20 @@ export type QueryPageBySlugResult =
               openInNewTab: boolean | null;
               href: string | null;
             }> | null;
+          }
+        | {
+            _key: string;
+            _type: "productGrid";
+            eyebrow?: string;
+            title?: string;
+            columns?: "2" | "3" | "4";
+            sortOrder?: "default" | "title_asc" | "title_desc";
+            showFilters?: boolean;
+            showCategoryTabs?: boolean;
+            showProductCount?: boolean;
+            showPrice?: boolean;
+            richText: null;
+            buttons: null;
           }
         | {
             _key: string;
@@ -4489,6 +4767,32 @@ export type QueryPageBySlugResult =
       pagebuilder: Array<
         | {
             _key: string;
+            _type: "articleFeed";
+            eyebrow?: string;
+            title?: string;
+            layout?: "grid" | "list" | "magazine";
+            columns?: "2" | "3" | "4";
+            sortOrder?: "publishedAt_asc" | "publishedAt_desc";
+            showCategories?: boolean;
+            showDate?: boolean;
+            showAuthor?: boolean;
+            showExcerpt?: boolean;
+            articles: null;
+            filteredArticles: Array<{
+              _type: "page";
+              _id: string;
+              title: string;
+              description: string | null;
+              internalRole: string | null;
+              slug: string;
+              orderRank: null;
+              image: null;
+              publishedAt: string | null;
+              authors: null;
+            }>;
+          }
+        | {
+            _key: string;
             _type: "cta";
             eyebrow?: string;
             title?: string;
@@ -4760,6 +5064,20 @@ export type QueryPageBySlugResult =
               openInNewTab: boolean | null;
               href: string | null;
             }> | null;
+          }
+        | {
+            _key: string;
+            _type: "productGrid";
+            eyebrow?: string;
+            title?: string;
+            columns?: "2" | "3" | "4";
+            sortOrder?: "default" | "title_asc" | "title_desc";
+            showFilters?: boolean;
+            showCategoryTabs?: boolean;
+            showProductCount?: boolean;
+            showPrice?: boolean;
+            richText: null;
+            buttons: null;
           }
         | {
             _key: string;
@@ -4904,6 +5222,32 @@ export type QueryPageBySlugResult =
       pagebuilder: Array<
         | {
             _key: string;
+            _type: "articleFeed";
+            eyebrow?: string;
+            title?: string;
+            layout?: "grid" | "list" | "magazine";
+            columns?: "2" | "3" | "4";
+            sortOrder?: "publishedAt_asc" | "publishedAt_desc";
+            showCategories?: boolean;
+            showDate?: boolean;
+            showAuthor?: boolean;
+            showExcerpt?: boolean;
+            articles: null;
+            filteredArticles: Array<{
+              _type: "page";
+              _id: string;
+              title: string;
+              description: string | null;
+              internalRole: string | null;
+              slug: string;
+              orderRank: null;
+              image: null;
+              publishedAt: string | null;
+              authors: null;
+            }>;
+          }
+        | {
+            _key: string;
             _type: "cta";
             eyebrow?: string;
             title?: string;
@@ -5175,6 +5519,20 @@ export type QueryPageBySlugResult =
               openInNewTab: boolean | null;
               href: string | null;
             }> | null;
+          }
+        | {
+            _key: string;
+            _type: "productGrid";
+            eyebrow?: string;
+            title?: string;
+            columns?: "2" | "3" | "4";
+            sortOrder?: "default" | "title_asc" | "title_desc";
+            showFilters?: boolean;
+            showCategoryTabs?: boolean;
+            showProductCount?: boolean;
+            showPrice?: boolean;
+            richText: null;
+            buttons: null;
           }
         | {
             _key: string;
@@ -5321,6 +5679,32 @@ export type QueryPageBySlugResult =
       pagebuilder: Array<
         | {
             _key: string;
+            _type: "articleFeed";
+            eyebrow?: string;
+            title?: string;
+            layout?: "grid" | "list" | "magazine";
+            columns?: "2" | "3" | "4";
+            sortOrder?: "publishedAt_asc" | "publishedAt_desc";
+            showCategories?: boolean;
+            showDate?: boolean;
+            showAuthor?: boolean;
+            showExcerpt?: boolean;
+            articles: null;
+            filteredArticles: Array<{
+              _type: "page";
+              _id: string;
+              title: string;
+              description: string | null;
+              internalRole: string | null;
+              slug: string;
+              orderRank: null;
+              image: null;
+              publishedAt: string | null;
+              authors: null;
+            }>;
+          }
+        | {
+            _key: string;
             _type: "cta";
             eyebrow?: string;
             title?: string;
@@ -5592,6 +5976,20 @@ export type QueryPageBySlugResult =
               openInNewTab: boolean | null;
               href: string | null;
             }> | null;
+          }
+        | {
+            _key: string;
+            _type: "productGrid";
+            eyebrow?: string;
+            title?: string;
+            columns?: "2" | "3" | "4";
+            sortOrder?: "default" | "title_asc" | "title_desc";
+            showFilters?: boolean;
+            showCategoryTabs?: boolean;
+            showProductCount?: boolean;
+            showPrice?: boolean;
+            richText: null;
+            buttons: null;
           }
         | {
             _key: string;
@@ -5736,6 +6134,32 @@ export type QueryPageBySlugResult =
       pagebuilder: Array<
         | {
             _key: string;
+            _type: "articleFeed";
+            eyebrow?: string;
+            title?: string;
+            layout?: "grid" | "list" | "magazine";
+            columns?: "2" | "3" | "4";
+            sortOrder?: "publishedAt_asc" | "publishedAt_desc";
+            showCategories?: boolean;
+            showDate?: boolean;
+            showAuthor?: boolean;
+            showExcerpt?: boolean;
+            articles: null;
+            filteredArticles: Array<{
+              _type: "page";
+              _id: string;
+              title: string;
+              description: string | null;
+              internalRole: string | null;
+              slug: string;
+              orderRank: null;
+              image: null;
+              publishedAt: string | null;
+              authors: null;
+            }>;
+          }
+        | {
+            _key: string;
             _type: "cta";
             eyebrow?: string;
             title?: string;
@@ -6007,6 +6431,20 @@ export type QueryPageBySlugResult =
               openInNewTab: boolean | null;
               href: string | null;
             }> | null;
+          }
+        | {
+            _key: string;
+            _type: "productGrid";
+            eyebrow?: string;
+            title?: string;
+            columns?: "2" | "3" | "4";
+            sortOrder?: "default" | "title_asc" | "title_desc";
+            showFilters?: boolean;
+            showCategoryTabs?: boolean;
+            showProductCount?: boolean;
+            showPrice?: boolean;
+            richText: null;
+            buttons: null;
           }
         | {
             _key: string;
@@ -6152,6 +6590,32 @@ export type QueryPageBySlugResult =
       pagebuilder: Array<
         | {
             _key: string;
+            _type: "articleFeed";
+            eyebrow?: string;
+            title?: string;
+            layout?: "grid" | "list" | "magazine";
+            columns?: "2" | "3" | "4";
+            sortOrder?: "publishedAt_asc" | "publishedAt_desc";
+            showCategories?: boolean;
+            showDate?: boolean;
+            showAuthor?: boolean;
+            showExcerpt?: boolean;
+            articles: null;
+            filteredArticles: Array<{
+              _type: "page";
+              _id: string;
+              title: string;
+              description: string | null;
+              internalRole: string | null;
+              slug: string;
+              orderRank: null;
+              image: null;
+              publishedAt: string | null;
+              authors: null;
+            }>;
+          }
+        | {
+            _key: string;
             _type: "cta";
             eyebrow?: string;
             title?: string;
@@ -6423,6 +6887,20 @@ export type QueryPageBySlugResult =
               openInNewTab: boolean | null;
               href: string | null;
             }> | null;
+          }
+        | {
+            _key: string;
+            _type: "productGrid";
+            eyebrow?: string;
+            title?: string;
+            columns?: "2" | "3" | "4";
+            sortOrder?: "default" | "title_asc" | "title_desc";
+            showFilters?: boolean;
+            showCategoryTabs?: boolean;
+            showProductCount?: boolean;
+            showPrice?: boolean;
+            richText: null;
+            buttons: null;
           }
         | {
             _key: string;
@@ -6566,6 +7044,32 @@ export type QueryPageBySlugResult =
       pagebuilder: Array<
         | {
             _key: string;
+            _type: "articleFeed";
+            eyebrow?: string;
+            title?: string;
+            layout?: "grid" | "list" | "magazine";
+            columns?: "2" | "3" | "4";
+            sortOrder?: "publishedAt_asc" | "publishedAt_desc";
+            showCategories?: boolean;
+            showDate?: boolean;
+            showAuthor?: boolean;
+            showExcerpt?: boolean;
+            articles: null;
+            filteredArticles: Array<{
+              _type: "page";
+              _id: string;
+              title: string;
+              description: string | null;
+              internalRole: string | null;
+              slug: string;
+              orderRank: null;
+              image: null;
+              publishedAt: string | null;
+              authors: null;
+            }>;
+          }
+        | {
+            _key: string;
             _type: "cta";
             eyebrow?: string;
             title?: string;
@@ -6837,6 +7341,20 @@ export type QueryPageBySlugResult =
               openInNewTab: boolean | null;
               href: string | null;
             }> | null;
+          }
+        | {
+            _key: string;
+            _type: "productGrid";
+            eyebrow?: string;
+            title?: string;
+            columns?: "2" | "3" | "4";
+            sortOrder?: "default" | "title_asc" | "title_desc";
+            showFilters?: boolean;
+            showCategoryTabs?: boolean;
+            showProductCount?: boolean;
+            showPrice?: boolean;
+            richText: null;
+            buttons: null;
           }
         | {
             _key: string;
@@ -6979,6 +7497,32 @@ export type QueryPageBySlugResult =
       pagebuilder: Array<
         | {
             _key: string;
+            _type: "articleFeed";
+            eyebrow?: string;
+            title?: string;
+            layout?: "grid" | "list" | "magazine";
+            columns?: "2" | "3" | "4";
+            sortOrder?: "publishedAt_asc" | "publishedAt_desc";
+            showCategories?: boolean;
+            showDate?: boolean;
+            showAuthor?: boolean;
+            showExcerpt?: boolean;
+            articles: null;
+            filteredArticles: Array<{
+              _type: "page";
+              _id: string;
+              title: string;
+              description: string | null;
+              internalRole: string | null;
+              slug: string;
+              orderRank: null;
+              image: null;
+              publishedAt: string | null;
+              authors: null;
+            }>;
+          }
+        | {
+            _key: string;
             _type: "cta";
             eyebrow?: string;
             title?: string;
@@ -7250,6 +7794,20 @@ export type QueryPageBySlugResult =
               openInNewTab: boolean | null;
               href: string | null;
             }> | null;
+          }
+        | {
+            _key: string;
+            _type: "productGrid";
+            eyebrow?: string;
+            title?: string;
+            columns?: "2" | "3" | "4";
+            sortOrder?: "default" | "title_asc" | "title_desc";
+            showFilters?: boolean;
+            showCategoryTabs?: boolean;
+            showProductCount?: boolean;
+            showPrice?: boolean;
+            richText: null;
+            buttons: null;
           }
         | {
             _key: string;
@@ -7390,6 +7948,32 @@ export type QueryPageBySlugResult =
       pagebuilder: Array<
         | {
             _key: string;
+            _type: "articleFeed";
+            eyebrow?: string;
+            title?: string;
+            layout?: "grid" | "list" | "magazine";
+            columns?: "2" | "3" | "4";
+            sortOrder?: "publishedAt_asc" | "publishedAt_desc";
+            showCategories?: boolean;
+            showDate?: boolean;
+            showAuthor?: boolean;
+            showExcerpt?: boolean;
+            articles: null;
+            filteredArticles: Array<{
+              _type: "page";
+              _id: string;
+              title: string;
+              description: string | null;
+              internalRole: string | null;
+              slug: string;
+              orderRank: null;
+              image: null;
+              publishedAt: string | null;
+              authors: null;
+            }>;
+          }
+        | {
+            _key: string;
             _type: "cta";
             eyebrow?: string;
             title?: string;
@@ -7661,6 +8245,20 @@ export type QueryPageBySlugResult =
               openInNewTab: boolean | null;
               href: string | null;
             }> | null;
+          }
+        | {
+            _key: string;
+            _type: "productGrid";
+            eyebrow?: string;
+            title?: string;
+            columns?: "2" | "3" | "4";
+            sortOrder?: "default" | "title_asc" | "title_desc";
+            showFilters?: boolean;
+            showCategoryTabs?: boolean;
+            showProductCount?: boolean;
+            showPrice?: boolean;
+            richText: null;
+            buttons: null;
           }
         | {
             _key: string;
@@ -7802,6 +8400,32 @@ export type QueryPageBySlugResult =
       pagebuilder: Array<
         | {
             _key: string;
+            _type: "articleFeed";
+            eyebrow?: string;
+            title?: string;
+            layout?: "grid" | "list" | "magazine";
+            columns?: "2" | "3" | "4";
+            sortOrder?: "publishedAt_asc" | "publishedAt_desc";
+            showCategories?: boolean;
+            showDate?: boolean;
+            showAuthor?: boolean;
+            showExcerpt?: boolean;
+            articles: null;
+            filteredArticles: Array<{
+              _type: "page";
+              _id: string;
+              title: string;
+              description: string | null;
+              internalRole: string | null;
+              slug: string;
+              orderRank: null;
+              image: null;
+              publishedAt: string | null;
+              authors: null;
+            }>;
+          }
+        | {
+            _key: string;
             _type: "cta";
             eyebrow?: string;
             title?: string;
@@ -8073,6 +8697,20 @@ export type QueryPageBySlugResult =
               openInNewTab: boolean | null;
               href: string | null;
             }> | null;
+          }
+        | {
+            _key: string;
+            _type: "productGrid";
+            eyebrow?: string;
+            title?: string;
+            columns?: "2" | "3" | "4";
+            sortOrder?: "default" | "title_asc" | "title_desc";
+            showFilters?: boolean;
+            showCategoryTabs?: boolean;
+            showProductCount?: boolean;
+            showPrice?: boolean;
+            richText: null;
+            buttons: null;
           }
         | {
             _key: string;

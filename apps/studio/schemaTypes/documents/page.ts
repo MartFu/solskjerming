@@ -17,11 +17,12 @@ import { GROUP, GROUPS } from "@/utils/constant";
 import {
   createIdentityFields,
   createPagebuilderField,
-  createParentField,
+  createPageParentField,
   createSortOrderField,
 } from "@/utils/factories/create-page-fields";
 import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
 import { InternalRole, ROLE_RULES} from "@/utils/modules";
+import { PAGEBUILDER_NAME } from "../definitions";
 
 // ---------------------------------------------------------------------------
 // Conditional validation helper
@@ -96,7 +97,7 @@ export const page = defineType({
 
     // ── STANDARD FIELDS ───────────────────────────────────────
     ...createIdentityFields(),
-    ...createParentField(["page"]), // all pages can nest under other pages
+    ...createPageParentField(["page"]), // all pages can nest under other pages
     ...createSortOrderField(),
 
     // ── SEO ─────────────────────
@@ -111,7 +112,7 @@ export const page = defineType({
     // ── PAGEBUILDER ───────────────────────────────────────────
     // Single universal pagebuilder that accepts ALL block types.
     // Blueprints pre-populate this with appropriate blocks on creation.
-    ...createPagebuilderField("pageBuilder"),
+    ...createPagebuilderField(PAGEBUILDER_NAME),
 
     // ── STRICT DATA REFERENCES ────────────────────────────────
     // Optional references to strict data documents. These only appear

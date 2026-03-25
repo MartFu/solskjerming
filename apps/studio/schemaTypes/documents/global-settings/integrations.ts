@@ -1,25 +1,20 @@
 import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
-import { createIntegrationFields } from "@/utils/factories/create-integration-fields";
-import { Blocks } from "lucide-react";
-import { defineType } from "sanity";
+import { createIntegrationsField } from "@/utils/factories/create-integration-fields";
+import { PlugIcon } from "@sanity/icons";
+import { defineGlobal } from "@/utils/globals/define-global";
 
-export const globalIntegrations = defineType({
-  name: DOCUMENT_NAMES.globalIntegrations,
-  title: "Globale Integrasjoner",
-  type: "document",
-  icon: Blocks,
-  fields: [
-    ...createIntegrationFields({
-      googleAnalyticsIdDescription:
-        "Standard ID som brukes hvis nettsiden ikke har sin egen (f.eks. G-XXXXXXXXXX).",
-      gtmContainerIdDescription: "Standard GTM ID (f.eks. GTM-XXXXXXX).",
-      facebookPixelIdDescription:
-        "Facebook Pixel-ID for konverteringssporing på tvers av nettsteder.",
-    }),
-  ],
-  preview: {
-    prepare() {
-      return { title: "Globale Integrasjoner" };
+export const globalIntegrations = defineGlobal({
+  sortFields: [],
+    name: DOCUMENT_NAMES.globalIntegrations,
+    title: "Globale Integrasjoner",
+    type: "document",
+    icon: PlugIcon,
+    fields: [
+        createIntegrationsField({ groupsEnabled: false })
+    ],
+    preview: {
+        prepare() {
+            return { title: "Globale Integrasjoner" };
+        },
     },
-  },
 });

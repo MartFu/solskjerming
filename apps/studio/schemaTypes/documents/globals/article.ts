@@ -2,14 +2,11 @@ import {
   orderRankField,
   orderRankOrdering,
 } from "@sanity/orderable-document-list";
-import { defineArrayMember, defineField, defineType } from "sanity";
-
+import { defineArrayMember, defineField } from "sanity";
 import { documentSlugField, imageWithAltField } from "@/schemaTypes/common";
 import { GROUP, GROUPS } from "@/utils/constant";
 import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
-import { defineGlobal } from "./define-global";
-// import { ogFields } from "@/utils/og-fields";
-// import { seoFields } from "@/utils/seo-fields";
+import { defineGlobal } from "@/utils/globals/define-global";
 
 
 

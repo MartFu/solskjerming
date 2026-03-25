@@ -1,0 +1,499 @@
+Date : 2026-03-25 13:33:55
+Directory : c:\Users\solsk\Desktop\Martin\monorepo\solskjerming
+Total : 359 files,  61056 codes, 2774 comments, 6670 blanks, all 70500 lines
+
+Languages
++--------------------+------------+------------+------------+------------+------------+
+| language           | files      | code       | comment    | blank      | total      |
++--------------------+------------+------------+------------+------------+------------+
+| TypeScript         |        195 |     22,938 |      2,084 |      1,814 |     26,836 |
+| TypeScript JSX     |        109 |     14,782 |        669 |      1,404 |     16,855 |
+| YAML               |          8 |     12,921 |          6 |      3,124 |     16,051 |
+| JSON               |         19 |      9,402 |          0 |         19 |      9,421 |
+| Markdown           |         14 |        587 |          4 |        274 |        865 |
+| JSON with Comments |          9 |        237 |          0 |          9 |        246 |
+| PostCSS            |          1 |        129 |          0 |          8 |        137 |
+| JavaScript         |          3 |         39 |          4 |         11 |         54 |
+| Ignore             |          1 |         21 |          7 |          7 |         35 |
++--------------------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                           | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                              |        359 |     61,056 |      2,774 |      6,670 |     70,500 |
+| . (Files)                                                                                                                      |         11 |     13,251 |          0 |      3,262 |     16,513 |
+| .github                                                                                                                        |          7 |        202 |          7 |         51 |        260 |
+| .github (Files)                                                                                                                |          2 |         15 |          7 |         12 |         34 |
+| .github\ISSUE_TEMPLATE                                                                                                         |          2 |         45 |          0 |         15 |         60 |
+| .github\workflows                                                                                                              |          3 |        142 |          0 |         24 |        166 |
+| apps                                                                                                                           |        299 |     36,511 |      2,650 |      3,011 |     42,172 |
+| apps\studio                                                                                                                    |        212 |     31,096 |      2,311 |      2,239 |     35,646 |
+| apps\studio (Files)                                                                                                            |         10 |      9,290 |         12 |         46 |      9,348 |
+| apps\studio\components                                                                                                         |         41 |      7,651 |        311 |        631 |      8,593 |
+| apps\studio\components (Files)                                                                                                 |         11 |        896 |         86 |        113 |      1,095 |
+| apps\studio\components\inputs                                                                                                  |          7 |      1,763 |         95 |        189 |      2,047 |
+| apps\studio\components\modals                                                                                                  |          3 |        249 |          3 |         12 |        264 |
+| apps\studio\components\modals\create-page                                                                                      |          3 |        249 |          3 |         12 |        264 |
+| apps\studio\components\panes                                                                                                   |          5 |        841 |         44 |         73 |        958 |
+| apps\studio\components\panes\page-tree                                                                                         |          5 |        841 |         44 |         73 |        958 |
+| apps\studio\components\studio                                                                                                  |          1 |         32 |          0 |          5 |         37 |
+| apps\studio\components\tool-layout                                                                                             |         12 |      2,738 |         73 |        214 |      3,025 |
+| apps\studio\components\url-slug                                                                                                |          1 |         39 |          0 |          6 |         45 |
+| apps\studio\components\views                                                                                                   |          1 |      1,093 |         10 |         19 |      1,122 |
+| apps\studio\context                                                                                                            |          8 |        655 |         74 |        113 |        842 |
+| apps\studio\functions                                                                                                          |          3 |         70 |          2 |          9 |         81 |
+| apps\studio\functions\auto-redirect                                                                                            |          3 |         70 |          2 |          9 |         81 |
+| apps\studio\hooks                                                                                                              |          4 |        159 |         21 |         50 |        230 |
+| apps\studio\plugins                                                                                                            |         15 |      1,897 |        110 |        147 |      2,154 |
+| apps\studio\plugins (Files)                                                                                                    |          1 |         65 |          0 |          5 |         70 |
+| apps\studio\plugins\products                                                                                                   |         14 |      1,832 |        110 |        142 |      2,084 |
+| apps\studio\plugins\products (Files)                                                                                           |          4 |        167 |         37 |         25 |        229 |
+| apps\studio\plugins\products\components                                                                                        |          7 |      1,560 |         61 |         95 |      1,716 |
+| apps\studio\plugins\products\hooks                                                                                             |          3 |        105 |         12 |         22 |        139 |
+| apps\studio\schemaTypes                                                                                                        |         75 |      6,367 |        863 |        571 |      7,801 |
+| apps\studio\schemaTypes (Files)                                                                                                |          4 |        426 |         59 |         62 |        547 |
+| apps\studio\schemaTypes\blocks                                                                                                 |         22 |      2,518 |        177 |        118 |      2,813 |
+| apps\studio\schemaTypes\blocks (Files)                                                                                         |         10 |        625 |          1 |         37 |        663 |
+| apps\studio\schemaTypes\blocks\v2                                                                                              |         12 |      1,893 |        176 |         81 |      2,150 |
+| apps\studio\schemaTypes\definitions                                                                                            |         15 |        573 |         26 |         54 |        653 |
+| apps\studio\schemaTypes\documents                                                                                              |         34 |      2,850 |        601 |        337 |      3,788 |
+| apps\studio\schemaTypes\documents (Files)                                                                                      |          8 |      1,058 |        122 |         85 |      1,265 |
+| apps\studio\schemaTypes\documents\global-settings                                                                              |          8 |        249 |         14 |         32 |        295 |
+| apps\studio\schemaTypes\documents\globals                                                                                      |          9 |        703 |         40 |         64 |        807 |
+| apps\studio\schemaTypes\documents\modules                                                                                      |          3 |        177 |         51 |         17 |        245 |
+| apps\studio\schemaTypes\documents\packages                                                                                     |          6 |        663 |        374 |        139 |      1,176 |
+| apps\studio\scripts                                                                                                            |          1 |         42 |         15 |          7 |         64 |
+| apps\studio\utils                                                                                                              |         55 |      4,965 |        903 |        665 |      6,533 |
+| apps\studio\utils (Files)                                                                                                      |         13 |      1,196 |        173 |        217 |      1,586 |
+| apps\studio\utils\actions                                                                                                      |          4 |         35 |          9 |         13 |         57 |
+| apps\studio\utils\factories                                                                                                    |         14 |      1,937 |        209 |        141 |      2,287 |
+| apps\studio\utils\globals                                                                                                      |          1 |         18 |          0 |          2 |         20 |
+| apps\studio\utils\modules                                                                                                      |          5 |        590 |        399 |        158 |      1,147 |
+| apps\studio\utils\persistence                                                                                                  |          2 |         67 |          4 |          7 |         78 |
+| apps\studio\utils\site                                                                                                         |          4 |        370 |         53 |         48 |        471 |
+| apps\studio\utils\structure                                                                                                    |          7 |        326 |         20 |         47 |        393 |
+| apps\studio\utils\themes                                                                                                       |          5 |        426 |         36 |         32 |        494 |
+| apps\web                                                                                                                       |         87 |      5,415 |        339 |        772 |      6,526 |
+| apps\web (Files)                                                                                                               |          8 |        189 |         12 |         27 |        228 |
+| apps\web\scripts                                                                                                               |          1 |         34 |          3 |          8 |         45 |
+| apps\web\src                                                                                                                   |         78 |      5,192 |        324 |        737 |      6,253 |
+| apps\web\src (Files)                                                                                                           |          4 |        190 |          2 |         46 |        238 |
+| apps\web\src\app                                                                                                               |         17 |        831 |         17 |        131 |        979 |
+| apps\web\src\app (Files)                                                                                                       |          5 |        149 |         12 |         25 |        186 |
+| apps\web\src\app\[[...slug]]                                                                                                   |          1 |         77 |          1 |         12 |         90 |
+| apps\web\src\app\_sandbox                                                                                                      |          2 |        227 |          2 |         27 |        256 |
+| apps\web\src\app\_sandbox\articles                                                                                             |          2 |        227 |          2 |         27 |        256 |
+| apps\web\src\app\_sandbox\articles (Files)                                                                                     |          1 |        142 |          1 |         17 |        160 |
+| apps\web\src\app\_sandbox\articles\[slug]                                                                                      |          1 |         85 |          1 |         10 |         96 |
+| apps\web\src\app\api                                                                                                           |          8 |        372 |          2 |         65 |        439 |
+| apps\web\src\app\api\article                                                                                                   |          1 |         27 |          0 |          8 |         35 |
+| apps\web\src\app\api\article\search                                                                                            |          1 |         27 |          0 |          8 |         35 |
+| apps\web\src\app\api\disable-draft                                                                                             |          1 |         10 |          0 |          3 |         13 |
+| apps\web\src\app\api\navigation                                                                                                |          1 |         13 |          0 |          7 |         20 |
+| apps\web\src\app\api\og                                                                                                        |          3 |        307 |          2 |         41 |        350 |
+| apps\web\src\app\api\presentation-draft                                                                                        |          1 |          6 |          0 |          3 |          9 |
+| apps\web\src\app\api\preview                                                                                                   |          1 |          9 |          0 |          3 |         12 |
+| apps\web\src\app\test                                                                                                          |          1 |          6 |          0 |          2 |          8 |
+| apps\web\src\components                                                                                                        |         41 |      3,724 |        270 |        468 |      4,462 |
+| apps\web\src\components (Files)                                                                                                |         19 |      2,093 |        186 |        258 |      2,537 |
+| apps\web\src\components\_deprecated                                                                                            |          4 |        300 |         40 |         40 |        380 |
+| apps\web\src\components\_deprecated (Files)                                                                                    |          1 |        140 |         19 |         18 |        177 |
+| apps\web\src\components\_deprecated\pagebuilder.v2                                                                             |          3 |        160 |         21 |         22 |        203 |
+| apps\web\src\components\elements                                                                                               |          6 |        691 |         30 |        102 |        823 |
+| apps\web\src\components\pagebuilder                                                                                            |          4 |        200 |          6 |         25 |        231 |
+| apps\web\src\components\sections                                                                                               |          7 |        383 |          3 |         35 |        421 |
+| apps\web\src\components\static                                                                                                 |          1 |         57 |          5 |          8 |         70 |
+| apps\web\src\context                                                                                                           |          1 |         24 |          0 |          7 |         31 |
+| apps\web\src\hooks                                                                                                             |          3 |        107 |          0 |         24 |        131 |
+| apps\web\src\lib                                                                                                               |         12 |        316 |         35 |         61 |        412 |
+| apps\web\src\lib (Files)                                                                                                       |          8 |        263 |         33 |         49 |        345 |
+| apps\web\src\lib\static                                                                                                        |          4 |         53 |          2 |         12 |         67 |
+| github                                                                                                                         |          2 |         72 |          3 |         12 |         87 |
+| github (Files)                                                                                                                 |          1 |          6 |          3 |          2 |         11 |
+| github\workflows                                                                                                               |          1 |         66 |          0 |         10 |         76 |
+| packages                                                                                                                       |         40 |     11,020 |        114 |        334 |     11,468 |
+| packages\blocks                                                                                                                |          2 |         38 |          0 |          1 |         39 |
+| packages\env                                                                                                                   |          4 |        101 |          3 |         18 |        122 |
+| packages\env (Files)                                                                                                           |          2 |         34 |          0 |          2 |         36 |
+| packages\env\src                                                                                                               |          2 |         67 |          3 |         16 |         86 |
+| packages\logger                                                                                                                |          4 |         63 |          0 |         17 |         80 |
+| packages\logger (Files)                                                                                                        |          3 |         45 |          0 |         11 |         56 |
+| packages\logger\src                                                                                                            |          1 |         18 |          0 |          6 |         24 |
+| packages\sanity                                                                                                                |         10 |      9,730 |        110 |        207 |     10,047 |
+| packages\sanity (Files)                                                                                                        |          3 |         74 |          0 |         14 |         88 |
+| packages\sanity\src                                                                                                            |          7 |      9,656 |        110 |        193 |      9,959 |
+| packages\typescript-config                                                                                                     |          5 |         52 |          0 |          6 |         58 |
+| packages\ui                                                                                                                    |         15 |      1,036 |          1 |         85 |      1,122 |
+| packages\ui (Files)                                                                                                            |          5 |         87 |          1 |          6 |         94 |
+| packages\ui\src                                                                                                                |         10 |        949 |          0 |         79 |      1,028 |
+| packages\ui\src\components                                                                                                     |          8 |        815 |          0 |         69 |        884 |
+| packages\ui\src\lib                                                                                                            |          1 |          5 |          0 |          2 |          7 |
+| packages\ui\src\styles                                                                                                         |          1 |        129 |          0 |          8 |        137 |
++--------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| filename                                                                                                                       | language           | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\.github\ISSUE_TEMPLATE\bug_report.md                                       | Markdown           |         30 |          0 |          9 |         39 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\.github\ISSUE_TEMPLATE\feature_request.md                                  | Markdown           |         15 |          0 |          6 |         21 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\.github\PULL_REQUEST_TEMPLATE.md                                           | Markdown           |          9 |          4 |         10 |         23 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\.github\dependabot.yml                                                     | YAML               |          6 |          3 |          2 |         11 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\.github\workflows\ci.yml                                                   | YAML               |         57 |          0 |         12 |         69 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\.github\workflows\deploy-sanity.yml                                        | YAML               |         71 |          0 |         10 |         81 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\.github\workflows\sanity-template.yml                                      | YAML               |         14 |          0 |          2 |         16 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\CLAUDE.md                                                                  | Markdown           |        124 |          0 |         60 |        184 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\CODE_OF_CONDUCT.md                                                         | Markdown           |         93 |          0 |         36 |        129 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\CONTRIBUTING.md                                                            | Markdown           |         20 |          0 |         12 |         32 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\README.md                                                                  | Markdown           |         96 |          0 |         57 |        153 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\SECURITY.md                                                                | Markdown           |          7 |          0 |          7 |         14 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\README.md                                                      | Markdown           |          6 |          0 |          4 |         10 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\blueprint-badge.tsx                                 | TypeScript JSX     |          9 |         15 |          3 |         27 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\collapsible-field-wrapper.tsx                       | TypeScript JSX     |         42 |          0 |          4 |         46 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\copy-button.tsx                                     | TypeScript JSX     |         58 |          0 |          5 |         63 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\deployment-dashboard.tsx                            | TypeScript JSX     |         47 |          2 |          6 |         55 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\divider.tsx                                         | TypeScript JSX     |         36 |          3 |          7 |         46 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\hover-card.ts                                       | TypeScript         |         27 |          0 |          1 |         28 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\icon-preview.tsx                                    | TypeScript JSX     |         11 |          0 |          2 |         13 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\inherited-label.tsx                                 | TypeScript JSX     |         17 |          0 |          2 |         19 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\inputs\oklch-color-input.tsx                        | TypeScript JSX     |        590 |         39 |         56 |        685 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\inputs\schema-org-select-field.tsx                  | TypeScript JSX     |        133 |          6 |         20 |        159 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\inputs\slug-domain-input.tsx                        | TypeScript JSX     |        441 |         24 |         37 |        502 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\inputs\slug-field-component.tsx                     | TypeScript JSX     |        211 |          2 |         22 |        235 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\inputs\theme-document-input.tsx                     | TypeScript JSX     |         47 |         13 |         13 |         73 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\inputs\theme-preset-field-input.tsx                 | TypeScript JSX     |         98 |          4 |         21 |        123 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\inputs\theme-preset-picker.tsx                      | TypeScript JSX     |        243 |          7 |         20 |        270 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\logo.tsx                                            | TypeScript JSX     |         46 |          0 |          1 |         47 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\modals\create-page\OptionButton.tsx                 | TypeScript JSX     |         58 |          0 |          2 |         60 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\modals\create-page\PlacementBreadcrumb.tsx          | TypeScript JSX     |         65 |          0 |          3 |         68 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\modals\create-page\index.tsx                        | TypeScript JSX     |        126 |          3 |          7 |        136 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\nested-pages-structure.ts                           | TypeScript         |        330 |         49 |         59 |        438 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\panes\page-tree\DrillDownTree.tsx                   | TypeScript JSX     |        249 |         10 |         21 |        280 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\panes\page-tree\ExpandableTree.tsx                  | TypeScript JSX     |        242 |         13 |         18 |        273 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\panes\page-tree\SearchResults.tsx                   | TypeScript JSX     |         95 |          0 |          5 |        100 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\panes\page-tree\index.tsx                           | TypeScript JSX     |        224 |         18 |         23 |        265 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\panes\page-tree\types.ts                            | TypeScript         |         31 |          3 |          6 |         40 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\social-preview.tsx                                  | TypeScript JSX     |        273 |         17 |         23 |        313 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\studio\ToolMenu.tsx                                 | TypeScript JSX     |         32 |          0 |          5 |         37 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\tool-layout\ArchiveSiteDialog.tsx                   | TypeScript JSX     |        892 |         26 |         65 |        983 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\tool-layout\ConfirmDialog.tsx                       | TypeScript JSX     |         66 |          0 |          4 |         70 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\tool-layout\CreateSiteDialog.tsx                    | TypeScript JSX     |        233 |          0 |         13 |        246 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\tool-layout\Layout.tsx                              | TypeScript JSX     |         46 |          0 |          8 |         54 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\tool-layout\PreviewPane.tsx                         | TypeScript JSX     |        208 |          4 |          8 |        220 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\tool-layout\SiteCombobox.tsx                        | TypeScript JSX     |        141 |          4 |         14 |        159 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\tool-layout\Stats.tsx                               | TypeScript JSX     |        317 |          4 |         21 |        342 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\tool-layout\TabBar.tsx                              | TypeScript JSX     |        323 |         17 |         31 |        371 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\tool-layout\TopBar.tsx                              | TypeScript JSX     |        120 |          3 |          7 |        130 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\tool-layout\WorkspaceView.tsx                       | TypeScript JSX     |        325 |         13 |         27 |        365 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\tool-layout\index.tsx                               | TypeScript JSX     |         63 |          2 |         12 |         77 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\tool-layout\types.ts                                | TypeScript         |          4 |          0 |          4 |          8 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\url-slug\validation-messages.tsx                    | TypeScript JSX     |         39 |          0 |          6 |         45 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\components\views\SeoReportView.tsx                             | TypeScript JSX     |      1,093 |         10 |         19 |      1,122 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\context\ActiveTabIdProvider.tsx                                | TypeScript JSX     |          5 |          3 |          4 |         12 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\context\ArchiveSiteProvider.tsx                                | TypeScript JSX     |        149 |         11 |         14 |        174 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\context\PageCreationProvider.tsx                               | TypeScript JSX     |         94 |         11 |         16 |        121 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\context\PreviewProvider.tsx                                    | TypeScript JSX     |         52 |          4 |         12 |         68 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\context\SiteProvider.tsx                                       | TypeScript JSX     |         90 |         10 |         20 |        120 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\context\TabSiteScopeProvider.tsx                               | TypeScript JSX     |         56 |         10 |         12 |         78 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\context\ToolLayoutProvider.tsx                                 | TypeScript JSX     |         36 |         15 |         10 |         61 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\context\WorkspaceTabsProvider.tsx                              | TypeScript JSX     |        173 |         10 |         25 |        208 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\functions\auto-redirect\document.json                          | JSON               |          4 |          0 |          1 |          5 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\functions\auto-redirect\index.ts                               | TypeScript         |         57 |          2 |          7 |         66 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\functions\auto-redirect\package.json                           | JSON               |          9 |          0 |          1 |         10 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\hooks\useCopy.ts                                               | TypeScript         |         20 |          0 |          4 |         24 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\hooks\useDrilldownState.ts                                     | TypeScript         |         36 |          3 |         15 |         54 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\hooks\usePreviewResolver.ts                                    | TypeScript         |         55 |          2 |         17 |         74 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\hooks\useStudioSettings.ts                                     | TypeScript         |         48 |         16 |         14 |         78 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\location.ts                                                    | TypeScript         |         31 |          0 |          2 |         33 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\package.json                                                   | JSON               |         64 |          0 |          1 |         65 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\plugins\presentation-url.ts                                    | TypeScript         |         65 |          0 |          5 |         70 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\plugins\products\components\DocumentForm.tsx                   | TypeScript JSX     |         56 |         22 |          7 |         85 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\plugins\products\components\FolderDialog.tsx                   | TypeScript JSX     |        160 |          0 |          9 |        169 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\plugins\products\components\FolderSidebar.tsx                  | TypeScript JSX     |        316 |          8 |         14 |        338 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\plugins\products\components\ProductDetailPane.tsx              | TypeScript JSX     |        146 |          4 |         10 |        160 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\plugins\products\components\ProductList.tsx                    | TypeScript JSX     |        297 |          5 |         13 |        315 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\plugins\products\components\ProductsView.tsx                   | TypeScript JSX     |        248 |         11 |         23 |        282 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\plugins\products\components\ReferencesPanel.tsx                | TypeScript JSX     |        337 |         11 |         19 |        367 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\plugins\products\folderTree.ts                                 | TypeScript         |         56 |         16 |          8 |         80 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\plugins\products\hooks\useProductReference.ts                  | TypeScript         |         40 |          5 |          7 |         52 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\plugins\products\hooks\useProducts.ts                          | TypeScript         |         36 |          1 |          8 |         45 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\plugins\products\hooks\useSites.ts                             | TypeScript         |         29 |          6 |          7 |         42 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\plugins\products\index.ts                                      | TypeScript         |         24 |          0 |          4 |         28 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\plugins\products\queries.ts                                    | TypeScript         |         48 |         20 |          5 |         73 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\plugins\products\types.ts                                      | TypeScript         |         39 |          1 |          8 |         48 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\sanity.blueprint.ts                                            | TypeScript         |         17 |          0 |          2 |         19 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\sanity.cli.ts                                                  | TypeScript         |         74 |          6 |         13 |         93 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\sanity.config.ts                                               | TypeScript         |          5 |          0 |          3 |          8 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schema.json                                                    | JSON               |      8,957 |          0 |          1 |      8,958 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\article-feed.ts                             | TypeScript         |        105 |          0 |          2 |        107 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\cta.ts                                      | TypeScript         |         35 |          0 |          3 |         38 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\faq-accordion.ts                            | TypeScript         |         78 |          0 |          2 |         80 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\feature-cards-icon.ts                       | TypeScript         |         63 |          0 |          4 |         67 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\hero.ts                                     | TypeScript         |         38 |          0 |          3 |         41 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\image-link-cards.ts                         | TypeScript         |        100 |          0 |          5 |        105 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\index.ts                                    | TypeScript         |         48 |          1 |         10 |         59 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\product-grid.ts                             | TypeScript         |         92 |          0 |          2 |         94 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\rich-text.ts                                | TypeScript         |         33 |          0 |          3 |         36 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\subscribe-newsletter.ts                     | TypeScript         |         33 |          0 |          3 |         36 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\v2\banner.ts                                | TypeScript         |         63 |          7 |          3 |         73 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\v2\card-grid.ts                             | TypeScript         |        118 |         10 |          5 |        133 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\v2\conversion-group.ts                      | TypeScript         |        234 |          8 |         12 |        254 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\v2\feature-group.ts                         | TypeScript         |        339 |         22 |         10 |        371 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\v2\feed.ts                                  | TypeScript         |        120 |         14 |          2 |        136 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\v2\group.ts                                 | TypeScript         |         76 |         10 |          3 |         89 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\v2\index.ts                                 | TypeScript         |         87 |         65 |         18 |        170 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\v2\intro.ts                                 | TypeScript         |         50 |          7 |          3 |         60 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\v2\reference-grid.ts                        | TypeScript         |         63 |         12 |          2 |         77 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\v2\rich-content-group.ts                    | TypeScript         |        352 |         13 |         10 |        375 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\v2\split.ts                                 | TypeScript         |         77 |          4 |          3 |         84 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\blocks\v2\trust-group.ts                           | TypeScript         |        314 |          4 |         10 |        328 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\common.ts                                          | TypeScript         |        120 |          0 |         14 |        134 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\constant.ts                                        | TypeScript         |         25 |          3 |          3 |         31 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\definitions\address.ts                             | TypeScript         |         12 |          0 |          1 |         13 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\definitions\button.ts                              | TypeScript         |         62 |          0 |          5 |         67 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\definitions\cookie.ts                              | TypeScript         |         10 |          0 |          2 |         12 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\definitions\custom-url.ts                          | TypeScript         |        100 |          0 |          4 |        104 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\definitions\deploymentMeta.ts                      | TypeScript         |         61 |          0 |          1 |         62 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\definitions\enabled-modules.ts                     | TypeScript         |         19 |          5 |          2 |         26 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\definitions\index.ts                               | TypeScript         |         31 |          0 |          3 |         34 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\definitions\organization.ts                        | TypeScript         |         12 |          0 |          2 |         14 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\definitions\pagebuilder.ts                         | TypeScript         |          6 |          0 |          4 |         10 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\definitions\pricing.ts                             | TypeScript         |         32 |          0 |          1 |         33 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\definitions\rich-text.ts                           | TypeScript         |         93 |          0 |          6 |         99 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\definitions\seo.ts                                 | TypeScript         |         42 |         10 |          5 |         57 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\definitions\social.ts                              | TypeScript         |          2 |          0 |          2 |          4 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\definitions\theme-tokens.ts                        | TypeScript         |         72 |         11 |         14 |         97 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\definitions\theme.ts                               | TypeScript         |         19 |          0 |          2 |         21 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\footer.ts                                | TypeScript         |        124 |          0 |          6 |        130 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\global-settings\compliance.ts            | TypeScript         |         42 |          0 |          2 |         44 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\global-settings\index.ts                 | TypeScript         |         41 |         13 |         17 |         71 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\global-settings\integrations.ts          | TypeScript         |         19 |          0 |          2 |         21 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\global-settings\organization.ts          | TypeScript         |         39 |          0 |          2 |         41 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\global-settings\robots.ts                | TypeScript         |         14 |          0 |          2 |         16 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\global-settings\seo.ts                   | TypeScript         |         42 |          0 |          3 |         45 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\global-settings\structured-data.ts       | TypeScript         |         22 |          1 |          2 |         25 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\global-settings\theme.ts                 | TypeScript         |         30 |          0 |          2 |         32 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\globals\README.MD                        | Markdown           |         65 |          0 |         27 |         92 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\globals\article.ts                       | TypeScript         |        154 |          5 |          9 |        168 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\globals\author.ts                        | TypeScript         |         55 |          1 |          2 |         58 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\globals\category.ts                      | TypeScript         |         51 |          0 |          1 |         52 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\globals\documentation.ts                 | TypeScript         |         65 |          0 |          2 |         67 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\globals\faq.ts                           | TypeScript         |         80 |          1 |          3 |         84 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\globals\index.ts                         | TypeScript         |         41 |         22 |         15 |         78 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\globals\product.ts                       | TypeScript         |         99 |          9 |          2 |        110 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\globals\video.ts                         | TypeScript         |         93 |          2 |          3 |         98 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\index.ts                                 | TypeScript         |         43 |         35 |         15 |         93 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\modules\_example.ts                      | TypeScript         |        130 |         31 |          8 |        169 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\modules\commerce.ts                      | TypeScript         |         42 |          3 |          4 |         49 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\modules\index.ts                         | TypeScript         |          5 |         17 |          5 |         27 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\navbar.ts                                | TypeScript         |        168 |          0 |          8 |        176 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\packages\README.MD                       | Markdown           |         77 |          0 |         24 |        101 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\packages\articles.ts                     | TypeScript         |        191 |         11 |          6 |        208 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\packages\commerce.ts                     | TypeScript         |         71 |         11 |          4 |         86 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\packages\constant.ts                     | TypeScript         |          5 |          0 |          0 |          5 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\packages\define-package.ts               | TypeScript         |        304 |        334 |        100 |        738 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\packages\index.ts                        | TypeScript         |         15 |         18 |          5 |         38 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\page.ts                                  | TypeScript         |        137 |         46 |         22 |        205 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\pages.ts                                 | TypeScript         |        234 |         31 |         15 |        280 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\redirect.ts                              | TypeScript         |        149 |          0 |          6 |        155 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\site.ts                                  | TypeScript         |        163 |         10 |         11 |        184 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\documents\studio.ts                                | TypeScript         |         40 |          0 |          2 |         42 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\index.ts                                           | TypeScript         |          9 |          6 |          7 |         22 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\schemaTypes\templates.ts                                       | TypeScript         |        272 |         50 |         38 |        360 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\scripts\cli-alert-for-data.ts                                  | TypeScript         |         42 |         15 |          7 |         64 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\tsconfig.json                                                  | JSON with Comments |         22 |          0 |          1 |         23 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\actions\cookie-consent.ts                                | TypeScript         |          0 |          0 |          1 |          1 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\actions\define-document-action.ts                        | TypeScript         |         26 |          8 |          6 |         40 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\actions\index.ts                                         | TypeScript         |          7 |          1 |          5 |         13 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\actions\site.ts                                          | TypeScript         |          2 |          0 |          1 |          3 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\constant.ts                                              | TypeScript         |        116 |          0 |         16 |        132 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\env.ts                                                   | TypeScript         |          5 |          0 |          1 |          6 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\factories\create-cookie-consent-fields.ts                | TypeScript         |        132 |         68 |          6 |        206 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\factories\create-integration-fields.ts                   | TypeScript         |         62 |          0 |          6 |         68 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\factories\create-og-fields.ts                            | TypeScript         |        145 |          2 |         13 |        160 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\factories\create-organization-fields.ts                  | TypeScript         |        107 |          0 |         13 |        120 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\factories\create-page-builder.ts                         | TypeScript         |         26 |         11 |          2 |         39 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\factories\create-page-fields.ts                          | TypeScript         |         89 |         38 |          7 |        134 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\factories\create-robots-fields.ts                        | TypeScript         |        228 |         11 |         16 |        255 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\factories\create-routable-document.ts                    | TypeScript         |        155 |         51 |         26 |        232 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\factories\create-seo-fields.ts                           | TypeScript         |        141 |          5 |         10 |        156 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\factories\create-site-scoped-slug-field.ts               | TypeScript         |         84 |          2 |         14 |        100 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\factories\create-socials-object.ts                       | TypeScript         |         67 |          0 |          4 |         71 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\factories\create-structured-data-fields.ts               | TypeScript         |        604 |         12 |         15 |        631 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\factories\create-theme.ts                                | TypeScript         |         88 |          9 |          9 |        106 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\factories\index.ts                                       | TypeScript         |          9 |          0 |          0 |          9 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\fetch-project-stats.ts                                   | TypeScript         |         24 |          2 |          6 |         32 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\generateStudioHref.ts                                    | TypeScript         |         10 |         14 |          2 |         26 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\globals\define-global.ts                                 | TypeScript         |         18 |          0 |          2 |         20 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\helper.ts                                                | TypeScript         |        168 |         24 |         28 |        220 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\modules\define-module.ts                                 | TypeScript         |        214 |        157 |         67 |        438 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\modules\index.ts                                         | TypeScript         |         25 |          0 |          1 |         26 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\modules\registry.ts                                      | TypeScript         |        197 |        159 |         61 |        417 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\modules\structure.ts                                     | TypeScript         |        122 |         31 |         16 |        169 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\modules\validation.ts                                    | TypeScript         |         32 |         52 |         13 |         97 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\oklch.ts                                                 | TypeScript         |         43 |          4 |          5 |         52 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\page-tree.ts                                             | TypeScript         |        184 |         52 |         36 |        272 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\pane-ids.ts                                              | TypeScript         |         52 |          6 |         13 |         71 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\persistence\context.ts                                   | TypeScript         |         32 |          2 |          3 |         37 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\persistence\tabs.ts                                      | TypeScript         |         35 |          2 |          4 |         41 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\preview.ts                                               | TypeScript         |         75 |          4 |         14 |         93 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\site\archiveSite.ts                                      | TypeScript         |         53 |         19 |         11 |         83 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\site\buildSiteDocumentTree.ts                            | TypeScript         |         86 |         24 |         19 |        129 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\site\getSiteDeletionPreview.ts                           | TypeScript         |        102 |          9 |         13 |        124 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\site\getSiteInitialValue.ts                              | TypeScript         |        129 |          1 |          5 |        135 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\slug-validation.ts                                       | TypeScript         |        241 |         26 |         36 |        303 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\slug.ts                                                  | TypeScript         |         74 |          3 |         18 |         95 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\structure\build-global-items.ts                          | TypeScript         |        129 |          3 |         15 |        147 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\structure\build-page-tree.ts                             | TypeScript         |         42 |          7 |          5 |         54 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\structure\build-site-items.ts                            | TypeScript         |         53 |          4 |         10 |         67 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\structure\helpers.ts                                     | TypeScript         |         48 |          3 |          5 |         56 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\structure\index.ts                                       | TypeScript         |          3 |          0 |          1 |          4 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\structure\structure-channel.ts                           | TypeScript         |          4 |          0 |          1 |          5 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\structure\structure.ts                                   | TypeScript         |         47 |          3 |         10 |         60 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\themes\constant.ts                                       | TypeScript         |        156 |          3 |          6 |        165 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\themes\index.ts                                          | TypeScript         |          2 |          0 |          2 |          4 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\themes\presets.ts                                        | TypeScript         |        206 |         19 |         13 |        238 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\themes\themeToCss.ts                                     | TypeScript         |         17 |          7 |          3 |         27 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\themes\types.ts                                          | TypeScript         |         45 |          7 |          8 |         60 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\truncate.ts                                              | TypeScript         |         38 |         11 |          9 |         58 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\utils\types.ts                                                 | TypeScript         |        166 |         27 |         33 |        226 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\vite.config.ts                                                 | TypeScript         |          9 |          0 |          2 |         11 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\studio\workspace.ts                                                   | TypeScript         |        105 |          6 |         17 |        128 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\.prettierignore                                                   | Ignore             |         21 |          7 |          7 |         35 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\components.json                                                   | JSON               |         20 |          0 |          1 |         21 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\next-env.d.ts                                                     | TypeScript         |          1 |          4 |          2 |          7 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\next.config.ts                                                    | TypeScript         |         51 |          1 |          9 |         61 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\package.json                                                      | JSON               |         49 |          0 |          1 |         50 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\postcss.config.mjs                                                | JavaScript         |          1 |          0 |          1 |          2 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\proxy.ts                                                          | TypeScript         |         23 |          0 |          5 |         28 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\scripts\build.js                                                  | JavaScript         |         34 |          3 |          8 |         45 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\app\[[...slug]]\page.tsx                                      | TypeScript JSX     |         77 |          1 |         12 |         90 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\app\_sandbox\articles\[slug]\page.tsx                         | TypeScript JSX     |         85 |          1 |         10 |         96 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\app\_sandbox\articles\page.tsx                                | TypeScript JSX     |        142 |          1 |         17 |        160 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\app\actions.ts                                                | TypeScript         |          8 |          0 |          4 |         12 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\app\api\article\search\route.ts                               | TypeScript         |         27 |          0 |          8 |         35 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\app\api\disable-draft\route.ts                                | TypeScript         |         10 |          0 |          3 |         13 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\app\api\navigation\route.ts                                   | TypeScript         |         13 |          0 |          7 |         20 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\app\api\og\og-config.ts                                       | TypeScript         |         15 |          0 |          5 |         20 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\app\api\og\og-data.ts                                         | TypeScript         |         20 |          0 |          6 |         26 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\app\api\og\route.tsx                                          | TypeScript JSX     |        272 |          2 |         30 |        304 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\app\api\presentation-draft\route.ts                           | TypeScript         |          6 |          0 |          3 |          9 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\app\api\preview\route.ts                                      | TypeScript         |          9 |          0 |          3 |         12 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\app\layout.tsx                                                | TypeScript JSX     |         90 |          0 |          9 |         99 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\app\not-found.tsx                                             | TypeScript JSX     |         18 |          0 |          2 |         20 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\app\robots.ts                                                 | TypeScript         |         12 |          0 |          4 |         16 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\app\sitemap.ts                                                | TypeScript         |         21 |         12 |          6 |         39 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\app\test\page.tsx                                             | TypeScript JSX     |          6 |          0 |          2 |          8 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\_deprecated\pagebuilder.tsx                        | TypeScript JSX     |        140 |         19 |         18 |        177 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\_deprecated\pagebuilder.v2\index.tsx               | TypeScript JSX     |          4 |          0 |          2 |          6 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\_deprecated\pagebuilder.v2\pagebuilder-preview.tsx | TypeScript JSX     |         85 |          9 |         10 |        104 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\_deprecated\pagebuilder.v2\pagebuilder.tsx         | TypeScript JSX     |         71 |         12 |         10 |         93 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\blog-card.tsx                                      | TypeScript JSX     |        161 |          0 |         21 |        182 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\blog-list.tsx                                      | TypeScript JSX     |         43 |          0 |          5 |         48 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\blog-page-content.tsx                              | TypeScript JSX     |         91 |          0 |         14 |        105 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\blog-pagination.tsx                                | TypeScript JSX     |        109 |          6 |         16 |        131 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\blog-search-results.tsx                            | TypeScript JSX     |        137 |          0 |         13 |        150 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\blog-search.tsx                                    | TypeScript JSX     |         50 |          0 |          6 |         56 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\blog-section.tsx                                   | TypeScript JSX     |         33 |          0 |          5 |         38 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\elements\menu-link.tsx                             | TypeScript JSX     |         36 |          0 |          4 |         40 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\elements\rich-text.tsx                             | TypeScript JSX     |        132 |          0 |          6 |        138 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\elements\sanity-buttons.tsx                        | TypeScript JSX     |         62 |          0 |          7 |         69 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\elements\sanity-icon.tsx                           | TypeScript JSX     |         29 |          0 |          7 |         36 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\elements\sanity-image.tsx                          | TypeScript JSX     |         22 |          3 |          6 |         31 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\elements\table-of-content.tsx                      | TypeScript JSX     |        410 |         27 |         72 |        509 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\footer.tsx                                         | TypeScript JSX     |        222 |          0 |         13 |        235 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\image-link-card.tsx                                | TypeScript JSX     |         43 |          0 |          5 |         48 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\json-ld.tsx                                        | TypeScript JSX     |        608 |        145 |         87 |        840 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\logo.tsx                                           | TypeScript JSX     |         47 |          2 |          5 |         54 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\mobile-menu.tsx                                    | TypeScript JSX     |        117 |          1 |         12 |        130 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\mode-toggle.tsx                                    | TypeScript JSX     |         35 |          0 |          4 |         39 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\navbar.tsx                                         | TypeScript JSX     |        178 |         26 |         23 |        227 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\pagebuilder\index.ts                               | TypeScript         |          1 |          0 |          1 |          2 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\pagebuilder\pagebuilder-client.tsx                 | TypeScript JSX     |         93 |          2 |          9 |        104 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\pagebuilder\pagebuilder-content.tsx                | TypeScript JSX     |         71 |          3 |         10 |         84 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\pagebuilder\pagebuilder.tsx                        | TypeScript JSX     |         35 |          1 |          5 |         41 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\preview-bar.tsx                                    | TypeScript JSX     |         44 |          0 |          6 |         50 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\providers.tsx                                      | TypeScript JSX     |         27 |          0 |          5 |         32 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\sections\cta.tsx                                   | TypeScript JSX     |         38 |          0 |          4 |         42 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\sections\faq-accordion.tsx                         | TypeScript JSX     |         83 |          0 |          5 |         88 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\sections\feature-cards-with-icon.tsx               | TypeScript JSX     |         56 |          0 |          7 |         63 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\sections\hero.tsx                                  | TypeScript JSX     |         51 |          0 |          5 |         56 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\sections\image-link-cards.tsx                      | TypeScript JSX     |         45 |          1 |          5 |         51 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\sections\rich-text-block.tsx                       | TypeScript JSX     |         27 |          0 |          4 |         31 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\sections\subscribe-newsletter.tsx                  | TypeScript JSX     |         83 |          2 |          5 |         90 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\site-picker.tsx                                    | TypeScript JSX     |         54 |          6 |          9 |         69 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\social-icons.tsx                                   | TypeScript JSX     |         73 |          0 |          5 |         78 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\static\pagebuilder-static.tsx                      | TypeScript JSX     |         57 |          5 |          8 |         70 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\components\theme-overrides.tsx                                | TypeScript JSX     |         21 |          0 |          4 |         25 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\config.ts                                                     | TypeScript         |          4 |          0 |          1 |          5 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\context\SiteConfigProvider.tsx                                | TypeScript JSX     |         24 |          0 |          7 |         31 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\hooks\use-blog-search.ts                                      | TypeScript         |         38 |          0 |          9 |         47 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\hooks\use-debounce.ts                                         | TypeScript         |         13 |          0 |          5 |         18 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\hooks\use-is-mobile.tsx                                       | TypeScript JSX     |         56 |          0 |         10 |         66 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\lib\generate-theme-overrides.ts                               | TypeScript         |         35 |          6 |          4 |         45 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\lib\navigation.ts                                             | TypeScript         |          9 |          0 |          3 |         12 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\lib\pages.ts                                                  | TypeScript         |         20 |          2 |          5 |         27 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\lib\seo.ts                                                    | TypeScript         |        141 |          8 |         19 |        168 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\lib\site-context.ts                                           | TypeScript         |          5 |         13 |          2 |         20 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\lib\site-resolver.ts                                          | TypeScript         |         35 |          4 |         11 |         50 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\lib\site.ts                                                   | TypeScript         |          9 |          0 |          2 |         11 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\lib\slug.ts                                                   | TypeScript         |          9 |          0 |          3 |         12 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\lib\static\getSitesList.ts                                    | TypeScript         |          8 |          0 |          2 |         10 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\lib\static\navigation.ts                                      | TypeScript         |         11 |          1 |          3 |         15 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\lib\static\pages.ts                                           | TypeScript         |         22 |          0 |          4 |         26 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\lib\static\slugs.ts                                           | TypeScript         |         12 |          1 |          3 |         16 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\proxy.ts                                                      | TypeScript         |         49 |          1 |         14 |         64 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\types.ts                                                      | TypeScript         |         43 |          1 |         14 |         58 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\src\utils.ts                                                      | TypeScript         |         94 |          0 |         17 |        111 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\apps\web\tsconfig.json                                                     | JSON with Comments |         23 |          0 |          1 |         24 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\biome.jsonc                                                                | JSON with Comments |        135 |          0 |          1 |        136 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\github\dependabot.yml                                                      | YAML               |          6 |          3 |          2 |         11 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\github\workflows\deploy-sanity.yml                                         | YAML               |         66 |          0 |         10 |         76 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\package.json                                                               | JSON               |         31 |          0 |          1 |         32 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\blocks\package.json                                               | JSON               |         27 |          0 |          1 |         28 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\blocks\tsconfig.json                                              | JSON with Comments |         11 |          0 |          0 |         11 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\env\package.json                                                  | JSON               |         25 |          0 |          1 |         26 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\env\src\client.ts                                                 | TypeScript         |         48 |          3 |         10 |         61 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\env\src\server.ts                                                 | TypeScript         |         19 |          0 |          6 |         25 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\env\tsconfig.json                                                 | JSON with Comments |          9 |          0 |          1 |         10 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\logger\README.md                                                  | Markdown           |         15 |          0 |          8 |         23 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\logger\package.json                                               | JSON               |         21 |          0 |          1 |         22 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\logger\src\index.ts                                               | TypeScript         |         18 |          0 |          6 |         24 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\logger\tsconfig.json                                              | JSON with Comments |          9 |          0 |          2 |         11 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\sanity\README.md                                                  | Markdown           |         28 |          0 |         12 |         40 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\sanity\package.json                                               | JSON               |         35 |          0 |          1 |         36 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\sanity\src\build-client.ts                                        | TypeScript         |         20 |          0 |          3 |         23 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\sanity\src\client.ts                                              | TypeScript         |         21 |          0 |          4 |         25 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\sanity\src\fetch-build.ts                                         | TypeScript         |          0 |          0 |          1 |          1 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\sanity\src\image.ts                                               | TypeScript         |         88 |          6 |         17 |        111 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\sanity\src\live.ts                                                | TypeScript         |          8 |          6 |          4 |         18 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\sanity\src\query.ts                                               | TypeScript         |        559 |         26 |         57 |        642 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\sanity\src\sanity.types.ts                                        | TypeScript         |      8,960 |         72 |        107 |      9,139 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\sanity\tsconfig.json                                              | JSON with Comments |         11 |          0 |          1 |         12 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\typescript-config\README.md                                       | Markdown           |          2 |          0 |          2 |          4 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\typescript-config\base.json                                       | JSON               |         20 |          0 |          1 |         21 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\typescript-config\nextjs.json                                     | JSON               |         13 |          0 |          1 |         14 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\typescript-config\package.json                                    | JSON               |          9 |          0 |          1 |         10 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\typescript-config\react-library.json                              | JSON               |          8 |          0 |          1 |          9 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\ui\components.json                                                | JSON               |         20 |          0 |          1 |         21 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\ui\package.json                                                   | JSON               |         44 |          0 |          1 |         45 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\ui\postcss.config.mjs                                             | JavaScript         |          4 |          1 |          2 |          7 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\ui\src\components\accordion.tsx                                   | TypeScript JSX     |         58 |          0 |          6 |         64 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\ui\src\components\badge.tsx                                       | TypeScript JSX     |         41 |          0 |          5 |         46 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\ui\src\components\button.tsx                                      | TypeScript JSX     |         55 |          0 |          5 |         60 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\ui\src\components\dropdown-menu.tsx                               | TypeScript JSX     |        238 |          0 |         17 |        255 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\ui\src\components\input.tsx                                       | TypeScript JSX     |         18 |          0 |          3 |         21 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\ui\src\components\navigation-menu.tsx                             | TypeScript JSX     |        157 |          0 |         11 |        168 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\ui\src\components\pagination.tsx                                  | TypeScript JSX     |        116 |          0 |         10 |        126 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\ui\src\components\sheet.tsx                                       | TypeScript JSX     |        132 |          0 |         12 |        144 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\ui\src\lib\utils.ts                                               | TypeScript         |          5 |          0 |          2 |          7 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\ui\src\styles\globals.css                                         | PostCSS            |        129 |          0 |          8 |        137 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\ui\tsconfig.json                                                  | JSON with Comments |         11 |          0 |          1 |         12 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\packages\ui\tsconfig.lint.json                                             | JSON               |          8 |          0 |          1 |          9 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\pnpm-lock.yaml                                                             | YAML               |     12,682 |          0 |      3,083 |     15,765 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\pnpm-workspace.yaml                                                        | YAML               |         19 |          0 |          3 |         22 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\tsconfig.json                                                              | JSON with Comments |          6 |          0 |          1 |          7 |
+| c:\Users\solsk\Desktop\Martin\monorepo\solskjerming\turbo.json                                                                 | JSON               |         38 |          0 |          1 |         39 |
+| Total                                                                                                                          |                    |     61,056 |      2,774 |      6,670 |     70,500 |
++--------------------------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+

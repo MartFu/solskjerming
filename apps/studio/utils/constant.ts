@@ -18,9 +18,9 @@ import {
   MoonIcon,
   RobotIcon
 } from "@sanity/icons";
+import { Brush, Building, Building2, Cookie, Fingerprint, Scale, ShieldCheck } from "lucide-react";
 import type { FieldGroupDefinition } from "sanity";
 import { OklchColor } from "./types";
-import { Brush, Building, Building2, Cookie, Fingerprint, Scale, ShieldCheck } from "lucide-react";
 import { asStudioIcon } from "./helper";
 
 
@@ -102,7 +102,6 @@ export const GROUPS = (
 
   return baseGroups.map((g) => ({
     ...g,
-    // Now you are correctly using the boolean 'default' key allowed by FieldGroupDefinition
     default: g.name === defaultGroup,
   }));
 };

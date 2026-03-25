@@ -1,9 +1,7 @@
 import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
 import { GROUP, GROUPS } from "@/utils/constant";
-// import { ogFields } from "@/utils/og-fields";
-// import { seoFields } from "@/utils/seo-fields";
-import { defineField, defineType } from "sanity";
-import { defineGlobal } from "./define-global";
+import { defineField } from "sanity";
+import { defineGlobal } from "@/utils/globals/define-global";
 
 export const product = defineGlobal({
   name: DOCUMENT_NAMES.product,

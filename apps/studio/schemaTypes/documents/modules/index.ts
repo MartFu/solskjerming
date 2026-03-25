@@ -14,10 +14,12 @@
 // ===========================================================================
 
 import { createModuleRegistry } from "@/utils/modules";
-import { commerce } from "./commerce";
+// import { commerce } from "./commerce";
+import { commerceModule } from "./_example";
 
 export const moduleRegistry = createModuleRegistry([
-  commerce,
+  // commerce,
+  commerceModule,
   // articles,
 ]);
 

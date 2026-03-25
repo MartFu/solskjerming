@@ -10,13 +10,13 @@ import { ThemePresetPicker } from "./theme-preset-picker";
 // ─── Shared helper ────────────────────────────────────────────────────────────
 
 function applyThemePatches(
-  onChange: ObjectInputProps["onChange"],
-  theme: Theme,
+    onChange: ObjectInputProps["onChange"],
+    theme: Theme,
 ) {
-  // Each call emits an independent FormPatch — Sanity batches these correctly.
-  onChange(set(theme.light, ["light"]));
-  onChange(set(theme.dark, ["dark"]));
-  onChange(set(theme.radius, ["radius"]));
+    // Each call emits an independent FormPatch
+    onChange(set(theme.light, ["light"]));
+    onChange(set(theme.dark, ["dark"]));
+    onChange(set(theme.radius, ["radius"]));
 }
 
 // ─── globalTheme document wrapper ────────────────────────────────────────────
@@ -27,21 +27,24 @@ function applyThemePatches(
  * in one operation; the editor can then tweak individual tokens below.
  */
 export function GlobalThemeDocumentInput(props: ObjectInputProps) {
-  const { onChange, renderDefault } = props;
+    const { onChange, renderDefault } = props;
 
-  const handleApply = useCallback(
-    (theme: Theme) => applyThemePatches(onChange, theme),
-    [onChange],
-  );
+    const handleApply = useCallback(
+        (theme: Theme) => applyThemePatches(onChange, theme),
+        [onChange],
+    );
 
-  return (
-    <Stack space={0}>
-      <Box paddingY={4} paddingBottom={3}>
-        <ThemePresetPicker onApply={handleApply} />
-      </Box>
-      {renderDefault(props)}
-    </Stack>
-  );
+    return (
+        <Stack space={0}>
+            <Box
+                paddingY={4}
+                paddingBottom={3}
+            >
+                <ThemePresetPicker onApply={handleApply} />
+            </Box>
+            {renderDefault(props)}
+        </Stack>
+    );
 }
 
 // ─── siteTheme document wrapper ───────────────────────────────────────────────
@@ -51,22 +54,25 @@ export function GlobalThemeDocumentInput(props: ObjectInputProps) {
  * when a preset is applied — because choosing a preset is an explicit override.
  */
 export function SiteThemeDocumentInput(props: ObjectInputProps) {
-  const { onChange, renderDefault } = props;
+    const { onChange, renderDefault } = props;
 
-  const handleApply = useCallback(
-    (theme: Theme) => {
-      onChange(set(false, ["useGlobalDefaults"]));
-      applyThemePatches(onChange, theme);
-    },
-    [onChange],
-  );
+    const handleApply = useCallback(
+        (theme: Theme) => {
+            onChange(set(false, ["useGlobalDefaults"]));
+            applyThemePatches(onChange, theme);
+        },
+        [onChange],
+    );
 
-  return (
-    <Stack space={0}>
-      <Box padding={4} paddingBottom={3}>
-        <ThemePresetPicker onApply={handleApply} />
-      </Box>
-      {renderDefault(props)}
-    </Stack>
-  );
+    return (
+        <Stack space={0}>
+            <Box
+                padding={4}
+                paddingBottom={3}
+            >
+                <ThemePresetPicker onApply={handleApply} />
+            </Box>
+            {renderDefault(props)}
+        </Stack>
+    );
 }

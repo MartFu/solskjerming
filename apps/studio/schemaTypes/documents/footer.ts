@@ -1,6 +1,7 @@
 import { LayoutPanelLeft, Link, PanelBottom } from "lucide-react";
 import { defineField, defineType } from "sanity";
 import { DOCUMENT_NAMES } from "../constant";
+import { siteRelationField } from "../common";
 
 const footerColumnLink = defineField({
     name: "footerColumnLink",
@@ -104,11 +105,7 @@ export const footer = defineType({
       title: "Subtitle",
       description: "Subtitle that sits beneath the logo in the footer",
     }),
-    defineField({
-      name: "site",
-      type: "reference",
-      to: [{ type: "site" }],
-    }),
+    siteRelationField,
     defineField({
       name: "columns",
       type: "array",

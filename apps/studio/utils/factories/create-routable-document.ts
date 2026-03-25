@@ -99,7 +99,7 @@ const routableDocumentFields: FieldDefinition[] = [
   createSiteScopedSlugField(),
 ];
 
-function _createParentField(parentTypes: string[]): FieldDefinition {
+function _createPageParentField(parentTypes: string[]): FieldDefinition {
   return defineField({
     name: "parent",
     title: "Sidens forelder",
@@ -184,7 +184,7 @@ export function createRoutableDocument<N extends string>(
     ...routableDocumentFields,
 
     // 2. Parent reference (if this type can have a parent)
-    ...(parentTypes.length > 0 ? [_createParentField(parentTypes)] : []),
+    ...(parentTypes.length > 0 ? [_createPageParentField(parentTypes)] : []),
 
     defineField({
       name: "sortOrder",

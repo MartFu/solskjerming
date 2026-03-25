@@ -1,32 +1,30 @@
 // schemaTypes/documents/index.ts
 
 // ─── Workspace-scoped defaults ─────────────────────────────────────────────────────────────
-import { globalSettings } from "@/schemaTypes/documents/global-settings";
+import { globalSettingsRegistry } from "@/schemaTypes/documents/global-settings";
 
 // ─── Workspace-scoped shared assets ─────────────────────────────────────
-import { globalSchemaTypes, GlobalType } from "@/schemaTypes/documents/globals";
+import { globalSchemaTypes } from "@/schemaTypes/documents/globals";
 
 // ─── Site config ─────────────────────────────────────────────────────────────
 import { site } from "@/schemaTypes/documents/site";
 import { redirect } from "@/schemaTypes/documents/redirect";
 
 // ─── Site-scoped, routable documents ─────────────────────────────────────────
-// import { page } from "@/schemaTypes/documents/page";
 import { page } from "./page";
-import { packageRegistry as _packageRegistry } from "./packages";
 
 // ─── Site-scoped, non-routable documents ─────────────────────────────────────
 import { footer } from "@/schemaTypes/documents/footer";
 import { navbar } from "@/schemaTypes/documents/navbar";
 import { studioSettings } from "@/schemaTypes/documents/studio";
 
-export const pageDocuments = [page, ..._packageRegistry.allSchemas] as const;
 
-export const PAGE_TYPES = pageDocuments.map((d) => d.name);
-export type PageType = (typeof pageDocuments)[number]["name"];
-export function isPageType(type: string): type is PageType {
-  return PAGE_TYPES.includes(type as PageType);
-}
+// ─── Registries ─────────────────────────────────────
+export { globalSettingsRegistry } from "@/schemaTypes/documents/global-settings";
+export { globalRegistry } from "@/schemaTypes/documents/globals";
+export { moduleRegistry } from "@/schemaTypes/documents/modules";
+
+export const isPageType = (type: string) => type === page.name;
 
 /**
  * Documents that are scoped to a single site and owned exclusively by it.
@@ -39,17 +37,12 @@ export function isPageType(type: string): type is PageType {
  *     Failing to do so means documents of that type will be orphaned when
  *     their parent site is archived — they will never be cleaned up.
  */
-export const siteOwnedDocuments = [
-  page,
-  redirect,
-  footer,
-  navbar,
-] as const;
+export const siteOwnedDocuments = [page, redirect, footer, navbar] as const;
 
 export const SITE_OWNED_TYPES = siteOwnedDocuments.map((d) => d.name);
 export type SiteOwnedType = (typeof siteOwnedDocuments)[number]["name"];
 export function isSiteOwnedType(type: string): type is SiteOwnedType {
-  return SITE_OWNED_TYPES.includes(type as SiteOwnedType);
+    return SITE_OWNED_TYPES.includes(type as SiteOwnedType);
 }
 
 /** ─── Config exports ──────────────────────────────────────────
@@ -66,14 +59,15 @@ export function isSiteOwnedType(type: string): type is SiteOwnedType {
  * All singleton documents — things that should only ever have one instance.
  * The "create new" button in the Studio is suppressed for these types.
  */
-export const singletons = [...globalSettings, studioSettings];
+export const singletons = [
+    ...globalSettingsRegistry.allSchemas,
+    studioSettings.schema,
+];
 export const singletonNames = singletons.map((s) => s.name);
 export type SingletonType = (typeof singletons)[number]["name"];
 export function isSingletonType(type: string): type is SingletonType {
-  return singletonNames.includes(type as SingletonType);
+    return singletonNames.includes(type as SingletonType);
 }
-
-
 
 /**
  * The full set of document types registered with Sanity.
@@ -81,18 +75,18 @@ export function isSingletonType(type: string): type is SingletonType {
  */
 export const documents = [
     site,
-  ...siteOwnedDocuments,
-  ...globalSchemaTypes,
-  ...singletons,
+    ...siteOwnedDocuments,
+    ...globalSchemaTypes,
+    ...singletons,
 ];
 
 export const ALL_DOCUMENT_TYPES = [
-  ...documents.map((d) => d.name),
-  ...singletons.map((d) => d.name),
+    ...documents.map((d) => d.name),
+    ...singletons.map((d) => d.name),
 ];
 export type DocumentType =
-  | (typeof documents)[number]["name"]
-  | (typeof singletons)[number]["name"];
+    | (typeof documents)[number]["name"]
+    | (typeof singletons)[number]["name"];
 export function isDocumentType(type: string): type is DocumentType {
-  return ALL_DOCUMENT_TYPES.includes(type as DocumentType);
+    return ALL_DOCUMENT_TYPES.includes(type as DocumentType);
 }

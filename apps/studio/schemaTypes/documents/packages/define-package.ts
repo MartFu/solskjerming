@@ -2,12 +2,12 @@ import { defineType, FieldDefinition, PreviewConfig } from "sanity";
 import { GROUP, GROUPS, GroupValue } from "@/utils/constant";
 import {
   createIdentityFields,
-  createParentField,
+  createPageParentField,
   createSortOrderField,
   // createPageSEOFields,
   createPagebuilderField,
 } from "@/utils/factories/create-page-fields";
-import { PageBuilderType } from "@/schemaTypes/definitions/pagebuilders";
+import { PageBuilderType } from "@/schemaTypes/definitions/pagebuilder";
 import { GlobalType, GlobalFieldNames, GLOBAL_REGISTRY } from "../globals";
 import { ComponentType, ReactNode } from "react";
 import { PackageKey } from "./constant";
@@ -495,7 +495,7 @@ function _buildFields(
 
   return [
     ...createIdentityFields(),
-    ...createParentField(resolvedParentTypes),
+    ...createPageParentField(resolvedParentTypes),
     ...createSortOrderField(),
     // ...createPageSEOFields(),
     ...(pagebuilderType ? createPagebuilderField(pagebuilderType) : []),

@@ -7,15 +7,13 @@ import { getSiteId } from "@/lib/site";
 import { draftMode } from "next/headers";
 import { getNavigationData } from "@/lib/static/navigation";
 import { Navbar } from "@/components/navbar";
-import { memo, Suspense } from "react";
+import { Suspense } from "react";
 import { FooterServer, FooterSkeleton } from "@/components/footer";
 import { sanityFetch, SanityLive } from "@workspace/sanity/live";
 import { CombinedJsonLd } from "@/components/json-ld";
 import { PreviewBar } from "@/components/preview-bar";
 import { VisualEditing } from "next-sanity/visual-editing";
 import { querySiteConfig, querySiteMetadata } from "@workspace/sanity/query";
-import { generateThemeOverrides } from "@/lib/generate-theme-overrides";
-import { QuerySiteConfigResult, Theme } from "@workspace/sanity/types";
 import { ThemeOverrides } from "@/components/theme-overrides";
 
 const fontSans = Geist({

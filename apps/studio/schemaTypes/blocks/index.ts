@@ -48,3 +48,12 @@ export const allPageBuilderBlocks = [
   articleFeed,
   productGrid,
 ];
+
+
+
+
+import { allBlocks, BLOCK_SEEDS } from "./v2";
+export { allBlocks, BLOCK_SEEDS };
+
+
+export const blocks = allPageBuilderBlocks 

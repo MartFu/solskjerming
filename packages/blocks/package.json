@@ -1,44 +1,27 @@
 {
-  "name": "@workspace/blocks",
-  "version": "0.0.0",
-  "type": "module",
-  "private": true,
-  "scripts": {
-    "lint": "biome lint .",
-    "format": "biome format --write .",
-    "format:check": "biome format .",
-    "check-types": "tsc --noEmit"
-  },
-  "peerDependencies": {
-    "react": "^19.2.3",
-    "sanity": "^5.17.1",
-    "next": "^15.0.0"
-  },
-  "dependencies": {
-    "@sanity/icons": "*",
-    "@workspace/env": "workspace:*",
-    "@workspace/logger": "workspace:*",
-    "@workspace/ui": "workspace:*",
-    "lucide-react": "catalog:",
-    "next-sanity": "^12.0.14",
-    "@workspace/sanity": "workspace:*",
-    "sanity-image": "*"
-  },
-  "devDependencies": {
-    "@types/react": "catalog:",
-    "@workspace/typescript-config": "workspace:*",
-    "react": "catalog:",
-    "sanity": "*",
-    "typescript": "catalog:"
-  },
-  "exports": {
-    "./schema": "./src/schema/index.ts",
-    "./schema/*": "./src/schema/*.ts",
-    "./registry": "./src/registry/default.ts",
-    "./registry/default": "./src/registry/default.ts",
-    "./registry/editorial": "./src/registry/editorial.ts",
-    "./registry/bold": "./src/registry/bold.ts",
-    "./registry/types": "./src/registry/types.ts",
-    "./available-themes": "./src/registry/available-themes.ts"
-  }
+    "name": "@workspace/blocks",
+    "version": "0.0.0",
+    "type": "module",
+    "private": true,
+    "exports": {
+        "./components": "./src/components/index.ts",
+        "./components/*": "./src/components/*.ts",
+        "./vibes": "./src/vibes/index.ts",
+        "./vibes/*": "./src/vibes/*.ts"
+    },
+    "peerDependencies": {
+        "react": "catalog:",
+        "next": "catalog:"
+    },
+    "dependencies": {
+        "@workspace/sanity": "workspace:*",
+        "@workspace/ui": "workspace:*",
+        "sanity-image": "*"
+    },
+    "devDependencies": {
+        "@types/react": "catalog:",
+        "@workspace/typescript-config": "workspace:*",
+        "react": "catalog:",
+        "typescript": "catalog:"
+    }
 }

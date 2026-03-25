@@ -5,8 +5,11 @@ import { useToolLayout } from "@/context/ToolLayoutProvider";
 import { SiteCombobox } from "./SiteCombobox";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { TabBar } from "./TabBar";
+import { useRouter } from "sanity/router";
+import { Tool } from "sanity";
 
 interface TopBarProps {
+  tool: Tool<any>
   isDirty?: boolean;
 }
 
@@ -19,6 +22,7 @@ export function TopBar({ isDirty = false }: TopBarProps) {
     hidePreview,
   } = useToolLayout();
   const [confirmBack, setConfirmBack] = useState(false);
+  const router  = useRouter();
 
   const handleBack = () => {
     if (isDirty) {

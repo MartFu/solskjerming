@@ -22,6 +22,11 @@ import { PROJECT_ID } from "./utils/env";
 import { moduleRegistry } from "./schemaTypes/documents/modules";
 import { BlueprintBadge } from "./components/blueprint-badge";
 import { isSingletonType, singletons } from "./schemaTypes/documents";
+import { presentationTool } from "sanity/presentation";
+import { getPresentationUrl } from "./utils/helper";
+
+import { locations } from "@/location"
+import { presentationUrl } from "./plugins/presentation-url";
 
 const logger = new Logger("studio-config")
 
@@ -69,43 +74,55 @@ const sharedConfig = definePlugin<{ workspace: WorkspaceKey }>(() => ({
 }));
 
 export const defineWorkspace = (
-  workspace: WorkspaceKey,
-  dataset: string,
+    workspace: WorkspaceKey,
+    dataset: string,
 ): WorkspaceOptions => ({
-  name: workspace,
-  title: workspace.charAt(0).toUpperCase() + workspace.slice(1),
-  icon: Logo,
-  projectId: PROJECT_ID,
-  dataset,
-  basePath: `/${workspace}`,
-  releases: {
-    enabled: true,
-  },
-
-  studio: {
-    components: {
-      activeToolLayout: (defaultProps) =>
-        ToolLayout({ config: { workspace } }, defaultProps),
+    name: workspace,
+    title: workspace.charAt(0).toUpperCase() + workspace.slice(1),
+    icon: Logo,
+    projectId: PROJECT_ID,
+    dataset,
+    basePath: `/${workspace}`,
+    releases: {
+        enabled: true,
     },
-  },
 
-  plugins: [
-    nbNOLocale(),
-    lucideIconPicker(),
-    unsplashImageAsset(),
-    // assist({}),
+    studio: {
+        components: {
+            activeToolLayout: (defaultProps) =>
+                ToolLayout({  workspace }, defaultProps),
+            // layout: Wrap layout in the ToolLayoutProvider
+        },
+    },
 
-    structureTool({
-      title: "Studio",
-      structure: (S, context) => createStructure(S, context, workspace),
-      
-    }),
-    /*   media(), */
-    visionTool({
-      title: "GROQ Vision",
-      icon: JsonIcon,
-    }),
-    sharedConfig({ workspace }),
-  ],
+    plugins: [
+        nbNOLocale(),
+        lucideIconPicker(),
+        unsplashImageAsset(),
+        presentationTool({
+            resolve: {
+                locations,
+            },
+            previewUrl: {
+                origin: getPresentationUrl(),
+                previewMode: {
+                    enable: "/api/presentation-draft",
+                },
+            },
+        }),
+        presentationUrl(workspace),
+        // assist({}),
+
+        structureTool({
+            title: "Studio",
+            structure: (S, context) => createStructure(S, context, workspace),
+        }),
+        /*   media(), */
+        visionTool({
+            title: "GROQ Vision",
+            icon: JsonIcon,
+        }),
+        sharedConfig({ workspace }),
+    ],
 });
 

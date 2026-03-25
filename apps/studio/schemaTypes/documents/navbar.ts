@@ -2,85 +2,84 @@ import { LayoutPanelLeft, Link, PanelTop } from "lucide-react";
 import { defineField, defineType } from "sanity";
 
 import { lucideIconPreview } from "@/components/icon-preview";
-import { buttonsField, iconField } from "@/schemaTypes/common";
+import { buttonsField, iconField, siteRelationField } from "@/schemaTypes/common";
 import { DOCUMENT_NAMES } from "../constant";
 
 const navbarLink = defineField({
-  name: "navbarLink",
-  type: "object",
-  icon: Link,
-  title: "Navigation Link",
-  description: "Individual navigation link with name and URL",
-  fields: [
-    defineField({
-      name: "name",
-      type: "string",
-      title: "Link Text",
-      description: "The text that will be displayed for this navigation link",
-    }),
-    defineField({
-      name: "url",
-      type: "customUrl",
-      title: "Link URL",
-      description: "The URL that this link will navigate to when clicked",
-    }),
-  ],
-  preview: {
-    select: {
-      title: "name",
-      externalUrl: "url.external",
-      urlType: "url.type",
-      internalUrl: "url.internal.slug.current",
-      openInNewTab: "url.openInNewTab",
-      siteId: "siteId",
-    },
-    prepare({
-      title,
-      externalUrl,
-      urlType,
-      internalUrl,
-      siteId,
-      openInNewTab,
-    }) {
-      const url = urlType === "external" ? externalUrl : internalUrl;
-      const newTabIndicator = openInNewTab ? " ↗" : "";
-      const truncatedUrl =
-        url?.length > 30 ? `${url.substring(0, 30)}...` : url;
+    name: "navbarLink",
+    type: "object",
+    icon: Link,
+    title: "Navigasjonslenke",
+    description: "Individuell navigasjonslenke med tekst og URL.",
+    fields: [
+        defineField({
+            name: "name",
+            type: "string",
+            title: "Lenkens tekst",
+            description: "Teksten som vises på denne lenken.",
+        }),
+        defineField({
+            name: "url",
+            type: "customUrl",
+            title: "Lenkens URL",
+            description: "URL-en denne lenken navigerer til ved klikk.",
+        }),
+    ],
+    preview: {
+        select: {
+            title: "name",
+            externalUrl: "url.external",
+            urlType: "url.type",
+            internalUrl: "url.internal.slug.current",
+            openInNewTab: "url.openInNewTab",
+            siteId: "siteId",
+        },
+        prepare({
+            title,
+            externalUrl,
+            urlType,
+            internalUrl,
+            siteId,
+            openInNewTab,
+        }) {
+            const url = urlType === "external" ? externalUrl : internalUrl;
+            const newTabIndicator = openInNewTab ? " ↗" : "";
+            const truncatedUrl =
+                url?.length > 30 ? `${url.substring(0, 30)}...` : url;
 
-      return {
-        title: title || "Untitled Link",
-        subtitle: `${urlType === "external" ? "External" : "Internal"} • ${truncatedUrl}${newTabIndicator}  • ${siteId}`,
-        media: Link,
-      };
+            return {
+                title: title || "Untitled Link",
+                subtitle: `${urlType === "external" ? "External" : "Internal"} • ${truncatedUrl}${newTabIndicator}  • ${siteId}`,
+                media: Link,
+            };
+        },
     },
-  },
 });
 
 const navbarColumnLink = defineField({
   name: "navbarColumnLink",
   type: "object",
   icon: LayoutPanelLeft,
-  title: "Navigation Column Link",
-  description: "A link within a navigation column",
+  title: "Lenke i navigasjonskolonne",
   fields: [
     iconField,
     defineField({
       name: "name",
       type: "string",
-      title: "Link Text",
-      description: "The text that will be displayed for this navigation link",
+      title: "Lenkens tekst",
+      description: "Teksten som vises på denne lenken.",
     }),
     defineField({
       name: "description",
       type: "string",
-      title: "Description",
-      description: "The description for this navigation link",
+      title: "Beskrivelse",
+      description: "Navigasjonslenkens beskrivelse.",
     }),
     defineField({
       name: "url",
       type: "customUrl",
-      title: "Link URL",
-      description: "The URL that this link will navigate to when clicked",
+      title: "Lenke-URL",
+      description: "URL-en denne lenken navigerer til ved klikk.",
     }),
   ],
   preview: {
@@ -100,7 +99,7 @@ const navbarColumnLink = defineField({
 
       return {
         title: title || "Untitled Link",
-        subtitle: `${urlType === "external" ? "External" : "Internal"} • ${truncatedUrl}${newTabIndicator}`,
+        subtitle: `${urlType === "external" ? "Ekstern" : "Intern"} • ${truncatedUrl}${newTabIndicator}`,
         media: lucideIconPreview(icon),
       };
     },
@@ -111,20 +110,20 @@ const navbarColumn = defineField({
     name: "navbarColumn",
     type: "object",
     icon: LayoutPanelLeft,
-    title: "Navigation Column",
-    description: "A column of navigation links with an optional title",
+    title: "Navigasjonskolonne",
+    description: "En kolonne med navigasjonslenker og valgfri tittel",
     fields: [
         defineField({
             name: "title",
             type: "string",
-            title: "Column Title",
+            title: "Kolonnens tittel",
             description:
-                "The heading text displayed above this group of navigation links",
+                "Overskrift som vises over denne kolonnen med lenker.",
         }),
         defineField({
             name: "links",
             type: "array",
-            title: "Column Links",
+            title: "Kolonnes lenker",
             validation: (rule) => [rule.required(), rule.unique()],
             description:
                 "The list of navigation links to display in this column",
@@ -147,22 +146,18 @@ const navbarColumn = defineField({
 
 export const navbar = defineType({
   name: DOCUMENT_NAMES.navbar,
-  title: "Site Navigation",
+  title: "Header",
   type: "document",
   icon: PanelTop,
-  description: "Configure the main navigation structure for your site",
+  description: "Konfigurer hovednavigasjonen til siden.",
   fields: [
-    defineField({
-      name: "site",
-      type: "reference",
-      to: [{ type: "site" }],
-    }),
+    siteRelationField,
     defineField({
       name: "columns",
       type: "array",
-      title: "Navigation Structure",
+      title: "Navigasjonsstruktur",
       description:
-        "Build your navigation menu using columns and links. Add either a column of links or individual links.",
+        "Bygg ut navigasjonen vha. kolonner og lenker. Legg til en kolonne med lenker, eller kun individuelle lenker.",
       of: [navbarColumn, navbarLink],
     }),
     buttonsField,

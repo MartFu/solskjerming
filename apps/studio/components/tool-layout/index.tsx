@@ -5,6 +5,7 @@ import { Layout } from "./Layout";
 import { WorkspaceView } from "./WorkspaceView";
 import { ToolLayoutProvider, useToolLayout } from "@/context/ToolLayoutProvider";
 import { TabSiteScope } from "@/context/TabSiteScopeProvider";
+import { WorkspaceKey } from "@/utils/constant";
 
 
 interface TabShellProps {
@@ -17,8 +18,10 @@ function TabShell({ tabId, active, props }: TabShellProps) {
   const { tabs } = useToolLayout();
   const tab = tabs.find((t) => t.id === tabId);
 
-  if (props.activeTool.name !== "structure") {
-    return props.renderDefault(props);
+  const currentTool = props.activeTool.name
+
+  if (currentTool !== "structure" && currentTool !== "presentation") {
+      return props.renderDefault(props);
   }
 
   return (
@@ -63,11 +66,11 @@ function ToolLayoutShell(props: ActiveToolLayoutProps) {
 // ─── Tool root (sets up provider) ────────────────────────────────────────────
 
 export function ToolLayout(
-  { config }: { config: ToolLayoutShellConfig },
+  { workspace }: { workspace: WorkspaceKey },
   props: ActiveToolLayoutProps,
 ) {
   return (
-      <ToolLayoutProvider workspace={config.workspace}>
+      <ToolLayoutProvider workspace={workspace}>
          <ToolLayoutShell {...props} />
       </ToolLayoutProvider>
   );

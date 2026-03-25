@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   Card,
+  Container,
   Flex,
   Grid,
   Spinner,
@@ -14,25 +15,18 @@ import {
 } from "@sanity/ui";
 import {
   AddIcon,
-  CogIcon,
   EarthGlobeIcon,
   SearchIcon,
-  TrashIcon,
 } from "@sanity/icons";
-import { Globe, Settings, Trash2 } from "lucide-react";
+import {  Settings, Trash2 } from "lucide-react";
 import { WorkspaceKey } from "@/utils/constant";
 import { useToolLayout } from "@/context/ToolLayoutProvider";
 import { useRouter } from "sanity/router";
 import { Site } from "@/utils/types";
-import {
-  getSiteDeletionPreview,
-  SiteDeletionPreview,
-} from "@/utils/site/getSiteDeletionPreview";
 import { ArchiveSiteDialog } from "./ArchiveSiteDialog";
 import { ArchiveSiteProvider } from "@/context/ArchiveSiteProvider";
 import { CreateSiteDialog } from "./CreateSiteDialog";
 import { API_VERSION } from "@/utils/env";
-import { fetchProjectStats } from "@/utils/fetch-project-stats";
 import { ProjectStats } from "./Stats";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -229,129 +223,142 @@ export function WorkspaceView() {
   };
 
   return (
-    <Box
-      padding={5}
-      flex={1}
-      style={{ maxWidth: 1440, margin: "0 auto", minHeight: 0, overflow: "auto" }}
-    >
-      <Stack space={6}>
-        {/* Header */}
-        <Stack space={4}>
-          <Text
-            size={4}
-            weight="bold"
+      <>
+          <Box
+              padding={5}
+              flex={1}
+              style={{
+                  minHeight: 0,
+              }}
           >
-            {workspace.charAt(0).toUpperCase() + workspace.slice(1)}
-          </Text>
-          <ProjectStats />
-        </Stack>
+              <Stack space={6}>
+                  {/* Header */}
+                  <Stack space={4}>
+                      <Text
+                          size={4}
+                          weight="bold"
+                      >
+                          {workspace.charAt(0).toUpperCase() +
+                              workspace.slice(1)}
+                      </Text>
+                      <ProjectStats />
+                  </Stack>
 
-        <Stack space={4}>
-          <Text size={2}>
-            Velg en nettside å jobbe med, eller opprett en ny.
-          </Text>
+                  <Stack space={4}>
+                      <Text size={2}>
+                          Velg en nettside å jobbe med, eller opprett en ny.
+                      </Text>
 
-          {/* Search + create */}
-          <Flex
-            align="center"
-            gap={3}
-          >
-            <Box flex={1}>
-              <TextInput
-                icon={SearchIcon}
-                placeholder="Søk i nettsider…"
-                value={search}
-                onChange={(e) => setSearch(e.currentTarget.value)}
-                clearButton={search.length > 0}
-                onClear={() => setSearch("")}
-              />
-            </Box>
-            <Button
-              icon={AddIcon}
-              text="Ny nettside"
-              mode="ghost"
-              tone="primary"
-              onClick={() => setShowCreate(true)}
-            />
-          </Flex>
+                      {/* Search + create */}
+                      <Flex
+                          align="center"
+                          gap={3}
+                      >
+                          <Box flex={1}>
+                              <TextInput
+                                  icon={SearchIcon}
+                                  placeholder="Søk i nettsider…"
+                                  value={search}
+                                  onChange={(e) =>
+                                      setSearch(e.currentTarget.value)
+                                  }
+                                  clearButton={search.length > 0}
+                                  onClear={() => setSearch("")}
+                              />
+                          </Box>
+                          <Button
+                              icon={AddIcon}
+                              text="Ny nettside"
+                              mode="ghost"
+                              tone="primary"
+                              onClick={() => setShowCreate(true)}
+                          />
+                      </Flex>
 
-          {/* Site grid */}
-          {loading ? (
-            <Flex
-              justify="center"
-              padding={6}
-            >
-              <Spinner muted />
-            </Flex>
-          ) : filtered.length === 0 ? (
-            <Card
-              tone="transparent"
-              padding={6}
-              radius={2}
-              border
-            >
-              <Stack
-                space={4}
-                style={{ textAlign: "center" }}
-              >
-                <Text muted>
-                  {search
-                    ? `Ingen treff på "${search}"`
-                    : "Ingen nettsider i dette arbeidsområdet ennå."}
-                </Text>
-                {!search && (
-                  <Flex justify="center">
-                    <Button
-                      icon={AddIcon}
-                      text="Opprett første nettside"
-                      tone="primary"
-                      onClick={() => setShowCreate(true)}
-                    />
-                  </Flex>
-                )}
+                      {/* Site grid */}
+                      {loading ? (
+                          <Flex
+                              justify="center"
+                              padding={6}
+                          >
+                              <Spinner muted />
+                          </Flex>
+                      ) : filtered.length === 0 ? (
+                          <Card
+                              tone="transparent"
+                              padding={6}
+                              radius={2}
+                              border
+                          >
+                              <Stack
+                                  space={4}
+                                  style={{ textAlign: "center" }}
+                              >
+                                  <Text muted>
+                                      {search
+                                          ? `Ingen treff på "${search}"`
+                                          : "Ingen nettsider i dette arbeidsområdet ennå."}
+                                  </Text>
+                                  {!search && (
+                                      <Flex justify="center">
+                                          <Button
+                                              icon={AddIcon}
+                                              text="Opprett første nettside"
+                                              tone="primary"
+                                              onClick={() =>
+                                                  setShowCreate(true)
+                                              }
+                                          />
+                                      </Flex>
+                                  )}
+                              </Stack>
+                          </Card>
+                      ) : (
+                          <Grid
+                              columns={[1, 1, 2, 3]}
+                              gap={3}
+                          >
+                              {filtered.map((site) => (
+                                  <SiteCard
+                                      key={site._id}
+                                      site={site}
+                                      workspace={workspace}
+                                      onSelect={() => handleSelect(site)}
+                                      onArchive={() =>
+                                          setArchiveSiteId(site._id)
+                                      }
+                                  />
+                              ))}
+                          </Grid>
+                      )}
+                  </Stack>
               </Stack>
-            </Card>
-          ) : (
-            <Grid
-              columns={[1, 1, 2, 3]}
-              gap={3}
-            >
-              {filtered.map((site) => (
-                <SiteCard
-                  key={site._id}
-                  site={site}
-                  workspace={workspace}
-                  onSelect={() => handleSelect(site)}
-                  onArchive={() => setArchiveSiteId(site._id)}
-                />
-              ))}
-            </Grid>
-          )}
-        </Stack>
-      </Stack>
 
-      {/* Create dialog */}
-      {showCreate && (
-        <CreateSiteDialog
-          workspace={workspace}
-          onClose={() => setShowCreate(false)}
-          onCreated={handleCreated}
-        />
-      )}
+              {/* Create dialog */}
+              {showCreate && (
+                  <CreateSiteDialog
+                      workspace={workspace}
+                      onClose={() => setShowCreate(false)}
+                      onCreated={handleCreated}
+                  />
+              )}
 
-      {archiveSiteId && (
-        <ArchiveSiteProvider
-          siteId={archiveSiteId}
-          onClose={() => setArchiveSiteId(null)}
-          onArchived={(siteId: string) => {
-            setSites((prev) => prev.filter((s) => s._id !== siteId));
-            setArchiveSiteId(null);
-          }}
-        >
-          {/* Archive dialog — only shown once preview data is ready */}
-          <ArchiveSiteDialog />
-        </ArchiveSiteProvider>
-      )}
-    </Box>
+              {archiveSiteId && (
+                  <ArchiveSiteProvider
+                      siteId={archiveSiteId}
+                      onClose={() => setArchiveSiteId(null)}
+                      onArchived={(siteId: string) => {
+                          setSites((prev) =>
+                              prev.filter((s) => s._id !== siteId),
+                          );
+                          setArchiveSiteId(null);
+                      }}
+                  >
+                      {/* Archive dialog — only shown once preview data is ready */}
+                      <ArchiveSiteDialog />
+                  </ArchiveSiteProvider>
+              )}
+          </Box>
+      </>
   );
 }

@@ -1,10 +1,12 @@
-import { defineField, defineType } from "sanity";
+import { defineField } from "sanity";
 import { slate } from "@/utils/themes";
 import { asStudioIcon } from "@/utils/helper";
 import { Brush } from "lucide-react";
 import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
+import { defineGlobal } from "@/utils/globals/define-global";
 
-export const globalTheme = defineType({
+export const globalTheme = defineGlobal({
+  sortFields: [],
   name: DOCUMENT_NAMES.globalTheme,
   title: "CSS Variabler",
   type: "document",

@@ -1,8 +1,10 @@
 import { defineField, defineType } from "sanity";
 import { asStudioIcon } from "@/utils/helper";
 import { LayoutDashboard } from "lucide-react";
+import { defineGlobal } from "@/utils/globals/define-global";
 
-export const studioSettings = defineType({
+export const studioSettings = defineGlobal({
+  sortFields: [],
   name: "studioSettings",
   title: "Studioinnstillinger",
   type: "document",

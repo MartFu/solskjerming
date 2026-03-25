@@ -5,9 +5,11 @@ import {
 } from "@/utils/factories/create-cookie-consent-fields";
 import { asStudioIcon } from "@/utils/helper";
 import { ShieldCheck } from "lucide-react";
-import { defineField, defineType } from "sanity";
+import { defineField } from "sanity";
+import { defineGlobal } from "@/utils/globals/define-global";
 
-export const globalCompliance = defineType({
+export const globalCompliance = defineGlobal({
+  sortFields: [],
     name: DOCUMENT_NAMES.globalCompliance,
     title: "GDPR & Samtykke",
     type: "document",

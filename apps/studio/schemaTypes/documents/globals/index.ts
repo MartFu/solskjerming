@@ -1,5 +1,6 @@
 import { article } from "./article";
 import { author } from "./author";
+import { category } from "./category";
 import { documentation } from "./documentation";
 import { faq } from "./faq";
 import { product } from "./product";
@@ -20,6 +21,7 @@ import { video } from "./video";
  */
 export const globals = [
   documentation,
+  category,
   video,
   product,
   faq,
@@ -44,7 +46,7 @@ export type GlobalFieldNames<T extends GlobalType> =
 
 export function isGlobalType(type: string): type is GlobalType {
   return globalNames.includes(type as GlobalType);
-}
+} 
 
 
 export function createGlobalRegistry(globals: readonly GlobalDefinition[]) {

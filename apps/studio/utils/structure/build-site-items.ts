@@ -5,7 +5,6 @@ import { WorkspaceKey } from "../constant";
 import { Site } from "@workspace/sanity/types";
 import { buildPageTree } from "./build-page-tree";
 import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
-import { LinkIcon } from "@sanity/icons";
 import { asStudioIcon } from "../helper";
 
 // import { buildPageTree } from "./build-page-tree";
@@ -29,7 +28,7 @@ export function buildSiteItems(
             workspace,
         }),
 
-        buildPageTree(S, site._id, site.enabledPackages ?? []),
+        buildPageTree(S, site._id, site.enabledModules ?? []),
 
         createSingleton(S, {
             type: "footer",

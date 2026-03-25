@@ -2,9 +2,11 @@ import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
 import { GROUP, GROUPS } from "@/utils/constant";
 import { asStudioIcon } from "@/utils/helper";
 import { Building2 } from "lucide-react";
-import { defineField, defineType } from "sanity";
+import { defineField } from "sanity";
+import { defineGlobal } from "@/utils/globals/define-global";
 
-export const globalOrganization = defineType({
+export const globalOrganization = defineGlobal({
+  sortFields: [],
     name: DOCUMENT_NAMES.globalOrganization,
     title: "Organisasjon",
     type: "document",

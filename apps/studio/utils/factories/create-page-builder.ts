@@ -13,7 +13,7 @@ import { defineArrayMember, defineType, SchemaTypeDefinition } from "sanity";
  */
 export function createPageBuilder(
     name: string,
-    blocks: SchemaTypeDefinition[],
+    blocks: readonly SchemaTypeDefinition[],
 ) {
     return defineType({
         name,

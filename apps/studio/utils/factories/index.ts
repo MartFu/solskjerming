@@ -1,4 +1,4 @@
-export { createIntegrationFields } from "./create-integration-fields";
+export { createIntegrationsField } from "./create-integration-fields";
 export { createOGFields } from "./create-og-fields";
 export { createOrganizationFields } from "./create-organization-fields";
 export { createPageBuilder } from "./create-page-builder";

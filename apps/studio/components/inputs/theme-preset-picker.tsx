@@ -245,7 +245,7 @@ export function ThemePresetPicker({
 }: {
   focusTheme?: "light" | "dark";
   onApply: (theme: Theme) => void;
-  currentPreset: Theme["name"] | undefined;
+  currentPreset?: Theme["name"] | undefined;
 }) {
   return (
     <Card>

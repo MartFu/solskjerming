@@ -14,6 +14,8 @@ export async function proxy(request: NextRequest) {
     const requestHeaders = new Headers(request.headers);
     if (siteId) {
         requestHeaders.set("x-site-id", siteId);
+    } else {
+        requestHeaders.set("x-site-id", "S3G3xrV4DbVDcBNiBB0fQl");
     }
 
     return NextResponse.next({ request: { headers: requestHeaders } });

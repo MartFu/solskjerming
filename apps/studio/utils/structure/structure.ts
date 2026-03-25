@@ -2,7 +2,6 @@ import type {
   StructureBuilder,
   StructureResolverContext,
 } from "sanity/structure";
-
 import { getActiveSite } from "../persistence/context";
 import { map, merge, fromEvent, switchMap, shareReplay } from "rxjs";
 import { SITE_CHANGED_EVENT } from "./structure-channel";
@@ -11,8 +10,6 @@ import { buildSiteItems } from "./build-site-items";
 import { buildGlobalItems } from "./build-global-items";
 import { Site } from "@workspace/sanity/types";
 import { WorkspaceKey } from "../constant";
-import { buildStructure } from "../modules/structure";
-import { moduleRegistry } from "@/schemaTypes/documents/modules";
 
 // ─────────────────────────────────────────────────────────────
 // Main structure export
@@ -27,7 +24,7 @@ export const createStructure = (
 
   const sites$ = documentStore
     .listenQuery(
-      `*[_type == "site" && workspace == $workspace]{ _id, title, enabledPackages, _updatedAt }`,
+      `*[_type == "site" && workspace == $workspace]{ _id, title, enabledModules, _updatedAt }`,
       { workspace },
       {
         tag: "structure-active-site",
@@ -48,13 +45,14 @@ export const createStructure = (
       if (!activeSite) return S.list().title("Laster...").items([]);
 
    
+      console.log("activeSite", activeSite)
 
       return S.list()
         .id(`root`)
         .title(`${capitalize(activeSite?.title)}`)
         .items([
           ...buildSiteItems(S, activeSite, workspace, context),
-          ...buildGlobalItems(S, activeSite?.enabledPackages ?? []),
+          ...buildGlobalItems(S, activeSite?.enabledModules ?? []),
         ]);
     }),
   );

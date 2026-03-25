@@ -14,6 +14,7 @@ import {
 } from "@/utils/slug-validation";
 import { isUnique } from "@/utils/slug";
 import { OklchColorInput } from "@/components/inputs/oklch-color-input";
+import { SiteRelationField, SiteRelationFieldInput } from "@/components/inputs/site-relation-field";
 
 export const richTextField = defineField({
   name: "richText",
@@ -47,6 +48,24 @@ export const iconField = defineField({
     "Choose a small picture symbol to represent this item, like a home icon or shopping cart",
 });
 
+
+export const siteRelationField = defineField({
+  name: "site",
+  title: "Nettsted",
+  components: {
+    input: SiteRelationFieldInput,
+  },
+  options: {
+    disableNew: true
+  },
+  description: "Ny dokumenter som tilhører et nettsted kobles automatisk til aktivt nettsted. Du trenger ikke å foreta deg noe her. Feltet er skrivebeskyttet for å sikre dataintegritet.",
+  type: "reference",
+  to: [{ type: "site" }],
+  validation: (Rule) => Rule.required().error("Relasjonen er påkrevd for at nettstedet skal fungere."),
+  initialValue: async () => {
+    return { _type : "", _ref: ""}
+  }
+})
 
 
 export const documentSlugField = (
@@ -114,6 +133,11 @@ export const imageWithAltField = ({
         description:
           "The text that describes the image for screen readers and search engines",
       }),
+      defineField({
+        name: "creditLine",
+        type: "string",
+        title: "Credit Line",
+      })
     ],
   });
 

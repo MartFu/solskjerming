@@ -7,48 +7,50 @@ import { usePreviewResolver } from "@/hooks/usePreviewResolver";
 import { PreviewPane } from "./PreviewPane";
 
 function PreviewResolver() {
-  usePreviewResolver();
-  return null;
+    usePreviewResolver();
+    return null;
 }
 
 export function Layout(props: ActiveToolLayoutProps) {
-  const { activeSite, previewUrl, previewHidden } = useToolLayout();
+    const { activeSite, previewUrl, previewHidden  } = useToolLayout();
 
-  const showPreview =
-    props.activeTool.name === "structure" &&
-    !!activeSite &&
-    !previewHidden &&
-    !!previewUrl;
+    const currentTool = props.activeTool.name;
 
-  return (
-    <Flex
-      direction="column"
-      height="fill"
-    >
-      {props.activeTool.name !== "vision" && <TopBar />}
+    const showPreview =
+        currentTool === "structure" &&
+        !!activeSite &&
+        !previewHidden &&
+        !!previewUrl;
 
-      <Flex
-        flex={1}
-        style={{ minHeight: 0 }}
-      >
-        <Box
-          flex={1}
-          style={{ minHeight: 0, overflow: "auto" }}
+
+    return (
+        <Flex
+            direction="column"
+            height="fill"
         >
-          {props.renderDefault(props)}
-        </Box>
+            {currentTool !== "vision" && <TopBar tool={props.activeTool} />}
 
+            <Flex
+                flex={1}
+                style={{ minHeight: 0 }}
+            >
+                <Box
+                    flex={1}
+                    style={{ minHeight: 0, overflow: "auto" }}
+                >
+                    {props.renderDefault(props)}
+                </Box>
 
-        {showPreview && (
-          <PreviewPane
-          url={previewUrl}
-          loading={false}
-          />
-        )}
-      </Flex>
-      {props.activeTool.name === "structure" && activeSite && (
-        <PreviewResolver />
-      )}
-    </Flex>
-  );
+                {showPreview && (
+                    <PreviewPane
+                        url={previewUrl}
+                        loading={false}
+                    />
+                )}
+            </Flex>
+            {currentTool === "structure" && activeSite && (
+                <PreviewResolver />
+            )}
+        </Flex>
+    );
 }

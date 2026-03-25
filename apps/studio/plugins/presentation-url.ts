@@ -25,7 +25,7 @@ function getDocumentSlug(
   return undefined;
 }
 
-export const presentationUrl = definePlugin(() => ({
+export const presentationUrl = definePlugin((workspace: string) => ({
   name: "presentationUrl",
   document: {
     unstable_fieldActions: (props: DocumentActionComponent[]) => [
@@ -40,14 +40,15 @@ export const presentationUrl = definePlugin(() => ({
           const handlePresentationOpen = useCallback(() => {
             if (!slug) {
               toast.push({
-                title: "No slug found",
+                title: "Fant ikke slug",
                 status: "error",
-                description: "Please ensure the document has a valid slug",
+                description: "Vennligst sørg for at dokumentet har en slug",
               });
               return;
             }
             router.navigateUrl({
-              path: `/presentation?preview=${encodeURIComponent(slug)}`,
+              path: `/${workspace}/presentation?preview=${encodeURIComponent(slug)}`,
+              replace: true
             });
           }, [slug, toast, router]);
 
@@ -58,7 +59,7 @@ export const presentationUrl = definePlugin(() => ({
             disabled: !slug,
             renderAsButton: true,
             onAction: handlePresentationOpen,
-            title: "Open in Presentation",
+            title: "Åpne i presentasjonsvisning",
           };
         },
       },

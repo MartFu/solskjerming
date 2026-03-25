@@ -34,7 +34,7 @@ export const button = defineType({
             title: "Url",
             type: "customUrl",
             description:
-                "Hvor knappen skal føre brukeren – kan være en intern side eller en ekstern nettside.",
+                "Hvor knappen skal føre brukeren - kan være en intern side eller en ekstern nettside.",
         }),
     ],
     preview: {
