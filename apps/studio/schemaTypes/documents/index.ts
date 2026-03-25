@@ -40,9 +40,7 @@ export function isPageType(type: string): type is PageType {
  *     their parent site is archived — they will never be cleaned up.
  */
 export const siteOwnedDocuments = [
-  // ...pageDocuments,
   page,
-  site,
   redirect,
   footer,
   navbar,
@@ -82,6 +80,7 @@ export function isSingletonType(type: string): type is SingletonType {
  * This is passed directly to `schema.types` in sanity.config.ts.
  */
 export const documents = [
+    site,
   ...siteOwnedDocuments,
   ...globalSchemaTypes,
   ...singletons,

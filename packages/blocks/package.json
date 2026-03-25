@@ -21,11 +21,11 @@
     "@workspace/ui": "workspace:*",
     "lucide-react": "catalog:",
     "next-sanity": "^12.0.14",
+    "@workspace/sanity": "workspace:*",
     "sanity-image": "*"
   },
   "devDependencies": {
     "@types/react": "catalog:",
-    "@workspace/sanity": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
     "react": "catalog:",
     "sanity": "*",

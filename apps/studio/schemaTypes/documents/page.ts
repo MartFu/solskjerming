@@ -192,7 +192,7 @@ export const page = defineType({
       const status = isPrivate ? "skjult" : "indeksert";
       const roleLabel = role && role !== "standard" ? `[${role}] ` : "";
       return {
-        title: `${roleLabel}${title || "Side uten tittel"}`,
+        title: `${title || "Side uten tittel"}`,
         subtitle: slug ? `${slug} · ${status}` : status,
         media,
       };

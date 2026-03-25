@@ -50,11 +50,15 @@ packages/
   typescript-config/ — Shared TS configs
 ```
 
+`apps/studio` (studio) primarily runs on components from `sanity/ui` and some custom `styled-components` components.
+
+`apps/web` (frontend) uses shadcn ui components and tailwind v4. All react/nextjs components created for the frontend must only use custom tailwind classes associated with shadcn for styling, as it is these custom properties we override to allow user defined themes (e.g. --color-background and --color-foreground in css, or bg-background and text-foreground in components' props).
+
 ## Architecture
 
 ### Data Flow: Sanity → Next.js
 
-1. **Schema** defined in `apps/studio/schemaTypes/` (documents, blocks, definitions)
+1. **Schema** defined in `apps/studio/schemaTypes/` (documents, blocks (legacy), definitions) -> in the process of moving blocks to `packages/blocks/` (target)
 2. **Type generation**: `pnpm type` in studio extracts schema → generates TS types at `packages/sanity/src/sanity.types.ts`
 3. **GROQ queries** live in `packages/sanity/src/query.ts` using `defineQuery` from `next-sanity`, with reusable fragments
 4. **Data fetching** uses `sanityFetch` from `packages/sanity/src/live.ts` (wraps `defineLive` for automatic revalidation)
@@ -64,11 +68,12 @@ packages/
 
 The core content model is a **page builder** — an array of typed blocks:
 
-- **Studio side**: `apps/studio/schemaTypes/blocks/` — each block is a `defineType({ type: 'object' })`. Registered in `blocks/index.ts` → fed to `definitions/pagebuilder.ts`
+- **Studio side**: `apps/studio/schemaTypes/blocks/` (legacy) — each block is a `defineType({ type: 'object' })`. Registered in `blocks/index.ts` → fed to `definitions/pagebuilder.ts`
 - **Frontend side**: `apps/web/src/components/pagebuilder.tsx` — maps `_type` to React component via `BLOCK_COMPONENTS` record. Includes Sanity visual editing data attributes and optimistic updates
-- **Block components**: `apps/web/src/components/sections/` — one file per block type (hero, cta, faq-accordion, etc.)
+- **Block components**: `apps/web/src/components/sections/` — one file per block type (hero, cta, faq-accordion, etc.) -> in the process of moving blocks to `packages/blocks/` (target)
 
 To add a new page builder block:
+
 1. Create schema in `apps/studio/schemaTypes/blocks/new-block.ts`
 2. Add to `apps/studio/schemaTypes/blocks/index.ts` array
 3. Run `pnpm type` in studio
@@ -78,9 +83,43 @@ To add a new page builder block:
 
 ### Sanity Document Types
 
-**Singletons** (one instance each): `homePage`, `blogIndex`, `settings`, `footer`, `navbar`
-**Documents**: `blog`, `page`, `faq`, `author`, `redirect`
-**Pages** use nested slug-based structure (`apps/studio/components/nested-pages-structure.tsx`)
+**The `site` document**:
+
+- `site` -> the configuration of a particular website. Owns `page`, `redirect`, `footer`, `navbar`
+
+**Site-scoped singletons** (one instance each):
+`footer`, `navbar`,
+
+**Workspace-scoped singletons (true singletons)**
+
+- `studioSettings` (workspace-scoped global settings directly related to the studio and its configuration)
+
+Other -> Primary concern: Acting as user-configurable defaults for new `site`-owned documents:
+
+- `globalTheme` -> theme: colors, fonts, spacing, radius, as well as choice of frontend component set to use. Component sets (also internally called component themes) are collections of react/nextjs components that are intended to be used together. They have a similar design language (beyond what overriding custom properties can achieve), such as layout and structure.
+
+While the component sets present the content differently, they correspond to the same set of blocks. The fictional HeroA.tsx and HeroB.tsx both expect their content in the shape of the hero block.
+
+- `globalSeo` -> meta tags, open graph
+- `globalIntegrations` -> external integrations such as analytics
+- `globalOrganization` -> organization ID, logo, favicon, social links
+- `globalCompliance` -> cookie banner, default `documentation` references
+- `globalStructuredData` -> structured data (json-ld)
+- `globalRobots` -> crawler settings
+
+**Documents (site-scoped)**:
+
+- `page` (`page` is as generic as possible and relies on the internal modul meta framework `defineModule` (`apps/studio/utils/module/define-module.ts`) and pagebuilders to create specific pages)
+- `redirect`
+
+**Documents (workspace-scoped)**
+
+- `faq`
+- `author`
+- `article` (blog/news post) can be referenced by multiple other entities, such as a page whose pagebuilder contains blocks specifically made for creating a blog page
+- `product` (product info source of truth) can be referenced by multiple other entities, such as a page whose pagebuilder contains blocks specifically made for creating commerce pages
+- `documentation` (multi purpose rich text document, primarily for documentation such as legals)
+  **Pages** use nested slug-based structure (`apps/studio/components/nested-pages-structure.tsx`)
 
 ### Environment Variables
 
@@ -104,28 +143,41 @@ All frontend types derive from generated Sanity types. `apps/web/src/types.ts` e
 ## Conventions
 
 ### File Naming
+
 - **kebab-case** for all files: `feature-cards-icon.ts`, `blog-card.tsx`
 - `.tsx` for React components, `.ts` for utilities
 
 ### Sanity Schema
+
 - Always use `defineType`, `defineField`, `defineArrayMember` from `sanity`
 - Include `description` on every field (written for non-technical users)
 - Icons: prefer `@sanity/icons`, fall back to `lucide-react`
 - GROQ: don't expand images unless explicitly needed. Use `defineQuery` from `next-sanity`
 
 ### Frontend
+
 - Prefer `grid` over `flex` unless two sibling elements
 - Use `SanityImage` component for Sanity images (from `sanity-image` library)
 - Use `SanityButtons` resolver for button arrays
 - Shared UI components in `@workspace/ui` (Radix + CVA pattern)
 
+# Note on Migration !
+
+We are currently migrating blocks from apps/web/src/components/sections/ to packages/blocks/. New blocks should be created in packages/blocks/ following the existing patterns to avoid technical debt.
+
+# Note on CMS-fed components
+
+Live Preview: Always ensure components use the data-sanity attributes provided by createDataAttribute to maintain "click-to-edit" functionality.
+
 ### Formatting (Biome)
+
 - Double quotes, semicolons, trailing commas (ES5), 2-space indent, 80 char line width
 - Import ordering: node/packages → blank line → aliases/paths
 - `noConsole: warn`, `noExplicitAny: warn`
 - Use `@workspace/logger` Logger class instead of raw `console.*`
 
 ### Node/Runtime
+
 - Node >= 22 required
 - pnpm 10.28.0 (corepack)
 - Turborepo handles task orchestration — `transit` task runs before lint/format/check-types
