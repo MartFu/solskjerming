@@ -14,14 +14,7 @@ interface TopBarProps {
 }
 
 export function TopBar({ currentTool, isDirty = false }: TopBarProps) {
-    const {
-        clearSite,
-        previewUrl,
-        togglePreviewHidden,
-        previewHidden,
-        hidePreview,
-        workspace,
-    } = useToolLayout();
+    const { clearSite, workspace } = useToolLayout();
     const [confirmBack, setConfirmBack] = useState(false);
     const { navigateUrl } = useRouter();
 
@@ -30,7 +23,6 @@ export function TopBar({ currentTool, isDirty = false }: TopBarProps) {
             setConfirmBack(true);
         } else {
             clearSite();
-            hidePreview();
         }
     };
 
@@ -80,52 +72,44 @@ export function TopBar({ currentTool, isDirty = false }: TopBarProps) {
                     >
                         <SiteCombobox isDirty={isDirty} />
 
-                        <Divider thickness={1} length={20} opacity={0.4} />
-
-                        <Button
-                            text="Visuell redigering"
-                            tone="neutral"
-                            mode={isPresentation ? "default" : "bleed"}
-                            fontSize={1}
-                            paddingY={2}
-                            onClick={() => {
-                                const path = isPresentation
-                                    ? `/${workspace}/structure`
-                                    : `/${workspace}/presentation`;
-
-                                navigateUrl({
-                                    path,
-                                    replace: true,
-                                });
-                            }}
+                        <Divider
+                            thickness={1}
+                            length={20}
+                            opacity={0.4}
                         />
 
-                        {/* ── Right zone: preview ── */}
-                        {previewUrl && (
-                            <Tooltip
-                                content={
-                                    <Text size={1}>Åpne forhåndsvisning</Text>
-                                }
-                                placement="bottom"
-                                portal
-                            >
-                                {/* Wrapper div needed because Tooltip requires a single child that accepts ref */}
-                                <div>
-                                    <Button
-                                        icon={
-                                            previewHidden ? (
-                                                <EyeClosedIcon />
-                                            ) : (
-                                                <EyeOpenIcon />
-                                            )
-                                        }
-                                        mode="bleed"
-                                        padding={2}
-                                        onClick={togglePreviewHidden}
-                                    />
-                                </div>
-                            </Tooltip>
-                        )}
+                        <Tooltip
+                            content={
+                                <Text size={1}>Åpne visuell redigering</Text>
+                            }
+                            placement="bottom"
+                            portal
+                        >
+                            {/* Wrapper div needed because Tooltip requires a single child that accepts ref */}
+                            <div>
+                                <Button
+                                    icon={
+                                        isPresentation ? (
+                                            <EyeClosedIcon />
+                                        ) : (
+                                            <EyeOpenIcon />
+                                        )
+                                    }
+                                    mode="bleed"
+                                    padding={2}
+                                    onClick={() => {
+                                        const path = isPresentation
+                                            ? `/${workspace}/structure`
+                                            : `/${workspace}/presentation`;
+
+                                        navigateUrl({
+                                            path,
+                                            replace: true,
+                                        });
+                                    }}
+                                />
+                            </div>
+                        </Tooltip>
                     </Flex>
                 </Flex>
             </Card>
@@ -141,7 +125,6 @@ export function TopBar({ currentTool, isDirty = false }: TopBarProps) {
                     onConfirm={() => {
                         setConfirmBack(false);
                         clearSite();
-                        hidePreview();
                     }}
                     onCancel={() => setConfirmBack(false)}
                 />

@@ -6,7 +6,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useSiteContext } from "./SiteProvider";
+import { useToolLayout } from "./ToolLayoutProvider";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -32,7 +32,7 @@ export function usePreviewContext(): PreviewContextValue {
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function PreviewProvider({ children }: { children: React.ReactNode }) {
-  const { activeSite } = useSiteContext();
+  const { activeSite } = useToolLayout();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewHidden, setPreviewHidden] = useState(true);
 

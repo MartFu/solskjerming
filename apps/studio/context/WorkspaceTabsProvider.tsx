@@ -9,7 +9,11 @@ import {
 } from "react";
 import type { WorkspaceKey } from "@/utils/constant";
 import type { ActiveSite, Tab, TabsState } from "@/utils/types";
-import { loadTabsState, makeDefaultTab } from "@/utils/persistence/tabs";
+import {
+    loadTabsState,
+    makeDefaultTab,
+    saveTabsState,
+} from "@/utils/persistence/tabs";
 import { emitSiteChanged } from "@/utils/structure/structure-channel";
 import { StudioTabSettings } from "@/hooks/useStudioSettings";
 import { useClient } from "sanity";
@@ -25,18 +29,28 @@ export interface WorkspaceTabsContextValue {
     activeTab: Tab;
     tabsEnabled: boolean;
     maxTabs: number;
+    // ── Tab operations ──────────────────────────────────────────────────────
     addTab: (siteTitle?: string, siteId?: string) => void;
     removeTab: (id: string) => void;
     setActiveTab: (id: string) => void;
     renameTab: (id: string, label: string) => void;
-    /** Stamps activeSite onto the specified tab (defaults to active tab) */
-    setActiveTabSite: (site: ActiveSite | null, tabId?: string) => void;
     openDocumentInNewTab: (
         docId: string,
         type: string,
         siteId: string,
         siteTitle: string,
     ) => Promise<void>;
+    // ── Site operations ─────────────────────────────────────────────────────
+    /** Selects a site for a tab (defaults to active tab) and triggers a
+     *  structure rebuild via the ordered pendingEffect flush. */
+    selectSite: (site: ActiveSite, tabId?: string) => void;
+    /** Clears the site for a tab (defaults to active tab). */
+    clearSite: (tabId?: string) => void;
+    /** Low-level stamp — only updates tab state, no side-effects.
+     *  Prefer selectSite/clearSite for user-initiated changes. */
+    setActiveTabSite: (site: ActiveSite | null, tabId?: string) => void;
+    /** Derived convenience — activeSite of the current active tab. */
+    activeSite: ActiveSite | null;
 }
 
 // ─── Pending side-effect type ─────────────────────────────────────────────────
@@ -93,37 +107,106 @@ export function WorkspaceTabsProvider({
         [tabsState],
     );
 
-    // Flush any pending side-effects (site sync + URL navigation) after each
-    // render so they never run inside a setState updater.
+    // Derived convenience so consumers don't have to reach into activeTab.
+    const activeSite = activeTab.activeSite;
+
+    // Persist tabs state to localStorage on every change so tabs survive a refresh.
+    useEffect(() => {
+        saveTabsState(workspace, tabsState);
+    }, [workspace, tabsState]);
+
+    // ─── Pending-effect flush ─────────────────────────────────────────────────
+    //
+    // ORDER MATTERS: sessionStorage → URL → emitSiteChanged.
+    //
+    // The structure tool reads both window.location and getActiveSite() when it
+    // rebuilds in response to the site-changed event. Everything must already be
+    // in place before the event fires, otherwise the structure initialises from
+    // stale values and the saved path is lost.
     useEffect(() => {
         const effect = pendingEffectRef.current;
         if (!effect) return;
         pendingEffectRef.current = null;
 
         setActiveSite(workspace, effect.site);
-        emitSiteChanged();
 
         if (effect.savedPath) {
             history.pushState(null, "", effect.savedPath);
-            window.dispatchEvent(new PopStateEvent("popstate"));
         }
+
+        emitSiteChanged();
     });
 
-    // Always points to the latest tabs without adding tabs to effect deps.
+    // Always points to the latest values without widening effect deps.
     const tabsRef = useRef(tabsState.tabs);
     tabsRef.current = tabsState.tabs;
+    const activeTabIdRef = useRef(tabsState.activeTabId);
+    activeTabIdRef.current = tabsState.activeTabId;
 
+    // ─── Continuous path tracking ─────────────────────────────────────────────
+    //
+    // Sanity's structure tool navigates by pushing/replacing history entries.
+    // We intercept every navigation so `savedPath` is always current, meaning
+    // switching back to a tab restores exactly where the user was — even mid-
+    // document — rather than the path as of the last tab switch.
+    //
+    // We skip syncing while a tab switch is in flight (isSwitchingRef) to avoid
+    // the outgoing tab's URL being stamped onto the incoming tab before
+    // pendingEffectRef has pushed the correct path.
+    const isSwitchingRef = useRef(false);
+
+    useEffect(() => {
+        const syncPath = () => {
+            if (isSwitchingRef.current) return;
+            const path = window.location.pathname + window.location.search;
+            const activeId = activeTabIdRef.current;
+            setTabsState((prev) => ({
+                ...prev,
+                tabs: prev.tabs.map((t) =>
+                    t.id === activeId ? { ...t, savedPath: path } : t,
+                ),
+            }));
+        };
+
+        // Patch pushState / replaceState so programmatic navigation is captured.
+        // popstate alone only fires on back/forward, not on history.pushState calls.
+        const originalPush = history.pushState.bind(history);
+        const originalReplace = history.replaceState.bind(history);
+
+        history.pushState = (...args) => {
+            originalPush(...args);
+            syncPath();
+        };
+        history.replaceState = (...args) => {
+            originalReplace(...args);
+            syncPath();
+        };
+
+        window.addEventListener("popstate", syncPath);
+
+        return () => {
+            history.pushState = originalPush;
+            history.replaceState = originalReplace;
+            window.removeEventListener("popstate", syncPath);
+        };
+    }, []); // intentionally empty — patches are global and use refs throughout
+
+    // ─── Active-tab change: save outgoing path ────────────────────────────────
+    //
+    // Navigation (URL + emitSiteChanged) is owned entirely by pendingEffectRef so
+    // that sessionStorage and the URL are always set before the structure rebuilds.
+    // This effect only saves the outgoing tab's last path.
     const prevTabIdRef = useRef<string>(tabsState.activeTabId);
     useEffect(() => {
         const prevId = prevTabIdRef.current;
         const nextId = tabsState.activeTabId;
         if (prevId === nextId) return;
 
-        const outgoingPath = window.location.pathname + window.location.search;
-        // Read from ref so we always have the latest tabs without widening deps.
-        const incoming = tabsRef.current.find((t) => t.id === nextId);
-        const incomingPath = incoming?.savedPath ?? `/${workspace}/structure`;
+        // Suppress syncPath while the switch is in flight so the outgoing URL
+        // is not accidentally written to the incoming tab by the history patch.
+        isSwitchingRef.current = true;
 
+        const outgoingPath = window.location.pathname + window.location.search;
         setTabsState((prev) => ({
             ...prev,
             tabs: prev.tabs.map((t) =>
@@ -131,12 +214,78 @@ export function WorkspaceTabsProvider({
             ),
         }));
 
-        history.replaceState(null, "", incomingPath);
-        window.dispatchEvent(new PopStateEvent("popstate", { state: null }));
-        emitSiteChanged();
-
         prevTabIdRef.current = nextId;
-    }, [tabsState.activeTabId, workspace]);
+
+        // Re-enable path syncing after this render cycle.
+        // rAF ensures pendingEffectRef has already pushed the new URL.
+        requestAnimationFrame(() => {
+            isSwitchingRef.current = false;
+        });
+    }, [tabsState.activeTabId]);
+
+    // ─── Mount: hydrate from sessionStorage + handle ?site= deep-link ────────
+
+    useEffect(() => {
+        // 1. Restore site from sessionStorage if the active tab doesn't already
+        //    have one (e.g. first load after the tab state was persisted without
+        //    an activeSite).
+        const stored = getActiveSite(workspace);
+        if (stored) {
+            setTabsState((prev) => {
+                const active = prev.tabs.find((t) => t.id === prev.activeTabId);
+                if (active?.activeSite) return prev;
+                return {
+                    ...prev,
+                    tabs: prev.tabs.map((t) =>
+                        t.id === prev.activeTabId
+                            ? {
+                                  ...t,
+                                  label: stored.title ?? t.label,
+                                  activeSite: stored,
+                              }
+                            : t,
+                    ),
+                };
+            });
+        }
+
+        // 2. ?site= deep-link: fetch and select the site immediately so the
+        //    structure opens in the right context.
+        const params = new URLSearchParams(window.location.search);
+        const siteIdFromUrl = params.get("site");
+        if (siteIdFromUrl && siteIdFromUrl !== stored?._id) {
+            client
+                .fetch<ActiveSite>(`*[_id == $siteId][0]`, {
+                    siteId: siteIdFromUrl,
+                })
+                .then((site) => {
+                    if (site) {
+                        // Route through the full selectSite flush so sessionStorage
+                        // and the structure are both updated correctly.
+                        pendingEffectRef.current = {
+                            site,
+                            savedPath:
+                                window.location.pathname +
+                                window.location.search,
+                        };
+                        setTabsState((prev) => ({
+                            ...prev,
+                            tabs: prev.tabs.map((t) =>
+                                t.id === prev.activeTabId
+                                    ? {
+                                          ...t,
+                                          label: site.title ?? t.label,
+                                          activeSite: site,
+                                      }
+                                    : t,
+                            ),
+                        }));
+                    }
+                });
+        }
+    }, [workspace]); // eslint-disable-line react-hooks/exhaustive-deps
+    // client is stable (useClient returns a cached instance) but omitted to
+    // avoid re-running on workspace-unrelated re-renders.
 
     // ─── Operations ───────────────────────────────────────────────────────────
 
@@ -145,22 +294,28 @@ export function WorkspaceTabsProvider({
             const currentTab = prev.tabs.find((t) => t.id === prev.activeTabId);
             const tab = makeDefaultTab();
 
-            const countOfKind = prev.tabs.reduce((acc, t) => {
-                if (t.activeSite?._id === siteId) {
-                    return acc + 1;
-                } else {
-                    return acc;
-                }
-            }, 0);
+            const countOfKind = prev.tabs.reduce(
+                (acc, t) => (t.activeSite?._id === siteId ? acc + 1 : acc),
+                0,
+            );
+
+            const label = siteTitle
+                ? countOfKind > 0
+                    ? `${siteTitle} (${countOfKind})`
+                    : siteTitle
+                : `Fane ${prev.tabs.length + 1}`;
 
             return {
                 tabs: [
                     ...prev.tabs,
                     {
                         ...tab,
-                        label: `${siteTitle ?? "Fane"}${countOfKind > 0 ? ` (${countOfKind})` : prev.tabs.length > 0 ? ` (${prev.tabs.length + 1}` : ""}`,
+                        label,
+                        // New tab starts at the workspace root, not the current path.
+                        // The current tab's site is inherited as a convenience default
+                        // so the user lands in the right context immediately.
                         activeSite: currentTab?.activeSite ?? null,
-                        savedPath: currentTab?.savedPath ?? null,
+                        savedPath: null,
                     },
                 ],
                 activeTabId: tab.id,
@@ -175,7 +330,6 @@ export function WorkspaceTabsProvider({
             const tabIndex = prev.tabs.findIndex((t) => t.id === id);
             const isClosingActive = prev.activeTabId === id;
             const nextTabs = prev.tabs.filter((t) => t.id !== id);
-
             let nextActiveId = prev.activeTabId;
 
             if (isClosingActive) {
@@ -183,8 +337,6 @@ export function WorkspaceTabsProvider({
                     prev.tabs[tabIndex - 1] || prev.tabs[tabIndex + 1];
                 nextActiveId = neighbor.id;
 
-                // Schedule side-effects to run after this render commits,
-                // never inside the updater function.
                 pendingEffectRef.current = {
                     site: neighbor.activeSite,
                     savedPath: neighbor.savedPath ?? null,
@@ -206,8 +358,6 @@ export function WorkspaceTabsProvider({
         setTabsState((prev) => {
             const nextTab = prev.tabs.find((t) => t.id === id);
             if (nextTab) {
-                // Schedule side-effects to run after this render commits,
-                // never inside the updater function.
                 pendingEffectRef.current = {
                     site: nextTab.activeSite,
                     savedPath: nextTab.savedPath ?? null,
@@ -217,6 +367,8 @@ export function WorkspaceTabsProvider({
         });
     }, []);
 
+    // Low-level: only stamps tab state, no sessionStorage or emitSiteChanged.
+    // Use selectSite for user-initiated site changes.
     const setActiveTabSite = useCallback(
         (site: ActiveSite | null, tabId?: string) => {
             setTabsState((prev) => ({
@@ -235,6 +387,55 @@ export function WorkspaceTabsProvider({
         [],
     );
 
+    // High-level: updates tab state + routes through the ordered flush so that
+    // sessionStorage and the structure are always updated together.
+    const selectSite = useCallback((site: ActiveSite, tabId?: string) => {
+        setTabsState((prev) => {
+            const targetId = tabId ?? prev.activeTabId;
+            const targetTab = prev.tabs.find((t) => t.id === targetId);
+
+            // Only trigger a structure rebuild when changing the active tab's
+            // site. Changes to inactive tabs are silent state updates.
+            if (targetId === prev.activeTabId) {
+                pendingEffectRef.current = {
+                    site,
+                    savedPath: targetTab?.savedPath ?? null,
+                };
+            }
+
+            return {
+                ...prev,
+                tabs: prev.tabs.map((t) =>
+                    t.id === targetId
+                        ? {
+                              ...t,
+                              label: site.title ?? t.label,
+                              activeSite: site,
+                          }
+                        : t,
+                ),
+            };
+        });
+    }, []);
+
+    const clearSite = useCallback((tabId?: string) => {
+        setTabsState((prev) => {
+            const targetId = tabId ?? prev.activeTabId;
+
+            if (targetId === prev.activeTabId) {
+                pendingEffectRef.current = { site: null, savedPath: null };
+            }
+
+            return {
+                ...prev,
+                tabs: prev.tabs.map((t) =>
+                    t.id === targetId ? { ...t, activeSite: null } : t,
+                ),
+            };
+        });
+    }, []);
+
+    // Uses an abort ref so a stale fetch after unmount cannot mutate state.
     const openDocumentInNewTab = useCallback(
         async (
             docId: string,
@@ -242,9 +443,21 @@ export function WorkspaceTabsProvider({
             siteId: string,
             siteTitle: string,
         ) => {
-            const site = await client.fetch(`*[_id == $id][0]`, { id: siteId });
+            const controller = new AbortController();
+
+            const site = await client
+                .fetch<ActiveSite>(
+                    `*[_id == $id][0]`,
+                    { id: siteId },
+                    { signal: controller.signal },
+                )
+                .catch(() => null);
+
+            if (!site) return;
 
             const path = `/${workspace}/structure/intent/edit/id=${docId.replace(/^drafts\./, "")};type=${type}?site=${siteId}`;
+
+            pendingEffectRef.current = { site, savedPath: path };
 
             setTabsState((prev) => {
                 const newTab = makeDefaultTab();
@@ -261,21 +474,9 @@ export function WorkspaceTabsProvider({
                     activeTabId: newTab.id,
                 };
             });
-
-            history.pushState(null, "", path);
-            window.dispatchEvent(
-                new PopStateEvent("popstate", { state: null }),
-            );
         },
         [workspace, client],
     );
-
-    useEffect(() => {
-        const stored = getActiveSite(workspace);
-        if (stored) {
-            setActiveTabSite(stored);
-        }
-    }, [workspace, setActiveTabSite]);
 
     // ─── Value ────────────────────────────────────────────────────────────────
 
@@ -285,6 +486,7 @@ export function WorkspaceTabsProvider({
             tabs: tabsState.tabs,
             activeTabId: tabsState.activeTabId,
             activeTab,
+            activeSite,
             tabsEnabled,
             maxTabs,
             addTab,
@@ -292,12 +494,15 @@ export function WorkspaceTabsProvider({
             setActiveTab,
             renameTab,
             setActiveTabSite,
+            selectSite,
+            clearSite,
             openDocumentInNewTab,
         }),
         [
             workspace,
             tabsState,
             activeTab,
+            activeSite,
             tabsEnabled,
             maxTabs,
             addTab,
@@ -305,6 +510,8 @@ export function WorkspaceTabsProvider({
             setActiveTab,
             renameTab,
             setActiveTabSite,
+            selectSite,
+            clearSite,
             openDocumentInNewTab,
         ],
     );

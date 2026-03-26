@@ -1,77 +1,64 @@
 /**
- * TabSiteScope.tsx
+ * TabSiteScopeProvider.tsx
  *
  * Scopes selectSite and clearSite to a specific tabId so that inactive
  * mounted tabs cannot accidentally stamp their site onto the wrong tab.
  *
- * Wraps each TabShell — overrides only the site-write operations while
- * leaving everything else (activeSite, preview, tabs) from the real context.
+ * Previously this provider duplicated sessionStorage writes and called
+ * emitSiteChanged() directly. Both are now handled by the ordered
+ * pendingEffect flush in WorkspaceTabsProvider, so this component only
+ * needs to curry the tabId into the context-level operations.
  */
 
 import { createContext, useCallback, useContext, useMemo } from "react";
-import { emitSiteChanged } from "@/utils/structure/structure-channel";
 import type { ActiveSite } from "@/utils/types";
-import { STUDIO_CONTEXT_LS_KEY } from "@/utils/persistence/context";
-import { WorkspaceKey } from "@/utils/constant";
 import { useWorkspaceTabsContext } from "./WorkspaceTabsProvider";
 
-function writeToSession(workspace: WorkspaceKey, site: ActiveSite | null) {
-  try {
-    if (site) {
-      sessionStorage.setItem(
-        STUDIO_CONTEXT_LS_KEY(workspace),
-        JSON.stringify(site),
-      );
-    } else {
-      sessionStorage.removeItem(STUDIO_CONTEXT_LS_KEY(workspace));
-    }
-  } catch {}
-}
+// ─── Context ──────────────────────────────────────────────────────────────────
 
 interface TabSiteScopeContextValue {
-  selectSite: (site: ActiveSite) => void;
-  clearSite: () => void;
+    selectSite: (site: ActiveSite) => void;
+    clearSite: () => void;
 }
 
 const TabSiteScopeContext = createContext<TabSiteScopeContextValue | null>(
-  null,
+    null,
 );
 
 export function useTabSiteScope(): TabSiteScopeContextValue | null {
-  return useContext(TabSiteScopeContext);
+    return useContext(TabSiteScopeContext);
 }
 
+// ─── Provider ─────────────────────────────────────────────────────────────────
+
 interface TabSiteScopeProps {
-  tabId: string;
-  children: React.ReactNode;
+    tabId: string;
+    children: React.ReactNode;
 }
 
 export function TabSiteScopeProvider({ tabId, children }: TabSiteScopeProps) {
-  const { workspace, setActiveTabSite } = useWorkspaceTabsContext();
+    const { selectSite: ctxSelectSite, clearSite: ctxClearSite } =
+        useWorkspaceTabsContext();
 
-  const selectSite = useCallback(
-    (site: ActiveSite) => {
-      writeToSession(workspace, site);
-      // Stamp onto this specific tab, not whatever activeTabId currently is
-      setActiveTabSite(site, tabId);
-      emitSiteChanged();
-    },
-    [workspace, tabId, setActiveTabSite],
-  );
+    // Curry tabId so callers don't need to know which tab they belong to.
+    const selectSite = useCallback(
+        (site: ActiveSite) => ctxSelectSite(site, tabId),
+        [ctxSelectSite, tabId],
+    );
 
-  const clearSite = useCallback(() => {
-    writeToSession(workspace, null);
-    setActiveTabSite(null, tabId);
-  }, [workspace, tabId, setActiveTabSite]);
+    const clearSite = useCallback(
+        () => ctxClearSite(tabId),
+        [ctxClearSite, tabId],
+    );
 
-  const value = useMemo(
-    () => ({ selectSite, clearSite }),
-    [selectSite, clearSite],
-  );
+    const value = useMemo(
+        () => ({ selectSite, clearSite }),
+        [selectSite, clearSite],
+    );
 
-  return (
-    <TabSiteScopeContext.Provider value={value}>
-      {children}
-    </TabSiteScopeContext.Provider>
-  );
+    return (
+        <TabSiteScopeContext.Provider value={value}>
+            {children}
+        </TabSiteScopeContext.Provider>
+    );
 }

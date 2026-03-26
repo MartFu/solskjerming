@@ -1,27 +1,9 @@
 import { Box, Flex } from "@sanity/ui";
 import { type ActiveToolLayoutProps } from "sanity";
 import { TopBar } from "./TopBar";
-import { useToolLayout } from "@/context/ToolLayoutProvider";
-import { usePreviewResolver } from "@/hooks/usePreviewResolver";
-
-import { PreviewPane } from "./PreviewPane";
-
-function PreviewResolver() {
-    usePreviewResolver();
-    return null;
-}
 
 export function Layout(props: ActiveToolLayoutProps) {
-    const { activeSite, previewUrl, previewHidden  } = useToolLayout();
-
     const currentTool = props.activeTool.name;
-
-    const showPreview =
-        currentTool === "structure" &&
-        !!activeSite &&
-        !previewHidden &&
-        !!previewUrl;
-
 
     return (
         <Flex
@@ -42,15 +24,7 @@ export function Layout(props: ActiveToolLayoutProps) {
                 >
                     {props.renderDefault(props)}
                 </Box>
-
-                {showPreview && (
-                    <PreviewPane
-                        url={previewUrl}
-                        loading={false}
-                    />
-                )}
             </Flex>
-            {currentTool === "structure" && activeSite && <PreviewResolver />}
         </Flex>
     );
 }
