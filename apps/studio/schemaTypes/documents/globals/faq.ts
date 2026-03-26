@@ -1,12 +1,12 @@
 import { defineField} from "sanity";
 import { customRichText } from "@/schemaTypes/definitions/rich-text";
 import { asStudioIcon, parseRichTextToString } from "@/utils/helper";
-import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
+import { DOCUMENTS } from "@/schemaTypes/constant";
 import { defineGlobal } from "@/utils/globals/define-global";
 import { MessageCircleQuestionMark } from "lucide-react";
 
 export const faq = defineGlobal({ 
-  name: DOCUMENT_NAMES.faq,
+  name: DOCUMENTS.faqAsset,
   type: "document",
   icon: asStudioIcon(MessageCircleQuestionMark),
   sortFields: [],

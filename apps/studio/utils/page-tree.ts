@@ -1,34 +1,10 @@
-import { File } from "lucide-react";
-import {
-  type PackageResult,
-  type DocumentRoleMeta,
-  type PackageRegistry,
-  packageRegistry,
-} from "@/schemaTypes/documents/packages";
-import { ComponentType, ReactNode } from "react";
-
-// ─────────────────────────────────────────────────────────────
-// Type display metadata
-// ─────────────────────────────────────────────────────────────
-
-/**
- * Returns display metadata (icon, title) for any document type.
- * Looks up the type in the package registry; falls back to a
- * generic "Side" (page) label for unknown types.
- */
-export function getTypeDisplay(
-  docType: string,
-): { icon: ComponentType | ReactNode; title: string } {
-  const entry = packageRegistry.lookup(docType);
-  if (entry) {
-    return { icon: entry.meta.icon, title: entry.meta.title };
-  }
-  return { icon: File, title: "Side" };
-}
 
 // ─────────────────────────────────────────────────────────────
 // Child type resolution (for "create new" actions)
 // ─────────────────────────────────────────────────────────────
+
+import { moduleRegistry } from "@/schemaTypes/documents/modules";
+import { ComponentType, ReactNode } from "react";
 
 export interface ChildTypeInfo {
   type: string;
@@ -40,120 +16,28 @@ export interface ChildTypeInfo {
 }
 
 /**
- * Given a parent type and the site's enabled packages, returns
- * which document types can be created as children at that level.
- *
- * Uses `resolvedParentTypes` from the registry metadata — a role
- * is a valid child if its resolved parents include the given type.
- *
- * - `null` or `"page"` → ["page", ...entry points from enabled packages]
- * - Any other type → all roles whose `resolvedParentTypes` includes it
+ * Checks the module registry to see what document types (blueprints) 
+ * are allowed to be created under a specific parent document.
+ * * @param parentRole - The 'internalRole' of the parent document.
+ * @param enabledModules - The list of active module keys for the site.
  */
 export function getChildTypes(
-  parentType: string | null,
-  enabledPackages: string[],
+  parentRole: string | undefined,
+  enabledModules: string[]
 ): ChildTypeInfo[] {
-  // Top-level or under a page → pages + enabled entry points
-  if (parentType === null || parentType === "page") {
-    const children: ChildTypeInfo[] = [
-      {
-        type: "page",
-        title: "Side",
-        icon: File,
-        templateId: "page-with-parent",
-        description:
-          "En fleksibel toppnivåside som benytter hovedsidebyggeren.",
-      },
-    ];
+  // Use the registry's existing logic to find valid child blueprints
+  const options = moduleRegistry.getCreationOptions(parentRole, enabledModules);
 
-    for (const pkg of packageRegistry.packages) {
-      if (!enabledPackages.includes(pkg.key)) continue;
-
-      for (const meta of Object.values<DocumentRoleMeta>(pkg.documents)) {
-        if (meta.isEntryPoint) {
-          children.push({
-            type: meta.type,
-            title: meta.title,
-            icon: meta.icon,
-            templateId: meta.templateId,
-            description: meta.description,
-            packageKey: pkg.key,
-          });
-        }
-      }
-    }
-
-    return children;
-  }
-
-  // Any other type → find all roles that accept it as a parent
-  const children: ChildTypeInfo[] = [];
-
-  for (const pkg of packageRegistry.packages) {
-    if (!enabledPackages.includes(pkg.key)) continue;
-
-    for (const meta of Object.values<DocumentRoleMeta>(pkg.documents)) {
-      if (meta.resolvedParentTypes.includes(parentType)) {
-        children.push({
-          type: meta.type,
-          title: meta.title,
-          icon: meta.icon,
-          templateId: meta.templateId,
-          description: meta.description,
-          packageKey: pkg.key,
-        });
-      }
-    }
-  }
-
-  return children;
-}
-
-// ─────────────────────────────────────────────────────────────
-// GROQ query
-// ─────────────────────────────────────────────────────────────
-
-/**
- * Returns all routable document type names for the given set of
- * enabled packages. Always includes "page".
- */
-export function getRoutableTypes(
-  enabledPackages: string[],
-): string[] {
-  const types = ["page"];
-
-  for (const pkg of packageRegistry.packages) {
-    if (!enabledPackages.includes(pkg.key)) continue;
-
-    for (const meta of Object.values<DocumentRoleMeta>(pkg.documents)) {
-      types.push(meta.type);
-    }
-  }
-
-  return types;
-}
-
-/**
- * Builds the GROQ query that fetches all routable documents for a
- * site's page tree. The query is scoped to the enabled packages.
- */
-export function buildTreeQuery(
-  enabledPackages: string[],
-): string {
-  const types = getRoutableTypes(enabledPackages);
-  const typeList = types.map((t) => `"${t}"`).join(", ");
-
-  return `
-    *[_type in [${typeList}] && site._ref == $siteId] | order(sortOrder asc, title asc) {
-      _id,
-      _type,
-      title,
-      "slug": slug.current,
-      sortOrder,
-      "parentRef": parent._ref,
-      seoNoIndex
-    }
-  `;
+  // Map the Registry's CreationOption to your Tree's ChildTypeInfo
+  return options.map((option) => ({
+    type: option.type,
+    title: option.title,
+    description: option.description,
+    icon: option.icon,
+    templateId: option.templateId,
+    // We don't strictly need packageKey here because 
+    // getCreationOptions already filtered them for us.
+  }));
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -185,7 +69,7 @@ export interface TreeNode {
  */
 export function buildTree(
   docs: RoutableDoc[],
-  enabledPackages: string[],
+  enabledModules: string[],
 ): TreeNode[] {
   const childrenOf = new Map<string | null, RoutableDoc[]>();
 
@@ -207,7 +91,7 @@ export function buildTree(
       const label = doc.title ?? "Uten tittel";
       const path = [...ancestorPath, label];
       const canHaveChildren =
-        getChildTypes(doc._type, enabledPackages).length > 0;
+          getChildTypes(doc.internalRole, enabledModules).length > 0;
 
       return {
         doc,

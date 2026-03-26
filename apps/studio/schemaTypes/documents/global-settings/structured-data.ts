@@ -1,11 +1,11 @@
-import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
+import { DOCUMENTS } from "@/schemaTypes/constant";
 import { createStructuredDataFields } from "@/utils/factories/create-structured-data-fields";
 import { JsonIcon } from "@sanity/icons";
 import { defineGlobal } from "@/utils/globals/define-global";
 
 export const globalStructuredData = defineGlobal({
   sortFields: [],
-  name: DOCUMENT_NAMES.globalStructuredData,
+  name: DOCUMENTS.globalStructuredData,
   title: "Strukturerte Data (JSON-LD)",
   type: "document",
   icon: JsonIcon,

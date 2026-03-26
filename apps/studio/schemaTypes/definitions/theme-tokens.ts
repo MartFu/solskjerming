@@ -1,7 +1,7 @@
 import {
   OklchColorInput,
   OklchColorInputOptional,
-} from "@/components/inputs/oklch-color-input";
+} from "@/components/inputs/OklchColorInput";
 import { OKLCH_PATTERN } from "@/utils/constant";
 import { RADIUS_OPTIONS, TOKEN_DEFS } from "@/utils/themes/constant";
 import { defineField } from "sanity";

@@ -3,10 +3,10 @@ import type { Tab, TabsState } from "../types";
 
 const storageKey = (workspace: WorkspaceKey) => `studio:tabs-v1:${workspace}`;
 
-export function makeDefaultTab(): Tab {
+export function makeDefaultTab(label: string | undefined = "Fane 1"): Tab {
   return {
     id: crypto.randomUUID(),
-    label: "Fane 1",
+    label,
     savedPath: null,
     activeSite: null,
   };

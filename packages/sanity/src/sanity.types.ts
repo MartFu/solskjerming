@@ -87,8 +87,8 @@ export type Dark = {
 export type SEOStructuredData = {
   enabled?: boolean;
   type?: string;
-  article?: StructuredDataArticle;
-  product?: StructuredDataProduct;
+  article?: Article;
+  product?: Product;
   faq?: Array<{
     question: string;
     answer: string;
@@ -96,7 +96,7 @@ export type SEOStructuredData = {
   }>;
   event?: Event;
   localBusiness?: LocalBusiness;
-  video?: StructuredDataVideo;
+  video?: Video;
   howTo?: HowTo;
   customJsonLd?: string;
 };
@@ -117,7 +117,7 @@ export type Link = {
   url?: CustomUrl;
 };
 
-export type StructuredDataArticle = {
+export type Article = {
   headline?: string;
   datePublished?: string;
   dateModified?: string;
@@ -126,7 +126,7 @@ export type StructuredDataArticle = {
   publisherName?: string;
 };
 
-export type StructuredDataProduct = {
+export type Product = {
   name?: string;
   description?: string;
   sku?: string;
@@ -187,7 +187,7 @@ export type Geo = {
   longitude?: number;
 };
 
-export type StructuredDataVideo = {
+export type Video = {
   name?: string;
   description?: string;
   uploadDate?: string;
@@ -407,11 +407,11 @@ export type ImageLinkCards = {
   }>;
 };
 
-export type FaqReference = {
+export type FaqAssetReference = {
   _ref: string;
   _type: "reference";
   _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "faq";
+  [internalGroqTypeReferenceTo]?: "faqAsset";
 };
 
 export type FaqAccordion = {
@@ -423,7 +423,7 @@ export type FaqAccordion = {
   faqs: Array<
     {
       _key: string;
-    } & FaqReference
+    } & FaqAssetReference
   >;
 };
 
@@ -736,27 +736,13 @@ export type PageReference = {
   [internalGroqTypeReferenceTo]?: "page";
 };
 
-export type ProductReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "product";
-};
-
-export type VideoReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "video";
-};
-
 export type CustomUrl = {
   _type: "customUrl";
   type: "internal" | "external";
   openInNewTab?: boolean;
   external?: string;
   href?: string;
-  internal?: PageReference | ProductReference | VideoReference;
+  internal?: PageReference;
 };
 
 export type StudioSettings = {
@@ -846,11 +832,11 @@ export type SanityImageHotspot = {
   width: number;
 };
 
-export type DocumentationReference = {
+export type DocumentAssetReference = {
   _ref: string;
   _type: "reference";
   _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "documentation";
+  [internalGroqTypeReferenceTo]?: "documentAsset";
 };
 
 export type GlobalCompliance = {
@@ -863,7 +849,7 @@ export type GlobalCompliance = {
   legalDocuments?: Array<
     {
       _key: string;
-    } & DocumentationReference
+    } & DocumentAssetReference
   >;
 };
 
@@ -922,11 +908,11 @@ export type GlobalTheme = {
   theme?: Theme;
 };
 
-export type AuthorReference = {
+export type AuthorAssetReference = {
   _ref: string;
   _type: "reference";
   _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "author";
+  [internalGroqTypeReferenceTo]?: "authorAsset";
 };
 
 export type SiteReference = {
@@ -936,9 +922,9 @@ export type SiteReference = {
   [internalGroqTypeReferenceTo]?: "site";
 };
 
-export type Article = {
+export type ArticleAsset = {
   _id: string;
-  _type: "article";
+  _type: "articleAsset";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
@@ -949,7 +935,7 @@ export type Article = {
   authors: Array<
     {
       _key: string;
-    } & AuthorReference
+    } & AuthorAssetReference
   >;
   publishedAt?: string;
   image: {
@@ -966,9 +952,9 @@ export type Article = {
   site?: SiteReference;
 };
 
-export type Faq = {
+export type FaqAsset = {
   _id: string;
-  _type: "faq";
+  _type: "faqAsset";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
@@ -998,9 +984,9 @@ export type Faq = {
   deployment?: DeploymentMeta;
 };
 
-export type Video = {
+export type VideoAsset = {
   _id: string;
-  _type: "video";
+  _type: "videoAsset";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
@@ -1027,28 +1013,28 @@ export type Slug = {
   source?: string;
 };
 
-export type CategoryReference = {
+export type CategoryAssetReference = {
   _ref: string;
   _type: "reference";
   _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "category";
+  [internalGroqTypeReferenceTo]?: "categoryAsset";
 };
 
-export type Category = {
+export type CategoryAsset = {
   _id: string;
-  _type: "category";
+  _type: "categoryAsset";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
   title: string;
   slug: Slug;
   description?: string;
-  parent?: CategoryReference;
+  parent?: CategoryAssetReference;
 };
 
-export type Documentation = {
+export type DocumentAsset = {
   _id: string;
-  _type: "documentation";
+  _type: "documentAsset";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
@@ -1120,9 +1106,9 @@ export type Footer = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
+  site: SiteReference;
   label: string;
   subtitle?: string;
-  site: SiteReference;
   columns?: Array<{
     title?: string;
     links?: Array<{
@@ -1142,11 +1128,11 @@ export type Redirect = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
+  site: SiteReference;
   status?: "active" | "inactive";
   source: Slug;
   destination: Slug;
   permanent?: "true" | "false";
-  site?: SiteReference;
 };
 
 export type Site = {
@@ -1177,9 +1163,16 @@ export type Site = {
   legalDocuments?: Array<
     {
       _key: string;
-    } & DocumentationReference
+    } & DocumentAssetReference
   >;
   workspace: "solskjerming" | "vannsport";
+};
+
+export type ProductAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "productAsset";
 };
 
 export type Page = {
@@ -1190,25 +1183,25 @@ export type Page = {
   _rev: string;
   internalRole?: string;
   blueprintKey?: string;
+  site: SiteReference;
   title: string;
   description?: string;
-  site: SiteReference;
   slug: Slug;
   parent?: PageReference;
   sortOrder?: number;
   SEO?: PageSEO;
   pagebuilder?: PageBuilder;
   dataRefs?: {
-    product?: ProductReference;
-    author?: AuthorReference;
+    product?: ProductAssetReference;
+    author?: AuthorAssetReference;
   };
   filterCategories?: Array<string>;
   publishedAt?: string;
 };
 
-export type Author = {
+export type AuthorAsset = {
   _id: string;
-  _type: "author";
+  _type: "authorAsset";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
@@ -1226,9 +1219,9 @@ export type Author = {
   bio?: string;
 };
 
-export type Product = {
+export type ProductAsset = {
   _id: string;
-  _type: "product";
+  _type: "productAsset";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
@@ -1278,6 +1271,152 @@ export type Product = {
 };
 
 export type LucideIcon = string;
+
+export type MediaTag = {
+  _id: string;
+  _type: "media.tag";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: Slug;
+};
+
+export type SanityAssistInstructionTask = {
+  _type: "sanity.assist.instructionTask";
+  path?: string;
+  instructionKey?: string;
+  started?: string;
+  updated?: string;
+  info?: string;
+};
+
+export type SanityAssistTaskStatus = {
+  _type: "sanity.assist.task.status";
+  tasks?: Array<
+    {
+      _key: string;
+    } & SanityAssistInstructionTask
+  >;
+};
+
+export type SanityAssistSchemaTypeAnnotations = {
+  _type: "sanity.assist.schemaType.annotations";
+  title?: string;
+  fields?: Array<
+    {
+      _key: string;
+    } & SanityAssistSchemaTypeField
+  >;
+};
+
+export type SanityAssistOutputType = {
+  _type: "sanity.assist.output.type";
+  type?: string;
+};
+
+export type SanityAssistOutputField = {
+  _type: "sanity.assist.output.field";
+  path?: string;
+};
+
+export type AssistInstructionContextReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "assist.instruction.context";
+};
+
+export type SanityAssistInstructionContext = {
+  _type: "sanity.assist.instruction.context";
+  reference: AssistInstructionContextReference;
+};
+
+export type AssistInstructionContext = {
+  _id: string;
+  _type: "assist.instruction.context";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  context?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal";
+    listItem?: never;
+    markDefs?: null;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+};
+
+export type SanityAssistInstructionUserInput = {
+  _type: "sanity.assist.instruction.userInput";
+  message: string;
+  description?: string;
+};
+
+export type SanityAssistInstructionPrompt = Array<{
+  children?: Array<
+    | {
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }
+    | ({
+        _key: string;
+      } & SanityAssistInstructionFieldRef)
+    | ({
+        _key: string;
+      } & SanityAssistInstructionContext)
+    | ({
+        _key: string;
+      } & SanityAssistInstructionUserInput)
+  >;
+  style?: "normal";
+  listItem?: never;
+  markDefs?: null;
+  level?: number;
+  _type: "block";
+  _key: string;
+}>;
+
+export type SanityAssistInstructionFieldRef = {
+  _type: "sanity.assist.instruction.fieldRef";
+  path?: string;
+};
+
+export type SanityAssistInstruction = {
+  _type: "sanity.assist.instruction";
+  prompt?: SanityAssistInstructionPrompt;
+  icon?: string;
+  title?: string;
+  userId?: string;
+  createdById?: string;
+  output?: Array<
+    | ({
+        _key: string;
+      } & SanityAssistOutputField)
+    | ({
+        _key: string;
+      } & SanityAssistOutputType)
+  >;
+};
+
+export type SanityAssistSchemaTypeField = {
+  _type: "sanity.assist.schemaType.field";
+  path?: string;
+  instructions?: Array<
+    {
+      _key: string;
+    } & SanityAssistInstruction
+  >;
+};
 
 export type SanityImagePaletteSwatch = {
   _type: "sanity.imagePaletteSwatch";
@@ -1385,12 +1524,12 @@ export type AllSanitySchemaTypes =
   | SEOStructuredData
   | SEORobots
   | Link
-  | StructuredDataArticle
-  | StructuredDataProduct
+  | Article
+  | Product
   | Event
   | LocalBusiness
   | Geo
-  | StructuredDataVideo
+  | Video
   | HowTo
   | StructuredDataOrganization
   | SanityImageAssetReference
@@ -1404,7 +1543,7 @@ export type AllSanitySchemaTypes =
   | SubscribeNewsletter
   | RichTextBlock
   | ImageLinkCards
-  | FaqReference
+  | FaqAssetReference
   | FaqAccordion
   | FeatureCardsIcon
   | Cta
@@ -1422,37 +1561,50 @@ export type AllSanitySchemaTypes =
   | Button
   | RichText
   | PageReference
-  | ProductReference
-  | VideoReference
   | CustomUrl
   | StudioSettings
   | GlobalRobots
   | GlobalStructuredData
   | SanityImageCrop
   | SanityImageHotspot
-  | DocumentationReference
+  | DocumentAssetReference
   | GlobalCompliance
   | GlobalOrganization
   | GlobalIntegrations
   | GlobalSeo
   | GlobalTheme
-  | AuthorReference
+  | AuthorAssetReference
   | SiteReference
-  | Article
-  | Faq
-  | Video
+  | ArticleAsset
+  | FaqAsset
+  | VideoAsset
   | Slug
-  | CategoryReference
-  | Category
-  | Documentation
+  | CategoryAssetReference
+  | CategoryAsset
+  | DocumentAsset
   | Navbar
   | Footer
   | Redirect
   | Site
+  | ProductAssetReference
   | Page
-  | Author
-  | Product
+  | AuthorAsset
+  | ProductAsset
   | LucideIcon
+  | MediaTag
+  | SanityAssistInstructionTask
+  | SanityAssistTaskStatus
+  | SanityAssistSchemaTypeAnnotations
+  | SanityAssistOutputType
+  | SanityAssistOutputField
+  | AssistInstructionContextReference
+  | SanityAssistInstructionContext
+  | AssistInstructionContext
+  | SanityAssistInstructionUserInput
+  | SanityAssistInstructionPrompt
+  | SanityAssistInstructionFieldRef
+  | SanityAssistInstruction
+  | SanityAssistSchemaTypeField
   | SanityImagePaletteSwatch
   | SanityImagePalette
   | SanityImageDimensions
@@ -1468,7 +1620,7 @@ export type AllSanitySchemaTypes =
 export type QueryGenericPageOGDataResult =
   | {
       _id: string;
-      _type: "category";
+      _type: "categoryAsset";
       title: string;
       description: string | null;
       ogImage: null;
@@ -1484,7 +1636,7 @@ export type QueryGenericPageOGDataResult =
     }
   | {
       _id: string;
-      _type: "product";
+      _type: "productAsset";
       title: string;
       description: Array<{
         children?: Array<{
@@ -1517,7 +1669,7 @@ export type QueryGenericPageOGDataResult =
     }
   | {
       _id: string;
-      _type: "video";
+      _type: "videoAsset";
       title: string;
       description: string | null;
       ogImage: null;
@@ -1528,21 +1680,7 @@ export type QueryGenericPageOGDataResult =
 // Source: ../../packages/sanity/src/query.ts
 // Variable: queryImageType
 // Query: *[_type == "author" && defined(image)][0]{      image {      "id": asset._ref,  "preview": asset->metadata.lqip,  "alt": coalesce(    alt,    asset->altText,    caption,    asset->originalFilename,    "untitled"  ),  hotspot {    x,    y  },  crop {    bottom,    left,    right,    top  }  }  }.image
-export type QueryImageTypeResult = {
-  id: string | null;
-  preview: string | null;
-  alt: string | "untitled";
-  hotspot: {
-    x: number;
-    y: number;
-  } | null;
-  crop: {
-    bottom: number;
-    left: number;
-    right: number;
-    top: number;
-  } | null;
-} | null;
+export type QueryImageTypeResult = null;
 
 // Source: ../../packages/sanity/src/query.ts
 // Variable: queryHomePageData
@@ -1641,7 +1779,7 @@ export type QueryHomePageDataResult = {
         faqs: Array<{
           title: string;
           _id: string;
-          _type: "faq";
+          _type: "faqAsset";
           richText: Array<{
             children?: Array<{
               marks?: Array<string>;
@@ -2097,7 +2235,7 @@ export type QueryPageBySlugResult =
             faqs: Array<{
               title: string;
               _id: string;
-              _type: "faq";
+              _type: "faqAsset";
               richText: Array<{
                 children?: Array<{
                   marks?: Array<string>;
@@ -2557,7 +2695,7 @@ export type QueryPageBySlugResult =
             faqs: Array<{
               title: string;
               _id: string;
-              _type: "faq";
+              _type: "faqAsset";
               richText: Array<{
                 children?: Array<{
                   marks?: Array<string>;
@@ -3018,7 +3156,7 @@ export type QueryPageBySlugResult =
             faqs: Array<{
               title: string;
               _id: string;
-              _type: "faq";
+              _type: "faqAsset";
               richText: Array<{
                 children?: Array<{
                   marks?: Array<string>;
@@ -3477,7 +3615,7 @@ export type QueryPageBySlugResult =
             faqs: Array<{
               title: string;
               _id: string;
-              _type: "faq";
+              _type: "faqAsset";
               richText: Array<{
                 children?: Array<{
                   marks?: Array<string>;
@@ -3935,7 +4073,7 @@ export type QueryPageBySlugResult =
             faqs: Array<{
               title: string;
               _id: string;
-              _type: "faq";
+              _type: "faqAsset";
               richText: Array<{
                 children?: Array<{
                   marks?: Array<string>;
@@ -4391,7 +4529,7 @@ export type QueryPageBySlugResult =
             faqs: Array<{
               title: string;
               _id: string;
-              _type: "faq";
+              _type: "faqAsset";
               richText: Array<{
                 children?: Array<{
                   marks?: Array<string>;
@@ -4848,7 +4986,7 @@ export type QueryPageBySlugResult =
             faqs: Array<{
               title: string;
               _id: string;
-              _type: "faq";
+              _type: "faqAsset";
               richText: Array<{
                 children?: Array<{
                   marks?: Array<string>;
@@ -5303,7 +5441,7 @@ export type QueryPageBySlugResult =
             faqs: Array<{
               title: string;
               _id: string;
-              _type: "faq";
+              _type: "faqAsset";
               richText: Array<{
                 children?: Array<{
                   marks?: Array<string>;
@@ -5760,7 +5898,7 @@ export type QueryPageBySlugResult =
             faqs: Array<{
               title: string;
               _id: string;
-              _type: "faq";
+              _type: "faqAsset";
               richText: Array<{
                 children?: Array<{
                   marks?: Array<string>;
@@ -6215,7 +6353,7 @@ export type QueryPageBySlugResult =
             faqs: Array<{
               title: string;
               _id: string;
-              _type: "faq";
+              _type: "faqAsset";
               richText: Array<{
                 children?: Array<{
                   marks?: Array<string>;
@@ -6671,7 +6809,7 @@ export type QueryPageBySlugResult =
             faqs: Array<{
               title: string;
               _id: string;
-              _type: "faq";
+              _type: "faqAsset";
               richText: Array<{
                 children?: Array<{
                   marks?: Array<string>;
@@ -7125,7 +7263,7 @@ export type QueryPageBySlugResult =
             faqs: Array<{
               title: string;
               _id: string;
-              _type: "faq";
+              _type: "faqAsset";
               richText: Array<{
                 children?: Array<{
                   marks?: Array<string>;
@@ -7578,7 +7716,7 @@ export type QueryPageBySlugResult =
             faqs: Array<{
               title: string;
               _id: string;
-              _type: "faq";
+              _type: "faqAsset";
               richText: Array<{
                 children?: Array<{
                   marks?: Array<string>;
@@ -8029,7 +8167,7 @@ export type QueryPageBySlugResult =
             faqs: Array<{
               title: string;
               _id: string;
-              _type: "faq";
+              _type: "faqAsset";
               richText: Array<{
                 children?: Array<{
                   marks?: Array<string>;
@@ -8481,7 +8619,7 @@ export type QueryPageBySlugResult =
             faqs: Array<{
               title: string;
               _id: string;
-              _type: "faq";
+              _type: "faqAsset";
               richText: Array<{
                 children?: Array<{
                   marks?: Array<string>;

@@ -131,7 +131,7 @@ function pickerReducer(state: OklchColor, action: PickerAction): OklchColor {
   }
 }
 
-// ─── SmoothSlider ─────────────────────────────────────────────────────────────
+// ─── Slider ─────────────────────────────────────────────────────────────
 /**
  * A pointer-event-driven slider that stays silky-smooth even during fast drags.
  *
@@ -146,7 +146,7 @@ function pickerReducer(state: OklchColor, action: PickerAction): OklchColor {
  *    (OklchColorPickerModal) also doesn't re-render mid-drag — only the
  *    thumb div moves.
  */
-const SmoothSlider = memo(function SmoothSlider({
+const Slider = memo(function Slider({
   label,
   value,
   min,
@@ -426,7 +426,7 @@ export const OklchColorPickerModal = memo(function OklchColorPickerModal({
 
             {/* Sliders */}
             <Stack space={3}>
-              <SmoothSlider
+              <Slider
                 label="L"
                 value={l}
                 min={0}
@@ -435,7 +435,7 @@ export const OklchColorPickerModal = memo(function OklchColorPickerModal({
                 gradient={lGradient}
                 onChange={setL}
               />
-              <SmoothSlider
+              <Slider
                 label="C"
                 value={c}
                 min={0}
@@ -444,7 +444,7 @@ export const OklchColorPickerModal = memo(function OklchColorPickerModal({
                 gradient={cGradient}
                 onChange={setC}
               />
-              <SmoothSlider
+              <Slider
                 label="H"
                 value={h}
                 min={0}
@@ -453,7 +453,7 @@ export const OklchColorPickerModal = memo(function OklchColorPickerModal({
                 gradient={hGradient}
                 onChange={setH}
               />
-              <SmoothSlider
+              <Slider
                 label="A"
                 value={a}
                 min={0}

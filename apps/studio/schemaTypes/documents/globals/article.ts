@@ -5,13 +5,11 @@ import {
 import { defineArrayMember, defineField } from "sanity";
 import { documentSlugField, imageWithAltField } from "@/schemaTypes/common";
 import { GROUP, GROUPS } from "@/utils/constant";
-import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
+import { DOCUMENTS } from "@/schemaTypes/constant";
 import { defineGlobal } from "@/utils/globals/define-global";
 
-
-
 export const article = defineGlobal({
-  name: DOCUMENT_NAMES.article,
+  name: DOCUMENTS.articleAsset,
   title: "Artikkel",
   type: "document",
   // icon: FileTextIcon,
@@ -21,7 +19,7 @@ export const article = defineGlobal({
   description:
     "En artikkel som vil bli publisert på nettsiden. Legg til tittel, beskrivelse, forfatter og innhold for å opprette en ny artikkel.",
   fields: [
-    orderRankField({ type: "article" }),
+    orderRankField({ type: DOCUMENTS.articleAsset }),
     defineField({
       name: "title",
       type: "string",
@@ -64,7 +62,7 @@ export const article = defineGlobal({
           type: "reference",
           to: [
             {
-              type: "author",
+              type: DOCUMENTS.authorAsset,
               options: {
                 disableNew: true,
               },
@@ -116,7 +114,7 @@ export const article = defineGlobal({
     defineField({
       name: "site",
       type: "reference",
-      to: [{ type: "site" }],
+      to: [{ type: DOCUMENTS.site }],
     }),
 
     // ...seoFields,

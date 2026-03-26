@@ -3,6 +3,7 @@ import { defineArrayMember, defineField, defineType } from "sanity";
 
 import { imageWithAltField } from "@/schemaTypes/common";
 import { customRichText } from "@/schemaTypes/definitions/rich-text";
+import { DOCUMENTS } from "@/schemaTypes/constant";
 
 // ── RichText ──────────────────────────────────────────────────────────────────
 
@@ -138,11 +139,11 @@ export const accordion = defineType({
             title: "FAQs",
             type: "array",
             description: "Pick from your FAQ library.",
-            hidden: ({ parent }) => parent?.sourceType !== "faq",
+            hidden: ({ parent }) => parent?.sourceType !== DOCUMENTS.faqAsset,
             of: [
                 defineArrayMember({
                     type: "reference",
-                    to: [{ type: "faq" }],
+                    to: [{ type: DOCUMENTS.faqAsset }],
                     options: { disableNew: true },
                 }),
             ],

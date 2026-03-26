@@ -1,10 +1,10 @@
-import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
+import { DOCUMENTS } from "@/schemaTypes/constant";
 import { GROUP, GROUPS } from "@/utils/constant";
 import { defineField } from "sanity";
 import { defineGlobal } from "@/utils/globals/define-global";
 
 export const product = defineGlobal({
-  name: DOCUMENT_NAMES.product,
+  name: DOCUMENTS.productAsset,
   title: "Produkt",
   sortFields: [],
   type: "document",

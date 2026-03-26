@@ -4,7 +4,7 @@ import {
   Search,
   Settings,
 } from "lucide-react";
-import { Divider, ListBuilder, ListItem, ListItemBuilder, StructureBuilder } from "sanity/structure";
+import {  StructureBuilder } from "sanity/structure";
 import { API_VERSION } from "@/utils/env";
 import { ActivityIcon, PackageIcon} from "@sanity/icons";
 import { DeploymentDashboard } from "@/components/deployment-dashboard";
@@ -12,14 +12,13 @@ import { asStudioIcon, capitalize } from "../helper";
 
 import { moduleRegistry, globalRegistry, globalSettingsRegistry } from "@/schemaTypes/documents";
 import { SeoReportsView } from "@/components/views/SeoReportView";
-import { ComponentType, JSX, ReactNode } from "react";
 import FleetManagementConsole from "@/components/overview/FleetManagementConsole";
 
 // ─────────────────────────────────────────────────────────────
 // Global items (workspace-level, shared across sites)
 // ─────────────────────────────────────────────────────────────
 
-export function buildGlobalItems(
+export function createGlobalItems(
   S: StructureBuilder,
   enabledModules: string[],
 ) {
@@ -39,8 +38,6 @@ export function buildGlobalItems(
             .defaultOrdering(global.defaultOrdering),
         ),
     );
-
-    console.log("moduleGlobals", moduleRegistry.globalsForModules(enabledModules), enabledModules)
 
   const alwaysAvailableGlobals = globalRegistry.alwaysAvailable.map((global) =>
     S.listItem()

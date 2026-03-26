@@ -3,8 +3,6 @@ import React, {
   useState,
   useEffect,
   useCallback,
-  createContext,
-  useContext,
 } from "react";
 import {
   Box,
@@ -17,7 +15,6 @@ import {
   Button,
   Stack,
   Badge,
-  Tooltip,
   Spinner,
   Code,
   TextInput,
@@ -28,7 +25,6 @@ import {
   TabList,
   Tab,
   TabPanel,
-  Select,
 } from "@sanity/ui";
 import {
   RefreshIcon,
@@ -41,10 +37,7 @@ import {
   CheckmarkCircleIcon,
   EarthGlobeIcon,
   CheckmarkIcon,
-  CloseIcon,
-  TrendUpwardIcon,
   ChartUpwardIcon,
-  DocumentIcon,
 } from "@sanity/icons";
 
 // ─── Types ────────────────────────────────────────────────────────────────────

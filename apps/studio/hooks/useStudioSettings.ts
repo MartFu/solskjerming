@@ -12,6 +12,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useClient } from "sanity";
 import { API_VERSION } from "@/utils/env";
+import { DOCUMENTS } from "@/schemaTypes/constant";
 
 export interface StudioTabSettings {
   enabled: boolean;
@@ -29,17 +30,16 @@ const DEFAULTS: StudioTabSettings = {
   maxTabs: 5,
 };
 
-const SETTINGS_ID = "studioSettings";
 
 export function useStudioSettings(): StudioSettings {
   const client = useClient({ apiVersion: API_VERSION });
   const [settings, setSettings] = useState<StudioSettings>(DEFAULTS);
 
   const query = `*[_id == $id][0]{ "enabled": tabs.enabled, "maxTabs": tabs.maxTabs }`;
-  const params = useMemo(() => ({ id: SETTINGS_ID }), []);
+  const params = useMemo(() => ({ id: DOCUMENTS.studioSettings }), []);
 
   useEffect(() => {
-    // 1. Function to fetch current data
+    // Function to fetch current data
     const fetchSettings = async () => {
       try {
         const data = await client.fetch(query, params);
@@ -54,21 +54,16 @@ export function useStudioSettings(): StudioSettings {
       }
     };
 
-    // 2. Initial Fetch
+    // Initial Fetch
     fetchSettings();
 
-    // 3. Set up the Real-time Listener
+    // Real-time Listener
     const subscription = client
-      .listen(query, params, {
-        visibility: "query",
-        events: ["mutation"],
-      })
-      .subscribe((update) => {
-        console.log("-- Settings changed in Sanity --", update);
-        // You can use the result from the update directly if projected,
-        // but re-fetching is the most reliable way to get the final state.
-        fetchSettings();
-      });
+        .listen(query, params, {
+            visibility: "query",
+            events: ["mutation"],
+        })
+        .subscribe(fetchSettings);
 
     return () => subscription.unsubscribe();
   }, [client, query, params]);

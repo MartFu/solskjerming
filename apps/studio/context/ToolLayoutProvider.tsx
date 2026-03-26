@@ -19,7 +19,6 @@ import {
 } from "./WorkspaceTabsProvider";
 import { useTabSiteScope } from "./TabSiteScopeProvider";
 import { useStudioSettings } from "@/hooks/useStudioSettings";
-import { LayoutProps } from "sanity";
 
 // ─── Composed hook ────────────────────────────────────────────────────────────
 
@@ -50,7 +49,6 @@ export function ToolLayoutProvider({
   workspace,
   children,
 }: ToolLayoutProviderProps ) {
-  console.log("SiteProvider is mounting!");
   const settings = useStudioSettings();
 
   const tabSettings = {

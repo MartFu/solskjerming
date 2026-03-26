@@ -4,10 +4,10 @@ import { EarthGlobeIcon } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
 import { SlugDomainInput } from "@/components/inputs/slug-domain-input";
 import { enabledModulesField } from "../definitions/enabled-modules";
-import { DOCUMENT_NAMES } from "../constant";
+import { DOCUMENTS } from "../constant";
 
 export const site = defineType({
-    name: DOCUMENT_NAMES.site,
+    name: DOCUMENTS.site,
     title: "Nettside",
     type: "document",
     groups: GROUPS(GROUP.IDENTITY),
@@ -28,7 +28,7 @@ export const site = defineType({
             name: "homePage",
             title: "Forside",
             type: "reference",
-            to: [{ type: DOCUMENT_NAMES.page }],
+            to: [{ type: DOCUMENTS.page }],
             group: GROUP.IDENTITY,
             description:
                 "Siden som vises på rotnivå (/). Må settes for at nettstedet skal fungere korrekt.",
@@ -144,7 +144,7 @@ export const site = defineType({
             name: "legalDocuments",
             title: "Juridiske dokumenter",
             type: "array",
-            of: [{ type: "reference", to: [{ type: "documentation" }] }],
+            of: [{ type: "reference", to: [{ type: DOCUMENTS.documentAsset }] }],
             group: GROUP.LEGAL,
             description:
                 "Referanser til vilkår, personvern og andre juridiske tekster.",

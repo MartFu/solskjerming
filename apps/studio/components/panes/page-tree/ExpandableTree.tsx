@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Box, Button, Card, Flex, Text } from "@sanity/ui";
+import { Box, Button, Flex, Text } from "@sanity/ui";
 import { AddIcon, DocumentIcon, FolderIcon, EditIcon } from "@sanity/icons";
 import { ChevronDown, ChevronRight } from "lucide-react";
 

@@ -4,7 +4,7 @@
 import { globalSettingsRegistry } from "@/schemaTypes/documents/global-settings";
 
 // ─── Workspace-scoped shared assets ─────────────────────────────────────
-import { globalSchemaTypes } from "@/schemaTypes/documents/globals";
+import { globalRegistry } from "@/schemaTypes/documents/globals";
 
 // ─── Site config ─────────────────────────────────────────────────────────────
 import { site } from "@/schemaTypes/documents/site";
@@ -76,7 +76,7 @@ export function isSingletonType(type: string): type is SingletonType {
 export const documents = [
     site,
     ...siteOwnedDocuments,
-    ...globalSchemaTypes,
+    ...globalRegistry.allSchemas,
     ...singletons,
 ];
 

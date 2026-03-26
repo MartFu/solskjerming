@@ -1,22 +1,19 @@
-export const DOCUMENT_NAMES = {
+export const DOCUMENTS = {
   // Site-scoped
   site: "site",
   redirect: "redirect",
   page: "page",
-  articlePage: "articlePage",
-  articleRoot: "articleRoot",
-  catalogRoot: "catalogRoot",
-  productPage: "productPage",
   footer: "footer",
   navbar: "navbar",
 
   // Shared assets
-  documentation: "documentation",
-  video: "video",
-  product: "product",
-  faq: "faq",
-  author: "author",
-  article: "article",
+  documentAsset: "documentAsset",
+  videoAsset: "videoAsset",
+  productAsset: "productAsset",
+  faqAsset: "faqAsset",
+  authorAsset: "authorAsset",
+  articleAsset: "articleAsset",
+  categoryAsset: "categoryAsset",
 
   // Globals
   globalTheme: "globalTheme",
@@ -26,6 +23,9 @@ export const DOCUMENT_NAMES = {
   globalCompliance: "globalCompliance",
   globalStructuredData: "globalStructuredData",
   globalRobots: "globalRobots",
+
+  // Studio settings
+  studioSettings: "studioSettings"
 } as const;
 
-export type DocumentName = (typeof DOCUMENT_NAMES)[keyof typeof DOCUMENT_NAMES];
+export type DocumentName = (typeof DOCUMENTS)[keyof typeof DOCUMENTS];

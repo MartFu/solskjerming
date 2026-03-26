@@ -1,4 +1,4 @@
-import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
+import { DOCUMENTS } from "@/schemaTypes/constant";
 import { GROUP, GROUPS } from "@/utils/constant";
 import { asStudioIcon } from "@/utils/helper";
 import { Building2 } from "lucide-react";
@@ -7,7 +7,7 @@ import { defineGlobal } from "@/utils/globals/define-global";
 
 export const globalOrganization = defineGlobal({
   sortFields: [],
-    name: DOCUMENT_NAMES.globalOrganization,
+    name: DOCUMENTS.globalOrganization,
     title: "Organisasjon",
     type: "document",
     icon: asStudioIcon(Building2),

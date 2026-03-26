@@ -9,28 +9,45 @@ export function ToolMenu(props: ToolMenuProps) {
   const direction = isSidebar ? "column" : "row";
 
 
+  const improvedTools = tools.map((t) => {
+    if (t.name === "releases") {
+      return {
+        ...t,
+        title: "Utgivelser",
+      }
+    } else if (t.name === "schedules") {
+      return {
+        ...t,
+        title: "Tidsplaner",
+      }
+    } 
+
+    return t
+  } )
+
+  const blacklist = ["presentation", "schedules"]
+
   return (
-    <Flex
-      direction={direction}
-      gap={1}
-      justify={"flex-start"}
-    >
-      {tools
-        .filter((t) => t.name !== "releases" && t.name !== "schedules")
-        .map((tool) => (
-            <Button
-              as={ToolLink}
-              key={tool.name}
-              name={tool.name}
-              text={tool.title || tool.name}
-              paddingX={[2]}
-              paddingY={[2]}
-              size={2}
-              selected={tool.name === activeToolName}
-              tone="neutral"
-              mode="bleed"
-            />
-        ))}
-    </Flex>
+      <Flex
+          direction={direction}
+          gap={1}
+          justify={"flex-start"}
+      >
+          {improvedTools.filter((t) => !blacklist.includes(t.name))
+              .map((tool) => (
+                  <Button
+                      as={ToolLink}
+                      key={tool.name}
+                      name={tool.name}
+                      text={tool.title || tool.name}
+                      paddingX={[2]}
+                      paddingY={[2]}
+                      size={2}
+                      selected={tool.name === activeToolName}
+                      tone="neutral"
+                      mode="bleed"
+                  />
+              ))}
+      </Flex>
   );
 }

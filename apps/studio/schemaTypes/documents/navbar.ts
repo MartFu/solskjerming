@@ -3,7 +3,7 @@ import { defineField, defineType } from "sanity";
 
 import { lucideIconPreview } from "@/components/icon-preview";
 import { buttonsField, iconField, siteRelationField } from "@/schemaTypes/common";
-import { DOCUMENT_NAMES } from "../constant";
+import { DOCUMENTS } from "../constant";
 
 const navbarLink = defineField({
     name: "navbarLink",
@@ -145,7 +145,7 @@ const navbarColumn = defineField({
 });
 
 export const navbar = defineType({
-  name: DOCUMENT_NAMES.navbar,
+  name: DOCUMENTS.navbar,
   title: "Header",
   type: "document",
   icon: PanelTop,

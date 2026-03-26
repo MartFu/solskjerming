@@ -46,7 +46,7 @@ interface TabSiteScopeProps {
   children: React.ReactNode;
 }
 
-export function TabSiteScope({ tabId, children }: TabSiteScopeProps) {
+export function TabSiteScopeProvider({ tabId, children }: TabSiteScopeProps) {
   const { workspace, setActiveTabSite } = useWorkspaceTabsContext();
 
   const selectSite = useCallback(

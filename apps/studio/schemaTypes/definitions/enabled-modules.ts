@@ -1,6 +1,6 @@
 import { defineField } from "sanity";
 import { GROUP } from "@/utils/constant";
-import { moduleRegistry } from "../documents/modules";
+import { moduleRegistry } from "@/schemaTypes/documents/modules";
 
 /**
  * Field for the site document that controls which packages
@@ -17,9 +17,9 @@ export const enabledModulesField = defineField({
     of: [{ type: "string" }],
     options: {
         list: moduleRegistry.modules.map((mod) => ({
-            title: mod.title,
-            value: mod.key,
-        })),
+                title: mod.title,
+                value: mod.key,
+            })),
         layout: "grid",
     },
 });

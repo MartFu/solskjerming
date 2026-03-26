@@ -1,4 +1,4 @@
-import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
+import { DOCUMENTS } from "@/schemaTypes/constant";
 import { GROUP, GROUPS } from "@/utils/constant";
 import {
     cookieFieldsets,
@@ -10,7 +10,7 @@ import { defineGlobal } from "@/utils/globals/define-global";
 
 export const globalCompliance = defineGlobal({
   sortFields: [],
-    name: DOCUMENT_NAMES.globalCompliance,
+    name: DOCUMENTS.globalCompliance,
     title: "GDPR & Samtykke",
     type: "document",
     icon: asStudioIcon(ShieldCheck),
@@ -29,7 +29,7 @@ export const globalCompliance = defineGlobal({
             name: "legalDocuments",
             title: "Juridisk Dokumentasjon",
             type: "array",
-            of: [{ type: "reference", to: [{ type: "documentation" }] }],
+            of: [{ type: "reference", to: [{ type: DOCUMENTS.documentAsset }] }],
             group: GROUP.LEGAL,
             description:
                 "Referanser til vilkår, personvern og andre juridiske tekster.",

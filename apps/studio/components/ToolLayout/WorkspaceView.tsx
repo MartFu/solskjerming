@@ -5,7 +5,6 @@ import {
   Box,
   Button,
   Card,
-  Container,
   Flex,
   Grid,
   Spinner,
@@ -23,9 +22,9 @@ import { WorkspaceKey } from "@/utils/constant";
 import { useToolLayout } from "@/context/ToolLayoutProvider";
 import { useRouter } from "sanity/router";
 import { Site } from "@/utils/types";
-import { ArchiveSiteDialog } from "./ArchiveSiteDialog";
+import { ArchiveSiteDialog } from "@/components/modals/ArchiveSiteDialog";
 import { ArchiveSiteProvider } from "@/context/ArchiveSiteProvider";
-import { CreateSiteDialog } from "./CreateSiteDialog";
+import { CreateSiteDialog } from "../modals/CreateSiteDialog";
 import { API_VERSION } from "@/utils/env";
 import { ProjectStats } from "./Stats";
 
@@ -44,10 +43,6 @@ function deploymentLabel(status?: string): string {
   if (status === "inactive") return "Inaktiv";
   return "Kladd";
 }
-
-// ─── Create site dialog ───────────────────────────────────────────────────────
-
-// ─── Archive dialog ───────────────────────────────────────────────────────────
 
 // ─── Site card ────────────────────────────────────────────────────────────────
 
@@ -175,7 +170,7 @@ export function WorkspaceView() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [showCreate, setShowCreate] = useState(false);
-  const [archiveSiteId, setArchiveSiteId] = useState<string | null>(null);
+  const [siteToArchive, setSiteToArchive] = useState<Site | null>(null);
 
   const fetchSites = () => {
     setLoading(true);
@@ -189,7 +184,6 @@ export function WorkspaceView() {
       )
       .then((result) => {
         setSites(result);
-        console.log("RESULT", result)
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -325,7 +319,7 @@ export function WorkspaceView() {
                                       workspace={workspace}
                                       onSelect={() => handleSelect(site)}
                                       onArchive={() =>
-                                          setArchiveSiteId(site._id)
+                                          setSiteToArchive(site)
                                       }
                                   />
                               ))}
@@ -343,15 +337,15 @@ export function WorkspaceView() {
                   />
               )}
 
-              {archiveSiteId && (
+              {siteToArchive && (
                   <ArchiveSiteProvider
-                      siteId={archiveSiteId}
-                      onClose={() => setArchiveSiteId(null)}
+                      site={siteToArchive}
+                      onClose={() => setSiteToArchive(null)}
                       onArchived={(siteId: string) => {
                           setSites((prev) =>
                               prev.filter((s) => s._id !== siteId),
                           );
-                          setArchiveSiteId(null);
+                          setSiteToArchive(null);
                       }}
                   >
                       {/* Archive dialog — only shown once preview data is ready */}

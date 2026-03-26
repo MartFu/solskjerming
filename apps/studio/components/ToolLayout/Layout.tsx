@@ -28,7 +28,9 @@ export function Layout(props: ActiveToolLayoutProps) {
             direction="column"
             height="fill"
         >
-            {currentTool !== "vision" && <TopBar tool={props.activeTool} />}
+            {currentTool !== "vision" && (
+                <TopBar currentTool={props.activeTool.name} />
+            )}
 
             <Flex
                 flex={1}
@@ -48,9 +50,7 @@ export function Layout(props: ActiveToolLayoutProps) {
                     />
                 )}
             </Flex>
-            {currentTool === "structure" && activeSite && (
-                <PreviewResolver />
-            )}
+            {currentTool === "structure" && activeSite && <PreviewResolver />}
         </Flex>
     );
 }

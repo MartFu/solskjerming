@@ -2,6 +2,7 @@ import {  WorkspaceKey } from "@/utils/constant";
 import { API_VERSION } from "@/utils/env";
 
 import type { SanityClient, SourceClientOptions, Template } from "sanity";
+import { DOCUMENTS } from "./constant";
 
 // ─────────────────────────────────────────────────────────────
 // Helpers
@@ -35,7 +36,7 @@ type SiteTemplateParams = {
 export const siteTemplate: Template<SiteTemplateParams> = {
   id: "site-template",
   title: "Nettsted",
-  schemaType: "site",
+  schemaType: DOCUMENTS.site,
   value: async ({
     workspace,
     getClient,

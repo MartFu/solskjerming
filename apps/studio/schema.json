@@ -506,7 +506,7 @@
           "type": "objectAttribute",
           "value": {
             "type": "inline",
-            "name": "structuredData.article"
+            "name": "article"
           },
           "optional": true
         },
@@ -514,7 +514,7 @@
           "type": "objectAttribute",
           "value": {
             "type": "inline",
-            "name": "structuredData.product"
+            "name": "product"
           },
           "optional": true
         },
@@ -575,7 +575,7 @@
           "type": "objectAttribute",
           "value": {
             "type": "inline",
-            "name": "structuredData.video"
+            "name": "video"
           },
           "optional": true
         },
@@ -702,7 +702,7 @@
   },
   {
     "type": "type",
-    "name": "structuredData.article",
+    "name": "article",
     "value": {
       "type": "object",
       "attributes": {
@@ -753,7 +753,7 @@
   },
   {
     "type": "type",
-    "name": "structuredData.product",
+    "name": "product",
     "value": {
       "type": "object",
       "attributes": {
@@ -1111,7 +1111,7 @@
   },
   {
     "type": "type",
-    "name": "structuredData.video",
+    "name": "video",
     "value": {
       "type": "object",
       "attributes": {
@@ -2728,7 +2728,7 @@
   },
   {
     "type": "type",
-    "name": "faq.reference",
+    "name": "faqAsset.reference",
     "value": {
       "type": "object",
       "attributes": {
@@ -2753,7 +2753,7 @@
           "optional": true
         }
       },
-      "dereferencesTo": "faq"
+      "dereferencesTo": "faqAsset"
     }
   },
   {
@@ -2814,7 +2814,7 @@
               },
               "rest": {
                 "type": "inline",
-                "name": "faq.reference"
+                "name": "faqAsset.reference"
               }
             }
           },
@@ -5000,66 +5000,6 @@
     }
   },
   {
-    "type": "type",
-    "name": "product.reference",
-    "value": {
-      "type": "object",
-      "attributes": {
-        "_ref": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
-          }
-        },
-        "_type": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string",
-            "value": "reference"
-          }
-        },
-        "_weak": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "boolean"
-          },
-          "optional": true
-        }
-      },
-      "dereferencesTo": "product"
-    }
-  },
-  {
-    "type": "type",
-    "name": "video.reference",
-    "value": {
-      "type": "object",
-      "attributes": {
-        "_ref": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string"
-          }
-        },
-        "_type": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "string",
-            "value": "reference"
-          }
-        },
-        "_weak": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "boolean"
-          },
-          "optional": true
-        }
-      },
-      "dereferencesTo": "video"
-    }
-  },
-  {
     "name": "customUrl",
     "type": "type",
     "value": {
@@ -5113,21 +5053,8 @@
         "internal": {
           "type": "objectAttribute",
           "value": {
-            "type": "union",
-            "of": [
-              {
-                "type": "inline",
-                "name": "page.reference"
-              },
-              {
-                "type": "inline",
-                "name": "product.reference"
-              },
-              {
-                "type": "inline",
-                "name": "video.reference"
-              }
-            ]
+            "type": "inline",
+            "name": "page.reference"
           },
           "optional": true
         }
@@ -5634,7 +5561,7 @@
   },
   {
     "type": "type",
-    "name": "documentation.reference",
+    "name": "documentAsset.reference",
     "value": {
       "type": "object",
       "attributes": {
@@ -5659,7 +5586,7 @@
           "optional": true
         }
       },
-      "dereferencesTo": "documentation"
+      "dereferencesTo": "documentAsset"
     }
   },
   {
@@ -5721,7 +5648,7 @@
             },
             "rest": {
               "type": "inline",
-              "name": "documentation.reference"
+              "name": "documentAsset.reference"
             }
           }
         },
@@ -6043,7 +5970,7 @@
   },
   {
     "type": "type",
-    "name": "author.reference",
+    "name": "authorAsset.reference",
     "value": {
       "type": "object",
       "attributes": {
@@ -6068,7 +5995,7 @@
           "optional": true
         }
       },
-      "dereferencesTo": "author"
+      "dereferencesTo": "authorAsset"
     }
   },
   {
@@ -6102,7 +6029,7 @@
     }
   },
   {
-    "name": "article",
+    "name": "articleAsset",
     "type": "document",
     "attributes": {
       "_id": {
@@ -6115,7 +6042,7 @@
         "type": "objectAttribute",
         "value": {
           "type": "string",
-          "value": "article"
+          "value": "articleAsset"
         }
       },
       "_createdAt": {
@@ -6180,7 +6107,7 @@
             },
             "rest": {
               "type": "inline",
-              "name": "author.reference"
+              "name": "authorAsset.reference"
             }
           }
         },
@@ -6280,7 +6207,7 @@
     }
   },
   {
-    "name": "faq",
+    "name": "faqAsset",
     "type": "document",
     "attributes": {
       "_id": {
@@ -6293,7 +6220,7 @@
         "type": "objectAttribute",
         "value": {
           "type": "string",
-          "value": "faq"
+          "value": "faqAsset"
         }
       },
       "_createdAt": {
@@ -6554,7 +6481,7 @@
     }
   },
   {
-    "name": "video",
+    "name": "videoAsset",
     "type": "document",
     "attributes": {
       "_id": {
@@ -6567,7 +6494,7 @@
         "type": "objectAttribute",
         "value": {
           "type": "string",
-          "value": "video"
+          "value": "videoAsset"
         }
       },
       "_createdAt": {
@@ -6740,7 +6667,7 @@
   },
   {
     "type": "type",
-    "name": "category.reference",
+    "name": "categoryAsset.reference",
     "value": {
       "type": "object",
       "attributes": {
@@ -6765,11 +6692,11 @@
           "optional": true
         }
       },
-      "dereferencesTo": "category"
+      "dereferencesTo": "categoryAsset"
     }
   },
   {
-    "name": "category",
+    "name": "categoryAsset",
     "type": "document",
     "attributes": {
       "_id": {
@@ -6782,7 +6709,7 @@
         "type": "objectAttribute",
         "value": {
           "type": "string",
-          "value": "category"
+          "value": "categoryAsset"
         }
       },
       "_createdAt": {
@@ -6829,14 +6756,14 @@
         "type": "objectAttribute",
         "value": {
           "type": "inline",
-          "name": "category.reference"
+          "name": "categoryAsset.reference"
         },
         "optional": true
       }
     }
   },
   {
-    "name": "documentation",
+    "name": "documentAsset",
     "type": "document",
     "attributes": {
       "_id": {
@@ -6849,7 +6776,7 @@
         "type": "objectAttribute",
         "value": {
           "type": "string",
-          "value": "documentation"
+          "value": "documentAsset"
         }
       },
       "_createdAt": {
@@ -7326,6 +7253,14 @@
           "type": "string"
         }
       },
+      "site": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "site.reference"
+        },
+        "optional": false
+      },
       "label": {
         "type": "objectAttribute",
         "value": {
@@ -7339,14 +7274,6 @@
           "type": "string"
         },
         "optional": true
-      },
-      "site": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "site.reference"
-        },
-        "optional": false
       },
       "columns": {
         "type": "objectAttribute",
@@ -7467,6 +7394,14 @@
           "type": "string"
         }
       },
+      "site": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "site.reference"
+        },
+        "optional": false
+      },
       "status": {
         "type": "objectAttribute",
         "value": {
@@ -7514,14 +7449,6 @@
               "value": "false"
             }
           ]
-        },
-        "optional": true
-      },
-      "site": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "site.reference"
         },
         "optional": true
       }
@@ -7718,7 +7645,7 @@
             },
             "rest": {
               "type": "inline",
-              "name": "documentation.reference"
+              "name": "documentAsset.reference"
             }
           }
         },
@@ -7741,6 +7668,36 @@
         },
         "optional": false
       }
+    }
+  },
+  {
+    "type": "type",
+    "name": "productAsset.reference",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_ref": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          }
+        },
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "reference"
+          }
+        },
+        "_weak": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        }
+      },
+      "dereferencesTo": "productAsset"
     }
   },
   {
@@ -7792,6 +7749,14 @@
         },
         "optional": true
       },
+      "site": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "site.reference"
+        },
+        "optional": false
+      },
       "title": {
         "type": "objectAttribute",
         "value": {
@@ -7805,14 +7770,6 @@
           "type": "string"
         },
         "optional": true
-      },
-      "site": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "inline",
-          "name": "site.reference"
-        },
-        "optional": false
       },
       "slug": {
         "type": "objectAttribute",
@@ -7862,7 +7819,7 @@
               "type": "objectAttribute",
               "value": {
                 "type": "inline",
-                "name": "product.reference"
+                "name": "productAsset.reference"
               },
               "optional": true
             },
@@ -7870,7 +7827,7 @@
               "type": "objectAttribute",
               "value": {
                 "type": "inline",
-                "name": "author.reference"
+                "name": "authorAsset.reference"
               },
               "optional": true
             }
@@ -7898,7 +7855,7 @@
     }
   },
   {
-    "name": "author",
+    "name": "authorAsset",
     "type": "document",
     "attributes": {
       "_id": {
@@ -7911,7 +7868,7 @@
         "type": "objectAttribute",
         "value": {
           "type": "string",
-          "value": "author"
+          "value": "authorAsset"
         }
       },
       "_createdAt": {
@@ -8017,7 +7974,7 @@
     }
   },
   {
-    "name": "product",
+    "name": "productAsset",
     "type": "document",
     "attributes": {
       "_id": {
@@ -8030,7 +7987,7 @@
         "type": "objectAttribute",
         "value": {
           "type": "string",
-          "value": "product"
+          "value": "productAsset"
         }
       },
       "_createdAt": {
@@ -8398,6 +8355,795 @@
     "type": "type",
     "value": {
       "type": "string"
+    }
+  },
+  {
+    "name": "media.tag",
+    "type": "document",
+    "attributes": {
+      "_id": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_type": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string",
+          "value": "media.tag"
+        }
+      },
+      "_createdAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_updatedAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_rev": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "name": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "slug"
+        },
+        "optional": true
+      }
+    }
+  },
+  {
+    "name": "sanity.assist.instructionTask",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "sanity.assist.instructionTask"
+          }
+        },
+        "path": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "instructionKey": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "started": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "updated": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "info": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "sanity.assist.task.status",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "sanity.assist.task.status"
+          }
+        },
+        "tasks": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "array",
+            "of": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              },
+              "rest": {
+                "type": "inline",
+                "name": "sanity.assist.instructionTask"
+              }
+            }
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "sanity.assist.schemaType.annotations",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "sanity.assist.schemaType.annotations"
+          }
+        },
+        "title": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "fields": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "array",
+            "of": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              },
+              "rest": {
+                "type": "inline",
+                "name": "sanity.assist.schemaType.field"
+              }
+            }
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "sanity.assist.output.type",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "sanity.assist.output.type"
+          }
+        },
+        "type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "sanity.assist.output.field",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "sanity.assist.output.field"
+          }
+        },
+        "path": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "type": "type",
+    "name": "assist.instruction.context.reference",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_ref": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          }
+        },
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "reference"
+          }
+        },
+        "_weak": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        }
+      },
+      "dereferencesTo": "assist.instruction.context"
+    }
+  },
+  {
+    "name": "sanity.assist.instruction.context",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "sanity.assist.instruction.context"
+          }
+        },
+        "reference": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "assist.instruction.context.reference"
+          },
+          "optional": false
+        }
+      }
+    }
+  },
+  {
+    "name": "assist.instruction.context",
+    "type": "document",
+    "attributes": {
+      "_id": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_type": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string",
+          "value": "assist.instruction.context"
+        }
+      },
+      "_createdAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_updatedAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_rev": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "title": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "context": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "children": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "array",
+                  "of": {
+                    "type": "object",
+                    "attributes": {
+                      "marks": {
+                        "type": "objectAttribute",
+                        "value": {
+                          "type": "array",
+                          "of": {
+                            "type": "string"
+                          }
+                        },
+                        "optional": true
+                      },
+                      "text": {
+                        "type": "objectAttribute",
+                        "value": {
+                          "type": "string"
+                        },
+                        "optional": true
+                      },
+                      "_type": {
+                        "type": "objectAttribute",
+                        "value": {
+                          "type": "string",
+                          "value": "span"
+                        }
+                      }
+                    },
+                    "rest": {
+                      "type": "object",
+                      "attributes": {
+                        "_key": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "optional": true
+              },
+              "style": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "union",
+                  "of": [
+                    {
+                      "type": "string",
+                      "value": "normal"
+                    }
+                  ]
+                },
+                "optional": true
+              },
+              "listItem": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "union",
+                  "of": []
+                },
+                "optional": true
+              },
+              "markDefs": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "null"
+                },
+                "optional": true
+              },
+              "level": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "number"
+                },
+                "optional": true
+              },
+              "_type": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string",
+                  "value": "block"
+                }
+              }
+            },
+            "rest": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "optional": true
+      }
+    }
+  },
+  {
+    "name": "sanity.assist.instruction.userInput",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "sanity.assist.instruction.userInput"
+          }
+        },
+        "message": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": false
+        },
+        "description": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "sanity.assist.instruction.prompt",
+    "type": "type",
+    "value": {
+      "type": "array",
+      "of": {
+        "type": "object",
+        "attributes": {
+          "children": {
+            "type": "objectAttribute",
+            "value": {
+              "type": "array",
+              "of": {
+                "type": "union",
+                "of": [
+                  {
+                    "type": "object",
+                    "attributes": {
+                      "marks": {
+                        "type": "objectAttribute",
+                        "value": {
+                          "type": "array",
+                          "of": {
+                            "type": "string"
+                          }
+                        },
+                        "optional": true
+                      },
+                      "text": {
+                        "type": "objectAttribute",
+                        "value": {
+                          "type": "string"
+                        },
+                        "optional": true
+                      },
+                      "_type": {
+                        "type": "objectAttribute",
+                        "value": {
+                          "type": "string",
+                          "value": "span"
+                        }
+                      }
+                    },
+                    "rest": {
+                      "type": "object",
+                      "attributes": {
+                        "_key": {
+                          "type": "objectAttribute",
+                          "value": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "attributes": {
+                      "_key": {
+                        "type": "objectAttribute",
+                        "value": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "rest": {
+                      "type": "inline",
+                      "name": "sanity.assist.instruction.fieldRef"
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "attributes": {
+                      "_key": {
+                        "type": "objectAttribute",
+                        "value": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "rest": {
+                      "type": "inline",
+                      "name": "sanity.assist.instruction.context"
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "attributes": {
+                      "_key": {
+                        "type": "objectAttribute",
+                        "value": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "rest": {
+                      "type": "inline",
+                      "name": "sanity.assist.instruction.userInput"
+                    }
+                  }
+                ]
+              }
+            },
+            "optional": true
+          },
+          "style": {
+            "type": "objectAttribute",
+            "value": {
+              "type": "union",
+              "of": [
+                {
+                  "type": "string",
+                  "value": "normal"
+                }
+              ]
+            },
+            "optional": true
+          },
+          "listItem": {
+            "type": "objectAttribute",
+            "value": {
+              "type": "union",
+              "of": []
+            },
+            "optional": true
+          },
+          "markDefs": {
+            "type": "objectAttribute",
+            "value": {
+              "type": "null"
+            },
+            "optional": true
+          },
+          "level": {
+            "type": "objectAttribute",
+            "value": {
+              "type": "number"
+            },
+            "optional": true
+          },
+          "_type": {
+            "type": "objectAttribute",
+            "value": {
+              "type": "string",
+              "value": "block"
+            }
+          }
+        },
+        "rest": {
+          "type": "object",
+          "attributes": {
+            "_key": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "sanity.assist.instruction.fieldRef",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "sanity.assist.instruction.fieldRef"
+          }
+        },
+        "path": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "sanity.assist.instruction",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "sanity.assist.instruction"
+          }
+        },
+        "prompt": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "sanity.assist.instruction.prompt"
+          },
+          "optional": true
+        },
+        "icon": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "title": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "userId": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "createdById": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "output": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "array",
+            "of": {
+              "type": "union",
+              "of": [
+                {
+                  "type": "object",
+                  "attributes": {
+                    "_key": {
+                      "type": "objectAttribute",
+                      "value": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "rest": {
+                    "type": "inline",
+                    "name": "sanity.assist.output.field"
+                  }
+                },
+                {
+                  "type": "object",
+                  "attributes": {
+                    "_key": {
+                      "type": "objectAttribute",
+                      "value": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "rest": {
+                    "type": "inline",
+                    "name": "sanity.assist.output.type"
+                  }
+                }
+              ]
+            }
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "sanity.assist.schemaType.field",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "sanity.assist.schemaType.field"
+          }
+        },
+        "path": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "instructions": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "array",
+            "of": {
+              "type": "object",
+              "attributes": {
+                "_key": {
+                  "type": "objectAttribute",
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              },
+              "rest": {
+                "type": "inline",
+                "name": "sanity.assist.instruction"
+              }
+            }
+          },
+          "optional": true
+        }
+      }
     }
   },
   {

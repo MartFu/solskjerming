@@ -1,5 +1,6 @@
 import { MessageCircle } from "lucide-react";
 import { defineField, defineType } from "sanity";
+import { DOCUMENTS } from "../constant";
 
 export const faqAccordion = defineType({
   name: "faqAccordion",
@@ -60,7 +61,7 @@ export const faqAccordion = defineType({
       of: [
         {
           type: "reference",
-          to: [{ type: "faq" }],
+          to: [{ type: DOCUMENTS.faqAsset }],
           options: { disableNew: true },
         },
       ],

@@ -1,3 +1,4 @@
+import { DOCUMENTS } from "@/schemaTypes/constant";
 import { Rss } from "lucide-react";
 import { defineField, defineType } from "sanity";
 
@@ -56,7 +57,7 @@ export const feed = defineType({
             type: "reference",
             description:
                 "Only show content from this category. Leave blank for all.",
-            to: [{ type: "category" }],
+            to: [{ type: DOCUMENTS.categoryAsset }],
             options: { disableNew: true },
         }),
         defineField({

@@ -3,17 +3,62 @@ import { createList, createSingleton } from "./helpers";
 import { Link, PanelBottom, PanelTop, Settings } from "lucide-react";
 import { WorkspaceKey } from "../constant";
 import { Site } from "@workspace/sanity/types";
-import { buildPageTree } from "./build-page-tree";
-import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
+import { DOCUMENTS } from "@/schemaTypes/constant";
 import { asStudioIcon } from "../helper";
+import { SquareMenu } from "lucide-react";
+import { API_VERSION } from "../env";
+import { PageTreePane } from "@/components/panes/page-tree";
 
-// import { buildPageTree } from "./build-page-tree";
+// Page tree
+export function createPageTree(
+  S: StructureBuilder,
+  siteId: string,
+  enabledPackages: string[],
+) {
+  // In v2, the only routable Sanity type is "page"
+  const PAGE_TYPE = DOCUMENTS.page
+
+  return S.listItem()
+    .title("Sider")
+    .id(`${siteId}-pages`)
+    .icon(asStudioIcon(SquareMenu))
+    .child(
+      Object.assign(
+        S.documentList()
+          .id(`${siteId}-page-tree`)
+          .title("Sider")
+          .filter(`_type == "${PAGE_TYPE}" && site._ref == $siteId`)
+          .apiVersion(API_VERSION)
+          .params({ siteId })
+          .canHandleIntent((intentName, params) => {
+            // If the user clicks a search result for a "page" on this site,
+            // this pane will claim the intent and open it in the tree context.
+            const isTargetType = params.type === PAGE_TYPE;
+
+            return ["edit", "create"].includes(intentName) && isTargetType;
+          })
+          .serialize(),
+        {
+          __preserveInstance: true,
+          key: `${siteId}-page-tree`,
+          id: `${siteId}-page-tree`,
+          type: "component",
+          component: () =>  PageTreePane({
+            siteId,
+            enabledPackages,
+          }),
+          
+        },
+      ),
+    );
+}
+
 
 // ─────────────────────────────────────────────────────────────
 // Site content
 // ─────────────────────────────────────────────────────────────
 
-export function buildSiteItems(
+export function createSiteItems(
     S: StructureBuilder,
     site: Site,
     workspace: WorkspaceKey,
@@ -28,7 +73,7 @@ export function buildSiteItems(
             workspace,
         }),
 
-        buildPageTree(S, site._id, site.enabledModules ?? []),
+        createPageTree(S, site._id, site.enabledModules ?? []),
 
         createSingleton(S, {
             type: "footer",
@@ -38,6 +83,8 @@ export function buildSiteItems(
             workspace,
         }),
 
+        S.divider(),
+
         S.listItem()
             .title("Innstillinger")
             .id(`${site._id}-settings`)
@@ -45,7 +92,7 @@ export function buildSiteItems(
             .child(
                 S.document()
                     .id(`${site._id}-settings-editor`)
-                    .schemaType(DOCUMENT_NAMES.site)
+                    .schemaType(DOCUMENTS.site)
                     .initialValueTemplate("site-template", {
                         workspace,
                         getClient: context.getClient,
@@ -58,8 +105,8 @@ export function buildSiteItems(
         createList(S,
           {
             icon: asStudioIcon(Link),
-            type: DOCUMENT_NAMES.redirect,
-            title: "Redirigeringer"
+            type: DOCUMENTS.redirect,
+            title: "Redirigering"
           }
         )
     ];

@@ -12,7 +12,7 @@
 import { useRef, useState, useCallback, useEffect } from "react";
 import { AddIcon, CloseIcon, InfoOutlineIcon } from "@sanity/icons";
 import { useToolLayout } from "@/context/ToolLayoutProvider";
-import { Box, Button, Flex, Popover, Text, Tooltip } from "@sanity/ui";
+import { Box, Button, Flex, Popover, Text } from "@sanity/ui";
 import type { Tab } from "@/utils/types";
 import { useRouter } from "sanity/router";
 import styled from "styled-components";
@@ -245,7 +245,7 @@ const hideScrollbarStyles = {
 // ─── Tab strip ───────────────────────────────────────────────────────────────
 
 export function TabBar() {
-  const { tabs, activeTabId, addTab, tabsEnabled, maxTabs, workspace } =
+  const { tabs, activeTabId, addTab, activeSite, tabsEnabled, maxTabs, workspace } =
     useToolLayout();
   const [isOverTrigger, setIsOverTrigger] = useState(false);
   const [isOverContent, setIsOverContent] = useState(false);
@@ -306,7 +306,7 @@ export function TabBar() {
           aria-label="Ny fane"
           disabled={!canAddTab}
           title="Ny fane"
-          onClick={addTab}
+          onClick={() => addTab(activeSite?.title, activeSite?._id)}
           icon={AddIcon}
           fontSize={0}
           radius={2}

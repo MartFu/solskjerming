@@ -6,9 +6,9 @@ import { unsplashImageAsset } from "sanity-plugin-asset-source-unsplash";
 import { lucideIconPicker } from "sanity-plugin-lucide-icon-picker";
 import { nbNOLocale } from "@sanity/locale-nb-no";
 import { Logo } from "@/components/logo";
-import { schemaTypes, singletonType } from "@/schemaTypes/index";
+import { schemaTypes } from "@/schemaTypes/index";
 import { JsonIcon } from "@sanity/icons";
-import { ToolLayoutShell } from "./components/tool-layout";
+import { ToolLayoutShell } from "./components/ToolLayout";
 
 import { createStructure } from "@/utils/structure/structure";
 import { initialValueTemplates } from "./schemaTypes/templates";
@@ -18,7 +18,7 @@ import { WorkspaceKey } from "./utils/constant";
 import { PROJECT_ID } from "./utils/env";
 import { moduleRegistry } from "./schemaTypes/documents/modules";
 import { BlueprintBadge } from "./components/blueprint-badge";
-import { isSingletonType, singletons } from "./schemaTypes/documents";
+import { isSingletonType } from "./schemaTypes/documents";
 import { presentationTool } from "sanity/presentation";
 import { getPresentationUrl } from "./utils/helper";
 
@@ -26,6 +26,9 @@ import { locations } from "@/location";
 import { presentationUrl } from "./plugins/presentation-url";
 import { createElement } from "react";
 import { ToolLayoutProvider } from "./context/ToolLayoutProvider";
+import { ToolMenu } from "./components/studio/ToolMenu";
+import { noNBOverrides } from "./utils/customTranslations";
+import { media } from "sanity-plugin-media";
 
 const logger = new Logger("studio-config");
 
@@ -76,70 +79,89 @@ const sharedConfig = definePlugin<{ workspace: WorkspaceKey }>(() => ({
 }));
 
 export const defineWorkspace = (
-  workspace: WorkspaceKey,
-  dataset: string,
+    workspace: WorkspaceKey,
+    dataset: string,
 ): WorkspaceOptions => ({
-  name: workspace,
-  title: workspace.charAt(0).toUpperCase() + workspace.slice(1),
-  icon: Logo,
-  projectId: PROJECT_ID,
-  dataset,
-  basePath: `/${workspace}`,
-  releases: {
-    enabled: true,
-  },
-
-  studio: {
-    // components: {
-    //     activeToolLayout: (defaultProps) =>
-    //         ToolLayout({  workspace }, defaultProps),
-    //     // layout: Wrap layout in the ToolLayoutProvider
-    // },
-    components: {
-      layout: (props) => {
-        return createElement(ToolLayoutProvider, {
-          workspace,
-          children: props.renderDefault(props),
-        });
-      },
-      // Use createElement here too!
-      // This ensures the Shell "looks up" the tree for the Provider.
-      activeToolLayout: (props) => {
-        return createElement(ToolLayoutShell, {
-          ...props,
-          workspace,
-        });
-      },
+    name: workspace,
+    title: workspace.charAt(0).toUpperCase() + workspace.slice(1),
+    icon: Logo,
+    projectId: PROJECT_ID,
+    dataset,
+    basePath: `/${workspace}`,
+    releases: {
+        enabled: true,
     },
-  },
 
-  plugins: [
-    nbNOLocale(),
-    lucideIconPicker(),
-    unsplashImageAsset(),
-    presentationTool({
-      resolve: {
-        locations,
-      },
-      previewUrl: {
-        origin: getPresentationUrl(),
-        previewMode: {
-          enable: "/api/presentation-draft",
+    studio: {
+        components: {
+            toolMenu: ToolMenu,
+            layout: (props) => {
+                return createElement(ToolLayoutProvider, {
+                    workspace,
+                    children: props.renderDefault(props),
+                });
+            },
+            // Use createElement here too!
+            // This ensures the Shell "looks up" the tree for the Provider.
+            activeToolLayout: (props) => {
+                return createElement(ToolLayoutShell, {
+                    ...props,
+                    workspace,
+                });
+            },
         },
-      },
-    }),
-    presentationUrl(workspace),
-    // assist({}),
+    },
 
-    structureTool({
-      title: "Studio",
-      structure: (S, context) => createStructure(S, context, workspace),
-    }),
-    /*   media(), */
-    visionTool({
-      title: "GROQ Vision",
-      icon: JsonIcon,
-    }),
-    sharedConfig({ workspace }),
-  ],
+    i18n: {
+        bundles: [...noNBOverrides],
+    },
+
+    plugins: [
+        nbNOLocale(),
+        lucideIconPicker(),
+        unsplashImageAsset(),
+        presentationTool({
+            resolve: {
+                locations,
+            },
+            previewUrl: {
+                origin: getPresentationUrl(),
+                previewMode: {
+                    enable: "/api/presentation-draft",
+                },
+            },
+        }),
+        presentationUrl(workspace),
+        assist({
+            assist: {
+                localeSettings: () =>
+                    Intl.DateTimeFormat("no-NO", {
+                        timeZone: "Europe/Oslo",
+                        dateStyle: "full",
+                        timeStyle: "long",
+                    }).resolvedOptions(),
+                maxPathDepth: 4,
+                temperature: 0.3,
+            },
+        }),
+
+        structureTool({
+            title: "Studio",
+            structure: (S, context) => createStructure(S, context, workspace),
+        }),
+        media({
+            creditLine: {
+                enabled: true,
+                excludeSources: ["unsplash"],
+            },
+            maximumUploadSize: 10000000,
+            directUploads: true,
+            
+        }),
+        visionTool({
+            title: "GROQ Vision",
+            icon: JsonIcon,
+        }),
+        sharedConfig({ workspace }),
+    ],
 });

@@ -2,8 +2,8 @@ import { RouterPanes } from "sanity/structure";
 import { parsePaneId } from "./pane-ids";
 import { SanityClient } from "sanity";
 import { createPreviewSecret } from "@sanity/preview-url-secret/create-secret";
-import { packageRegistry } from "@/schemaTypes/documents/packages";
 import { PREVIEW_BASE } from "./env";
+import { moduleRegistry } from "@/schemaTypes/documents";
 
 export async function buildPreviewUrl(
   client: SanityClient,
@@ -35,7 +35,7 @@ export async function buildPreviewUrl(
 
   const basePath = "";
 
-  if (preview.type && preview.type !== "page" && !packageRegistry.lookup(preview.type)) {
+  if (preview.type && preview.type !== "page" && !moduleRegistry.getModule(preview.type)) {
     return null;
   }
 

@@ -9,6 +9,8 @@
     "dev": "turbo run dev",
     "dev:studio": "turbo run dev --filter=studio",
     "dev:web": "turbo run dev --filter=web",
+    "start:studio": "turbo run start --filter=studio",
+    "start:web": "turbo run start --filter=web",
     "lint": "turbo run lint",
     "format": "turbo run format",
     "format:check": "turbo run format:check",

@@ -12,11 +12,11 @@ import {
   createSlugWarningValidator,
   getDocumentTypeConfig,
 } from "@/utils/slug-validation";
-import { isUnique } from "@/utils/slug";
-import { OklchColorInput } from "@/components/inputs/oklch-color-input";
+import { OklchColorInput } from "@/components/inputs/OklchColorInput";
 import {
   SiteRelationFieldInput,
 } from "@/components/inputs/site-relation-field";
+import { DOCUMENTS } from "./constant";
 
 export const richTextField = defineField({
   name: "richText",
@@ -61,7 +61,7 @@ export const siteRelationField = defineField({
   description:
     "Ny dokumenter som tilhører et nettsted kobles automatisk til aktivt nettsted. Du trenger ikke å foreta deg noe her med mindre en feil oppstod under oppretting av dokumentet.",
   type: "reference",
-  to: [{ type: "site" }],
+  to: [{ type: DOCUMENTS.site }],
   validation: (Rule) =>
     Rule.required().error(
       "Relasjonen er påkrevd for at nettstedet skal fungere. Vennligst koble til.",

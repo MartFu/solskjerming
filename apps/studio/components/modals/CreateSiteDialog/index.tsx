@@ -1,13 +1,12 @@
-import {
-  packageRegistry,
-  type PackageKey,
-} from "@/schemaTypes/documents/packages";
+
+import { DOCUMENTS } from "@/schemaTypes/constant";
+import { moduleRegistry } from "@/schemaTypes/documents";
 import { WorkspaceKey } from "@/utils/constant";
 import { API_VERSION } from "@/utils/env";
 import { asStudioIcon, capitalize } from "@/utils/helper";
 import { getSiteInitialValue } from "@/utils/site/getSiteInitialValue";
 import { Site } from "@/utils/types";
-import { AsteriskIcon, InfoOutlineIcon } from "@sanity/icons";
+import { InfoOutlineIcon } from "@sanity/icons";
 import {
   Box,
   Button,
@@ -42,7 +41,7 @@ export function CreateSiteDialog({
 }: CreateSiteDialogProps) {
   const [title, setTitle] = useState("");
   const [domain, setDomain] = useState("");
-  const [enabledPackages, setEnabledPackages] = useState<PackageKey[]>([]);
+  const [enabledModules, setEnabledModules] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,8 +49,8 @@ export function CreateSiteDialog({
   const toast = useToast();
   const canSubmit = title.trim().length > 0 && !saving;
 
-  const togglePackage = (value: PackageKey) => {
-    setEnabledPackages((prev) =>
+  const togglePackage = (value: string) => {
+    setEnabledModules((prev) =>
       prev.includes(value) ? prev.filter((p) => p !== value) : [...prev, value],
     );
   };
@@ -63,11 +62,11 @@ export function CreateSiteDialog({
     try {
       const initialValues = await getSiteInitialValue(client, workspace);
       const created = await client.create({
-        _type: "site",
+        _type: DOCUMENTS.site,
         ...initialValues,
         title: title.trim(),
         ...(domain.trim() ? { domain: domain.trim() } : {}),
-        ...(enabledPackages.length > 0 ? { enabledPackages } : {}),
+        ...(enabledModules.length > 0 ? { enabledModules } : {}),
         workspace,
       });
       onCreated(created);
@@ -163,17 +162,17 @@ export function CreateSiteDialog({
               </Tooltip>
             </Flex>
             <Stack space={2}>
-              {packageRegistry.packages.map((pkg) => {
-                const enabled = enabledPackages.includes(pkg.key);
+              {moduleRegistry.modules.map((mod) => {
+                const enabled = enabledModules.includes(mod.key);
                 return (
                   <Card
-                    key={pkg.key}
+                    key={mod.key}
                     padding={3}
                     radius={2}
                     border
                     tone={enabled ? "primary" : "default"}
                     style={{ cursor: "pointer" }}
-                    onClick={() => togglePackage(pkg.key)}
+                    onClick={() => togglePackage(mod.key)}
                   >
                     <Flex
                       align="center"
@@ -183,11 +182,11 @@ export function CreateSiteDialog({
                         size={1}
                         weight="medium"
                       >
-                        {pkg.title}
+                        {mod.title}
                       </Text>
                       <Switch
                         checked={enabled}
-                        onChange={() => togglePackage(pkg.key)}
+                        onChange={() => togglePackage(mod.key)}
                         onClick={(e) => e.stopPropagation()}
                       />
                     </Flex>

@@ -1,4 +1,4 @@
-import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
+import { DOCUMENTS } from "@/schemaTypes/constant";
 import { GROUP, GROUPS } from "@/utils/constant";
 import { createOGFields, createSEOFields } from "@/utils/factories";
 
@@ -8,7 +8,7 @@ import { defineGlobal } from "@/utils/globals/define-global";
 
 export const globalSeo = defineGlobal({
     sortFields: [],
-    name: DOCUMENT_NAMES.globalSeo,
+    name: DOCUMENTS.globalSeo,
     title: "Søkemotoroptimalisering",
     type: "document",
     icon: SearchIcon,

@@ -4,7 +4,7 @@ import { LightThemePresetFieldInput, ThemePresetFieldInput } from "@/components/
 import {
   OklchColorInput,
   OklchColorInputOptional,
-} from "@/components/inputs/oklch-color-input";
+} from "@/components/inputs/OklchColorInput";
 import { OKLCH_PATTERN } from "../constant";
 import { TOKEN_DEFS } from "../themes/constant";
 

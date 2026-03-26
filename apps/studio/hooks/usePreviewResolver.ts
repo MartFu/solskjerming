@@ -1,5 +1,5 @@
-import { packageRegistry } from "@/schemaTypes/documents/packages";
 import { useToolLayout } from "@/context/ToolLayoutProvider";
+import { moduleRegistry } from "@/schemaTypes/documents";
 import { API_VERSION, PREVIEW_BASE } from "@/utils/env";
 import { buildPreviewUrl, getPreviewContext } from "@/utils/preview";
 import { useEffect } from "react";
@@ -46,8 +46,8 @@ export function usePreviewResolver() {
         return;
       }
       
-      const pkgMeta = packageRegistry.lookup(type);
-      const isRoutable = type === "page" || !!pkgMeta;
+      const moduleMeta = moduleRegistry.getModule(type);
+      const isRoutable = type === "page" || !!moduleMeta;
       
       if (!isRoutable) {
         setPreviewUrl(null);

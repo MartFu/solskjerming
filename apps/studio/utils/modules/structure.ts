@@ -21,7 +21,7 @@ import type {
   ResolvedGlobalConfig,
   ModuleResult,
 } from "./define-module";
-import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
+import { DOCUMENTS } from "@/schemaTypes/constant";
 import { asStudioIcon } from "../helper";
 import { SquareMenu } from "lucide-react";
 import { API_VERSION } from "../env";
@@ -54,7 +54,7 @@ export function buildStructure(
   const items: ListItemBuilder[] = [];
   const enabledSet = new Set(enabledKeys);
 
-  const PAGE_TYPE = DOCUMENT_NAMES.page;
+  const PAGE_TYPE = DOCUMENTS.page;
 
   // 1. Standard pages
   items.push(

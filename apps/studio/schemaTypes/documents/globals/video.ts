@@ -1,10 +1,10 @@
-import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
+import { DOCUMENTS } from "@/schemaTypes/constant";
 import { GROUPS } from "@/utils/constant";
 import { defineField } from "sanity";
 import { defineGlobal } from "@/utils/globals/define-global";
 
 export const video = defineGlobal({
-    name: DOCUMENT_NAMES.video,
+    name: DOCUMENTS.videoAsset,
     title: "Video",
     sortFields: [],
     type: "document",

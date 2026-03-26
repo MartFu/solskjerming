@@ -1,6 +1,5 @@
-import { CreatePageModal } from "@/components/modals/create-page";
+import { CreatePageModal } from "@/components/modals/CreatePageDialog";
 import { moduleRegistry } from "@/schemaTypes/documents/modules";
-import type { ModuleCreationOptions } from "@/utils/modules";
 import { CreationOption } from "@/utils/modules/registry";
 import type { TreeNode } from "@/utils/page-tree";
 import { useToast } from "@sanity/ui";
@@ -71,8 +70,6 @@ export function PageCreationProvider({
         title,
       });
  
-      console.log("INTENT: ", intent)
-
       if (!intent) {
         toast.push({
           title: "En feil oppstod",

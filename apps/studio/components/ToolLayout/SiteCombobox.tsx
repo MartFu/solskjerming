@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useClient } from "sanity";
 import {
     Box,
@@ -8,16 +8,14 @@ import {
     Menu,
     MenuButton,
     MenuItem,
-    Popover,
     Spinner,
-    Stack,
     Text,
     TextInput,
 } from "@sanity/ui";
 import { ChevronDownIcon, SearchIcon } from "@sanity/icons";
 import { API_VERSION } from '@/utils/env';
 import { useToolLayout } from "@/context/ToolLayoutProvider";
-import { ConfirmDialog } from "./ConfirmDialog";
+import { ConfirmDialog } from "@/components/modals/ConfirmDialog";
 import { ActiveSite, Site } from "@/utils/types";
 
 interface SiteComboboxProps {

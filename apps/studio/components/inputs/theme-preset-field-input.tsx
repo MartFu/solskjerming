@@ -35,8 +35,6 @@ export function ThemePresetFieldInput({
         return isCurrentPreset(light, dark);
     }, [light, dark]);
 
-    useEffect(() => console.log(themeObjectPath), [themeObjectPath]);
-
     const handleApply = useCallback(
         (theme: Theme) => {
             const pathPrefix = themeObjectPath.join(".");
@@ -91,7 +89,6 @@ export function SiteThemePresetFieldInput({ path }: ObjectInputProps) {
         return isCurrentPreset(light, dark);
     }, [light, dark]);
 
-    useEffect(() => console.log(themeObjectPath), [themeObjectPath]);
 
     const handleApply = useCallback(
         (theme: Theme) => {

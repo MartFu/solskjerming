@@ -6,8 +6,8 @@ import { getActiveSite } from "../persistence/context";
 import { map, merge, fromEvent, switchMap, shareReplay } from "rxjs";
 import { SITE_CHANGED_EVENT } from "./structure-channel";
 import { capitalize } from "../helper";
-import { buildSiteItems } from "./build-site-items";
-import { buildGlobalItems } from "./build-global-items";
+import { createSiteItems } from "./create-site-items";
+import { createGlobalItems } from "./create-global-items";
 import { Site } from "@workspace/sanity/types";
 import { WorkspaceKey } from "../constant";
 
@@ -32,7 +32,7 @@ export const createStructure = (
         transitions: ["update", "appear"],
       },
     )
-    .pipe(shareReplay(1)); // ← one live listener, replays latest to new subscribers
+    .pipe(shareReplay(1)); // one live listener, replays latest to new subscribers
 
   const siteChanged$ = fromEvent(window, SITE_CHANGED_EVENT);
 
@@ -51,8 +51,8 @@ export const createStructure = (
         .id(`root`)
         .title(`${capitalize(activeSite?.title)}`)
         .items([
-          ...buildSiteItems(S, activeSite, workspace, context),
-          ...buildGlobalItems(S, activeSite?.enabledModules ?? []),
+          ...createSiteItems(S, activeSite, workspace, context),
+          ...createGlobalItems(S, activeSite?.enabledModules ?? []),
         ]);
     }),
   );

@@ -1,9 +1,10 @@
+import { DOCUMENTS } from "@/schemaTypes/constant";
 import { defineGlobal } from "@/utils/globals/define-global";
 import { TagIcon } from "@sanity/icons";
 import { defineField } from "sanity";
 
 export const category = defineGlobal({
-    name: "category",
+    name: DOCUMENTS.categoryAsset,
     type: "document",
     icon: TagIcon,
     sortFields: [],
@@ -39,7 +40,7 @@ export const category = defineGlobal({
             name: "parent",
             title: "Foreldrekategori",
             type: "reference",
-            to: [{ type: "category" }],
+            to: [{ type: DOCUMENTS.categoryAsset }],
             description: "Velg hvis dette er en underkategori av en annen.",
         }),
     ],

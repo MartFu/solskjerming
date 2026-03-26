@@ -1,11 +1,11 @@
 import { UserIcon } from "@sanity/icons";
 import { defineField } from "sanity";
 import { imageWithAltField } from "@/schemaTypes/common";
-import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
+import { DOCUMENTS } from "@/schemaTypes/constant";
 import { defineGlobal } from "@/utils/globals/define-global";
 
 export const author = defineGlobal({
-  name: DOCUMENT_NAMES.author,
+  name: DOCUMENTS.authorAsset,
   title: "Forfatter",
   type: "document",
   sortFields: ["name"],

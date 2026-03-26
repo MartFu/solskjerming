@@ -11,6 +11,7 @@ import { createSEOFields } from "./create-seo-fields";
 import { createOGFields } from "./create-og-fields";
 import { createStructuredDataFields } from "./create-structured-data-fields";
 import { createRobotsFields } from "./create-robots-fields";
+import { DOCUMENTS } from "@/schemaTypes/constant";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -90,7 +91,7 @@ const routableDocumentFields: FieldDefinition[] = [
     title: "Nettsted",
     type: "reference",
     group: GROUP.RELATIONSHIPS,
-    to: [{ type: "site" }],
+    to: [{ type: DOCUMENTS.site }],
     description:
       "Nye sider kobles automatisk til aktivt nettstedet. Du trenger ikke å foreta deg noe her, feltet er skrivebeskyttet for å sikre dataintegritet.",
     readOnly: true,

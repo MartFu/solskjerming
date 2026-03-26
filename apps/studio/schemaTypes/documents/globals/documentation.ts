@@ -1,11 +1,11 @@
-import { DOCUMENT_NAMES } from "@/schemaTypes/constant";
+import { DOCUMENTS } from "@/schemaTypes/constant";
 import { customRichText } from "@/schemaTypes/definitions/rich-text";
 import { DocumentTextIcon } from "@sanity/icons";
 import { defineField } from "sanity";
 import { defineGlobal } from "@/utils/globals/define-global";
 
 export const documentation = defineGlobal({
-  name: DOCUMENT_NAMES.documentation,
+  name: DOCUMENTS.documentAsset,
   title: "Dokument",
   type: "document",
   sortFields: ["title"],

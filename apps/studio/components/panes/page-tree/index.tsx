@@ -8,7 +8,6 @@ import {
   Stack,
   Text,
   TextInput,
-  useToast,
 } from "@sanity/ui";
 import { AddIcon, SearchIcon } from "@sanity/icons";
 import { useDocumentStore } from "sanity";
