@@ -55,7 +55,7 @@ export function ToolLayoutProvider({
             workspace={workspace}
             tabSettings={tabSettings}
         >
-            <PreviewProvider>{children}</PreviewProvider>
+            {children}
         </WorkspaceTabsProvider>
     );
 }

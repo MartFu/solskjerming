@@ -4,6 +4,23 @@ import { Layout } from "./Layout";
 import { WorkspaceView } from "./WorkspaceView";
 import { useToolLayout } from "@/context/ToolLayoutProvider";
 import { TabSiteScopeProvider } from "@/context/TabSiteScopeProvider";
+import { useRouter } from "sanity/router";
+import { useEffect } from "react";
+
+
+function TabPathTracker({ tabId }: { tabId: string }) {
+    const { setTabPath, activeTabId } = useToolLayout();
+    const { state } = useRouter();
+
+     useEffect(() => {
+        if (tabId === activeTabId) {
+            const path = window.location.pathname + window.location.search;
+            setTabPath(tabId, path);
+        }
+     }, [state, tabId, activeTabId, setTabPath]);
+
+    return null;
+}
 
 
 export function ToolLayoutShell({
@@ -26,6 +43,7 @@ export function ToolLayoutShell({
             {tabs.map((tab) => {
                 return (
                     <TabSiteScopeProvider key={tab.id} tabId={tab.id}>
+                        <TabPathTracker tabId={tab.id} />
                         <Box
                             style={{
                                 display:

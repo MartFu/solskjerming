@@ -101,8 +101,6 @@ export const defineWorkspace = (
                     children: props.renderDefault(props),
                 });
             },
-            // Use createElement here too!
-            // This ensures the Shell "looks up" the tree for the Provider.
             activeToolLayout: (props) => {
                 return createElement(ToolLayoutShell, {
                     ...props,

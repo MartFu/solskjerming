@@ -4,7 +4,6 @@ import { TopBar } from "./TopBar";
 
 export function Layout(props: ActiveToolLayoutProps) {
     const currentTool = props.activeTool.name;
-
     return (
         <Flex
             direction="column"
