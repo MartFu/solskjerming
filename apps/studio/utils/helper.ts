@@ -1,5 +1,5 @@
 import { LucideIcon } from "lucide-react";
-import { createElement } from "react";
+import { ComponentType, createElement } from "react";
 import { isPortableTextTextBlock, type StringOptions } from "sanity";
 
 export const isRelativeUrl = (url: string) =>
@@ -199,7 +199,7 @@ export function clamp(v: number, min: number, max: number) {
  * @param icon - The Lucide icon component to adapt.
  * @returns A functional component compatible with Sanity's `icon` field.
  */
-export function asStudioIcon(icon: LucideIcon) {
+export function asStudioIcon(icon: LucideIcon): ComponentType {
   return () => createElement(icon, { size: 16, strokeWidth: 1.5 });
 }
 

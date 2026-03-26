@@ -1,109 +1,121 @@
-import { useSiteContext } from "@/context/SiteProvider";
 import { useToolLayout } from "@/context/ToolLayoutProvider";
 import { asStudioIcon } from "@/utils/helper";
-import { getActiveSite } from "@/utils/persistence/context";
-import { Box, Button, Card, Flex, Stack, Text, TextInput } from "@sanity/ui";
-import { Link, Zap } from "lucide-react";
-import {
-    DocumentFieldAction,
-    DocumentFieldActionHook,
-    FieldActionMenuProps,
-    FieldProps,
-    FormNodeValidation,
-    InputProps,
-    ReferenceInput,
-    ReferenceInputProps,
-    set,
-    StringInputProps,
-} from "sanity";
-
-export function SiteRelationField(props: FieldProps) {
-    const { renderDefault, validation } = props;
-    const hasError = validation.some((v: any) => v.level === "error");
-
-    return (
-        <Box>
-            {renderDefault({ ...props })}
-            {hasError && (
-                <Box
-                    padding={3}
-                    marginTop={2}
-                    style={{ background: "#fee2e2", borderRadius: "4px" }}
-                >
-                    <Text
-                        size={1}
-                        weight="bold"
-                        key="err"
-                    >
-                        Tilkobling mangler!
-                    </Text>
-                    <Button
-                        fontSize={1}
-                        padding={2}
-                        text="Koble til aktivt nettsted nå"
-                        onClick={() => {
-                            // Here is your "Predefined Action"
-                            // e.g., using document patch to set the ID
-                        }}
-                    />
-                </Box>
-            )}
-        </Box>
-    );
-}
+import { EarthGlobeIcon, WarningOutlineIcon } from "@sanity/icons";
+import { Badge, Box, Button, Card, Flex, Stack, Text } from "@sanity/ui";
+import { Frown, GlobeLock, Wrench } from "lucide-react";
+import { FormNodeValidation, ReferenceInputProps, set } from "sanity";
 
 export function SiteRelationFieldInput({
-    validation,
-    onChange,
-    ...props
+  validation,
+  onChange,
+  value,
 }: ReferenceInputProps) {
-   console.log("SiteRelationFieldMounting is mounting!");
-    const siteId = "";
-    const hasError = validation.some((v: FormNodeValidation) => v.level === "error");
-    const canFix = hasError && siteId;
+  const { activeSite } = useToolLayout();
+  const siteId = activeSite?._id ?? "";
+  const hasError = validation.some(
+    (v: FormNodeValidation) => v.level === "error",
+  );
+  const isLinked = value?._ref === siteId;
 
-    return (
-        <Stack space={1}>
-            <Flex gap={1}>
-                <Box flex={1}>
-                    <ReferenceInput
-                        {...props}
-                        onChange={onChange}
-                        validation={validation}
-                        readOnly
-                    />
-                </Box>
-
-                {canFix && (
-                    <Button
-                        fontSize={1}
-                        padding={2}
-                        paddingX={4}
-                        tone="primary"
-                        text="Koble til"
-                        icon={asStudioIcon(Link)}
-                        onClick={() => {
-                            onChange(
-                                set({ _type: "reference", _ref: siteId }, [
-                                    "site",
-                                ]),
-                            );
-                        }}
-                    />
-                )}
-            </Flex>
-            {!canFix && (
-                <Card padding={3} tone="critical">
-                    <Text
-                        size={1}
-                        weight="bold"
-                        key="err"
-                    >
-                        [FEIL] Kan ikke repareres via grensesnittet.
-
-                    </Text>
-                </Card>
+  return (
+    <Stack space={0}>
+      <Card
+        padding={3}
+        border
+        radius={2}
+        tone={isLinked ? "neutral" : "caution"}
+        style={{ borderStyle: isLinked ? "solid" : "dashed" }}
+      >
+        <Flex
+          align="center"
+          gap={3}
+        >
+          {/* Visual Icon */}
+          <Box>
+            {isLinked ? (
+              <EarthGlobeIcon fontSize={24} />
+            ) : (
+              <Frown fontSize={24} />
             )}
-        </Stack>
-    );
+          </Box>
+
+          {/* Site Info */}
+          <Stack
+            flex={1}
+            space={2}
+          >
+            <Text
+              size={1}
+              weight="semibold"
+            >
+              {isLinked ? activeSite?.title : "Ingen nettsted tilkoblet"}
+            </Text>
+            <Text
+              size={1}
+              muted
+              style={{ fontFamily: isLinked ? "monospace" : ""}}
+            >
+              {isLinked
+                ? `ID: ${siteId}`
+                : "Dette dokumentet må kobles til aktivt nettsted"}
+            </Text>
+          </Stack>
+
+          {/* Action Button */}
+          {!isLinked && (
+            <Button
+              fontSize={1}
+              padding={3}
+              tone="positive"
+              text="Koble til"
+              icon={asStudioIcon(Wrench)}
+              onClick={() =>
+                onChange(set({ _type: "reference", _ref: siteId }))
+              }
+            />
+          )}
+
+          {isLinked && <Badge tone="positive">Tilkoblet</Badge>}
+        </Flex>
+      </Card>
+
+      <Box paddingX={4}>
+        {hasError && (
+          <Card
+            borderBottom
+            borderLeft
+            borderRight
+            radius={2}
+            paddingY={1}
+            paddingX={3}
+            tone="critical"
+          >
+            <Flex
+              gap={2}
+              justify="flex-start"
+              align="center"
+            >
+                <WarningOutlineIcon
+                  style={{ flexShrink: 0 }}
+                  fontSize={16}
+                />
+              {validation.map((v, i) => {
+                if (v.level === "error" && i === 0) {
+                  return (
+                    <Text
+                      key={`site-rel-val-err-${i}`}
+                      size={0}
+                      muted
+                    >
+                      {v.message}
+                    </Text>
+                  );
+                }
+              })}
+            </Flex>
+          </Card>
+        )}
+      </Box>
+    </Stack>
+  );
 }

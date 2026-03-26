@@ -2,6 +2,7 @@ import { defineField, FieldDefinition } from "sanity";
 import { GROUP } from "@/utils/constant";
 import { createSiteScopedSlugField } from "@/utils/factories";
 import { PageBuilderType } from "@/schemaTypes/definitions/pagebuilder";
+import { siteRelationField } from "@/schemaTypes/common";
 
 // ---------------------------------------------------------------------------
 // Field Sets
@@ -26,35 +27,25 @@ import { PageBuilderType } from "@/schemaTypes/definitions/pagebuilder";
  */
 export function createIdentityFields(): FieldDefinition[] {
     return [
-        defineField({
-            name: "title",
-            title: "Tittel",
-            type: "string",
-            group: GROUP.IDENTITY,
-            description:
-                "Sidens H1-overskrift. Bør inneholde nøkkelord som samsvarer med ord som finnes både i innholdet og Metatittel.",
-            validation: (Rule) => Rule.required(),
-        }),
-        defineField({
-            name: "description",
-            title: "Beskrivelse",
-            type: "text",
-            description:
-                "Et kort sammendrag av hva besøkende kan finne på denne siden. Bør gjenta nøkkelord for optimal søkemotorsynlighet.",
-            group: GROUP.MAIN_CONTENT,
-        }),
-        defineField({
-            name: "site",
-            title: "Nettsted",
-            type: "reference",
-            group: GROUP.RELATIONSHIPS,
-            to: [{ type: "site" }],
-            description:
-                "Nye sider kobles automatisk til aktivt nettstedet. Du trenger ikke å foreta deg noe her, feltet er skrivebeskyttet for å sikre dataintegritet.",
-            readOnly: true,
-            validation: (Rule) => Rule.required(),
-        }),
-        createSiteScopedSlugField(),
+      siteRelationField,
+      defineField({
+        name: "title",
+        title: "Tittel",
+        type: "string",
+        group: GROUP.IDENTITY,
+        description:
+          "Sidens H1-overskrift. Bør inneholde nøkkelord som samsvarer med ord som finnes både i innholdet og Metatittel.",
+        validation: (Rule) => Rule.required(),
+      }),
+      defineField({
+        name: "description",
+        title: "Beskrivelse",
+        type: "text",
+        description:
+          "Et kort sammendrag av hva besøkende kan finne på denne siden. Bør gjenta nøkkelord for optimal søkemotorsynlighet.",
+        group: GROUP.MAIN_CONTENT,
+      }),
+      createSiteScopedSlugField(),
     ];
 }
 

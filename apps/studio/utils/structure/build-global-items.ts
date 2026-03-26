@@ -4,14 +4,16 @@ import {
   Search,
   Settings,
 } from "lucide-react";
-import { StructureBuilder } from "sanity/structure";
+import { Divider, ListBuilder, ListItem, ListItemBuilder, StructureBuilder } from "sanity/structure";
 import { API_VERSION } from "@/utils/env";
-import { PackageIcon} from "@sanity/icons";
+import { ActivityIcon, PackageIcon} from "@sanity/icons";
 import { DeploymentDashboard } from "@/components/deployment-dashboard";
 import { asStudioIcon, capitalize } from "../helper";
 
 import { moduleRegistry, globalRegistry, globalSettingsRegistry } from "@/schemaTypes/documents";
 import { SeoReportsView } from "@/components/views/SeoReportView";
+import { ComponentType, JSX, ReactNode } from "react";
+import FleetManagementConsole from "@/components/overview/FleetManagementConsole";
 
 // ─────────────────────────────────────────────────────────────
 // Global items (workspace-level, shared across sites)
@@ -66,81 +68,95 @@ export function buildGlobalItems(
       ),
   );
 
-  const globalSettings = [
-      ...globalSettingsRegistry.map((g) => ({
-          title: g.schema.title ? capitalize(g.schema.title) : capitalize(g.schema.name),
-          id: `${g.schema.name}-editor`,
-          icon: g.schema.icon,
-      })),
-      {
-        title: "Studioinnstillinger",
-        id: "studio-settings-editor",
-        icon: asStudioIcon(LayoutDashboard),
-      }
-  ];
+  const globalSettings = globalSettingsRegistry.map((g) => ({
+      title: g.schema.title
+        ? capitalize(g.schema.title)
+        : capitalize(g.schema.name),
+      id: `${g.schema.name}-editor`,
+      icon: g.schema.icon,
+      schemaType: g.schema.name,
+    }))
 
 
   return [
-      S.divider().title("Globaler"),
+    S.divider().title("Globaler"),
 
-      S.listItem()
+    S.listItem()
+      .title("Ressurser")
+      .id("resources")
+      .icon(PackageIcon)
+      .child(
+        S.list()
+          .id("resources-list")
           .title("Ressurser")
-          .id("resources")
-          .icon(PackageIcon)
-          .child(
-              S.list()
-                  .id("resources-list")
-                  .title("Ressurser")
-                  .items([...packagedGlobals, ...alwaysAvailableGlobals]),
-          ),
+          .items([...packagedGlobals, ...alwaysAvailableGlobals]),
+      ),
 
-      S.listItem()
+    S.listItem()
+      .title("Globale Innstillinger")
+      .id("global-settings")
+      .icon(Settings)
+      .child(
+        S.list()
+          .id("global-settings-list")
           .title("Globale Innstillinger")
-          .id("global-settings")
-          .icon(Settings)
-          .child(
-              S.list()
-                  .id("global-settings-list")
-                  .title("Globale Innstillinger")
-                  .items([
-                      ...globalSettings.map((g) => S.listItem().title(g.title).id(g.id).icon(g.icon)),
-                  ]),
-          ),
+          .items([
+            ...globalSettings.map((g) =>
+              S.listItem()
+                .title(g.title)
+                .id(g.id)
+                .icon(g.icon)
+                .child(
+                  S.document()
+                    .schemaType(g.schemaType)
+                    .documentId(g.schemaType),
+                ),
+            ),
+          ]),
+      ),
 
-      S.divider().title("Verktøy"),
+    S.divider().title("Verktøy"),
 
-      S.listItem()
-          .title("Distribusjonssenter")
-          .id("deployment-center")
-          .icon(Rocket)
-          .child(
-              S.component()
-                  .id("deployment-dashboard")
-                  .component(DeploymentDashboard)
-                  .title("Distribusjonssenter"),
-          ),
+    S.listItem()
+      .title("Distribusjonssenter")
+      .id("deployment-center")
+      .icon(Rocket)
+      .child(
+        S.component()
+          .id("deployment-dashboard")
+          .component(DeploymentDashboard)
+          .title("Distribusjonssenter"),
+      ),
 
-      S.listItem()
-          .title("SEO Analyse")
-          .id("seo")
-          .icon(Search)
-          .child(
-              S.component()
-                  .id("seo-dashboard")
-                  .component(SeoReportsView)
-                  .title("SEO Analyse"),
-          ),
+    S.listItem()
+      .title("SEO Analyse")
+      .id("seo")
+      .icon(Search)
+      .child(
+        S.component()
+          .id("seo-dashboard")
+          .component(SeoReportsView)
+          .title("SEO Analyse"),
+      ),
 
-      S.listItem()
-          .title("Studio")
-          .id("studio-settings")
-          .icon(asStudioIcon(LayoutDashboard))
-          .child(
-              S.document()
-                  .id("studio-settings-editor")
-                  .schemaType("studioSettings")
-                  .documentId("studioSettings")
-                  .title("Studio"),
-          ),
+    S.listItem()
+      .title("Studio")
+      .id("studio-settings")
+      .icon(asStudioIcon(LayoutDashboard))
+      .child(
+        S.document()
+          .id("studio-settings-editor")
+          .schemaType("studioSettings")
+          .documentId("studioSettings")
+          .title("Studio"),
+      ),
+
+    S.listItem()
+      .title("Operasjoner")
+      .id("operations-view")
+      .icon(ActivityIcon)
+      .child(
+        S.component().id("operations-view-component").component(FleetManagementConsole).title("Fleet View"),
+      ),
   ];
 }

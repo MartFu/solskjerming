@@ -43,7 +43,7 @@ function TabShell({ tabId, active, props }: TabShellProps) {
 
 // ─── Inner shell (has access to context) ─────────────────────────────────────
 
-function ToolLayoutShell(props: ActiveToolLayoutProps) {
+export function ToolLayoutShell({workspace, ...props}: ActiveToolLayoutProps & { workspace: string}) {
   const { tabs, activeTabId } = useToolLayout();
 
   return (
@@ -65,13 +65,13 @@ function ToolLayoutShell(props: ActiveToolLayoutProps) {
 
 // ─── Tool root (sets up provider) ────────────────────────────────────────────
 
-export function ToolLayout(
-  { workspace }: { workspace: WorkspaceKey },
-  props: ActiveToolLayoutProps,
-) {
-  return (
-      <ToolLayoutProvider workspace={workspace}>
-         <ToolLayoutShell {...props} />
-      </ToolLayoutProvider>
-  );
-}
+// export function ToolLayout(
+//   { workspace }: { workspace: WorkspaceKey },
+//   props: ActiveToolLayoutProps,
+// ) {
+//   return (
+//       <ToolLayoutProvider workspace={workspace}>
+//          <ToolLayoutShell {...props} />
+//       </ToolLayoutProvider>
+//   );
+// }

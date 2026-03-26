@@ -14,7 +14,9 @@ import {
 } from "@/utils/slug-validation";
 import { isUnique } from "@/utils/slug";
 import { OklchColorInput } from "@/components/inputs/oklch-color-input";
-import { SiteRelationField, SiteRelationFieldInput } from "@/components/inputs/site-relation-field";
+import {
+  SiteRelationFieldInput,
+} from "@/components/inputs/site-relation-field";
 
 export const richTextField = defineField({
   name: "richText",
@@ -30,7 +32,6 @@ export const buttonsField = defineField({
   description:
     "Add one or more clickable buttons that visitors can use to navigate your website",
 });
-
 
 export const pageBuilderField = defineField({
   name: "pageBuilder",
@@ -48,7 +49,6 @@ export const iconField = defineField({
     "Choose a small picture symbol to represent this item, like a home icon or shopping cart",
 });
 
-
 export const siteRelationField = defineField({
   name: "site",
   title: "Nettsted",
@@ -56,17 +56,20 @@ export const siteRelationField = defineField({
     input: SiteRelationFieldInput,
   },
   options: {
-    disableNew: true
+    disableNew: true,
   },
-  description: "Ny dokumenter som tilhører et nettsted kobles automatisk til aktivt nettsted. Du trenger ikke å foreta deg noe her. Feltet er skrivebeskyttet for å sikre dataintegritet.",
+  description:
+    "Ny dokumenter som tilhører et nettsted kobles automatisk til aktivt nettsted. Du trenger ikke å foreta deg noe her med mindre en feil oppstod under oppretting av dokumentet.",
   type: "reference",
   to: [{ type: "site" }],
-  validation: (Rule) => Rule.required().error("Relasjonen er påkrevd for at nettstedet skal fungere."),
+  validation: (Rule) =>
+    Rule.required().error(
+      "Relasjonen er påkrevd for at nettstedet skal fungere. Vennligst koble til.",
+    ),
   initialValue: async () => {
-    return { _type : "", _ref: ""}
-  }
-})
-
+    return { _type: "", _ref: "" };
+  },
+});
 
 export const documentSlugField = (
   documentType: string,
@@ -74,7 +77,7 @@ export const documentSlugField = (
     group?: string;
     description?: string;
     title?: string;
-  } = {}
+  } = {},
 ) => {
   const {
     group,
@@ -88,17 +91,20 @@ export const documentSlugField = (
     title,
     description,
     group,
-  
+
     components: {
       field: PathnameFieldComponent,
     },
-    validation: (Rule) => {
-      const config = getDocumentTypeConfig(documentType);
-      return [
-        Rule.custom(createSlugErrorValidator(config)),
-        Rule.custom(createSlugWarningValidator(config)).warning(),
-      ];
-    },
+    validation: (Rule) => [
+      Rule.custom((value, context) => {
+        const config = getDocumentTypeConfig(documentType);
+        return createSlugErrorValidator(config)(value);
+      }),
+      Rule.custom((value, context) => {
+        const config = getDocumentTypeConfig(documentType);
+        return createSlugWarningValidator(config)(value);
+      }).warning(),
+    ],
   });
 };
 
@@ -137,10 +143,9 @@ export const imageWithAltField = ({
         name: "creditLine",
         type: "string",
         title: "Credit Line",
-      })
+      }),
     ],
   });
-
 
 export const oklchField = (name: string, title: string) =>
   defineField({

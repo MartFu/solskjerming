@@ -12,7 +12,7 @@ import type { WorkspaceKey } from "@/utils/constant";
 import type { ActiveSite } from "@/utils/types";
 import { STUDIO_CONTEXT_LS_KEY } from "@/utils/persistence/context";
 import { useWorkspaceTabsContext } from "./WorkspaceTabsProvider";
-import { emitSiteChanged } from "@/utils/structure";
+import { emitSiteChanged } from "@/utils/structure/structure-channel";
 
 // ─── Session storage helpers ──────────────────────────────────────────────────
 

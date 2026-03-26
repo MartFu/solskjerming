@@ -14,7 +14,7 @@ import {
   makeDefaultTab,
   saveTabsState,
 } from "@/utils/persistence/tabs";
-import { emitSiteChanged } from "@/utils/structure";
+import { emitSiteChanged } from "@/utils/structure/structure-channel";
 import { StudioTabSettings } from "@/hooks/useStudioSettings";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
