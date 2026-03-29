@@ -20,7 +20,7 @@
     "@workspace/env": "workspace:*"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.8",
+    "@biomejs/biome": "2.4.9",
     "@workspace/typescript-config": "workspace:*",
     "turbo": "^2.8.17",
     "typescript": "catalog:",
